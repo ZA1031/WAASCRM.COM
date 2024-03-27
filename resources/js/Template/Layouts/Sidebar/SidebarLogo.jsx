@@ -2,8 +2,8 @@ import React, { useContext, useState } from 'react';
 import { Grid } from 'react-feather';
 import { Link } from 'react-router-dom';
 import { Image } from '../../AbstractElements';
-import CubaIcon from '../../../assets/images/logo/logo.png';
-import CubaIconDark from '../../../assets/images/logo/logo_dark.png';
+import CubaIcon from '../../../../assets/images/logo/logo.png';
+import CubaIconDark from '../../../../assets/images/logo/logo_dark.png';
 import CustomizerContext from '../../_helper/Customizer';
 
 const SidebarLogo = () => {

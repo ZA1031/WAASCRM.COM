@@ -5,8 +5,8 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { BrowserRouter } from 'react-router-dom'
-import AnimationThemeProvider from './_helper/AnimationTheme/AnimationThemeProvider';
-import CustomizerProvider from './_helper/Customizer/CustomizerProvider';
+import AnimationThemeProvider from './Template/_helper/AnimationTheme/AnimationThemeProvider';
+import CustomizerProvider from './Template/_helper/Customizer/CustomizerProvider';
 import { Provider } from 'react-redux'
 import main from './Stores/main'
 

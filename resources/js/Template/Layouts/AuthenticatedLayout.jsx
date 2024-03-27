@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 //import { Loader } from '../../Components/Common/Loader';
 import { useSelector, useDispatch } from 'react-redux'
-import { setUser } from './../Stores/Main/authSlice'
+import { setUser } from './../../Stores/Main/authSlice'
 
 import Taptop from './TapTop';
 import Header from './Header';

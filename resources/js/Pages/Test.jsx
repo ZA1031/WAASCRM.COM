@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
-import { Btn, H4 } from "./../AbstractElements";
+import { Btn, H4 } from "./../Template/AbstractElements";
 import { useForm } from "react-hook-form";
 import { Row, Col, CardHeader, CardBody, CardFooter, Form, FormGroup, Label, Input } from 'reactstrap'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Breadcrumbs } from '../AbstractElements';
+import { Breadcrumbs } from '../Template/AbstractElements';
 
 export default function Test({ auth }) {
     const { register, handleSubmit, formState: { errors } } = useForm();

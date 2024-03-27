@@ -1,5 +1,4 @@
 import React from 'react';
-import sprite from '../../../../assets/images/svg-icon/sprite.svg';
 
 const SvgIcon = (props) => {
   const { iconId, ...res } = props;

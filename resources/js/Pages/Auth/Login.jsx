@@ -4,7 +4,7 @@ import InputError from '@/Components/InputError';
 
 import React, { Fragment, useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
-import { Btn, H4, P } from '../../AbstractElements';
+import { Btn, H4, P } from '../../Template/AbstractElements';
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
