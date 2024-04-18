@@ -16,8 +16,8 @@
 @import 'utils/variables';
 
 :root {
-  --theme-deafult: #7366ff;
-  --theme-secondary: #f73164;
+  --theme-deafult: rgb(30, 136, 229) !important;
+  --theme-secondary: #f73164 !important;
   --light-background: rgba(242, 243, 247, 0.7);
   --body-font-color: #2f2f3b;
   --chart-border: #ecf3fa;
@@ -44,6 +44,9 @@
   --fc-button-border-color: var(--theme-deafult);
   --fc-button-hover-bg-color: var(--theme-deafult);
   --fc-button-hover-border-color: var(--theme-deafult);
+
+  --header-bg: rgba(30, 136, 229, 0.5);
+  --sidebar-bg: rgb(30, 136, 229);
 }
 
 body[class='dark-only'],
@@ -168,3 +171,9 @@ body.dark-only {
 @import 'themes/theme-customizer';
 @import 'themes/responsive';
 @import 'themes/update';
+
+
+/* ---------------------
+	*** Custom **
+-----------------------*/
+@import 'custom';

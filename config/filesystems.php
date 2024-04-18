@@ -44,6 +44,46 @@ return [
             'throw' => false,
         ],
 
+        'products' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/products'),
+            'url' => env('APP_URL').'/storage/products',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'companies' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/companies'),
+            'url' => env('APP_URL').'/storage/companies',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'materials' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/materials'),
+            'url' => env('APP_URL').'/storage/materials',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'users' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/users'),
+            'url' => env('APP_URL').'/storage/users',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'tmp' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/tmp'),
+            'url' => env('APP_URL').'/storage/tmp',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

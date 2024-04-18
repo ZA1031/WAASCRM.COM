@@ -31,7 +31,10 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
-        $user->rol_name = $request->user()?->rol_name;
+        if ($user) {
+            $user->rol_name = $request->user()->rol_name ?? '';
+            $user->is_tenant = !empty(tenant('id'));
+        }
         return [
             ...parent::share($request),
             'auth' => [
@@ -41,6 +44,12 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'flash' => [
+                'message' => fn () => $request->session()->get('message'),
+                'error' => fn () => $request->session()->get('error'),
+                'warning' => fn () => $request->session()->get('warning'),
+                'files' => fn () => $request->session()->get('files'),
+            ]
         ];
     }
 }

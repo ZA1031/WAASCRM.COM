@@ -22,6 +22,7 @@ class AuthenticatedSessionController extends Controller
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
+            'prefix' => empty(tenant('id')) ? 'central.' : '',
         ]);
     }
 
@@ -34,7 +35,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(empty(tenant('id') ? RouteServiceProvider::CENTRAL_HOME : RouteServiceProvider::HOME));
     }
 
     /**

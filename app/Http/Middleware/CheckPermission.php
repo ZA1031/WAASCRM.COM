@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Activity;
+use App\Models\Central\Company;
 use App\Models\Module;
 use App\Models\Rol;
 use App\Models\StudentActivity;
@@ -28,6 +29,11 @@ class CheckPermission
         if (!in_array(auth()->user()->rol_id, $roles)) {
             abort(403, 'Access denied');
         }
+
+        $company = Company::first();
+        define('COMPANY', $company);
+        define('ALLOWED_PRODUCTS', explode(',', $company->products));
+
         return $next($request);
     }
 }

@@ -5,15 +5,18 @@ import { Link } from 'react-router-dom';
 import CustomContext from '../../_helper/Customizer';
 import Leftbar from './Leftbar/index';
 import RightHeader from './RightHeader/index';
-import { MENUITEMS } from '../Sidebar/Menu';
+import { MENUITEMS, MENUITEMS_TENANT } from '../Sidebar/Menu';
 import SvgIcon from '../../Components/Common/Component/SvgIcon';
+import { useSelector } from 'react-redux'
 
 const Header = () => {
+  const actualUser = useSelector((state) => state.auth.value);
   const id = window.location.pathname.split('/').pop();
   const layout = id;
+  const ITEMS = actualUser.is_tenant ? MENUITEMS_TENANT : MENUITEMS;
   const { toggleIcon } = useContext(CustomContext);
   // eslint-disable-next-line
-  const [mainmenu, setMainMenu] = useState(MENUITEMS);
+  const [mainmenu, setMainMenu] = useState(ITEMS);
   const [searchValue, setsearchValue] = useState('');
   // eslint-disable-next-line
   const [searchResult, setSearchResult] = useState(false);
@@ -22,6 +25,7 @@ const Header = () => {
   const { customizer } = useContext(CustomContext);
 
   const layout_type = customizer.settings.layout_type;
+  
   // const layout_versions = customizer.color.mix_background_layout;
 
   // const layout_version = localStorage.getItem('layout_version') || (layout_versions && localStorage.setItem('layout_version', layout_versions));

@@ -7,6 +7,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { BrowserRouter } from 'react-router-dom'
 import AnimationThemeProvider from './Template/_helper/AnimationTheme/AnimationThemeProvider';
 import CustomizerProvider from './Template/_helper/Customizer/CustomizerProvider';
+import MainDataProvider from './Template/_helper/MainData/MainData';
 import { Provider } from 'react-redux'
 import main from './Stores/main'
 
@@ -23,7 +24,9 @@ createInertiaApp({
                 <BrowserRouter>
                     <CustomizerProvider>
                         <AnimationThemeProvider>
-                            <App {...props} />
+                            <MainDataProvider>
+                                <App {...props} />
+                            </MainDataProvider>
                         </AnimationThemeProvider>
                     </CustomizerProvider>
                 </BrowserRouter>

@@ -1,12 +1,12 @@
-import GuestLayout from '@/Layouts/GuestLayout';
+import GuestLayout from '@/Template/Layouts/GuestLayout';
 import {useForm } from '@inertiajs/react';
-import InputError from '@/Components/InputError';
+import InputError from '@/Template/Components/InputError';
 
 import React, { Fragment, useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
 import { Btn, H4, P } from '../../Template/AbstractElements';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status, canResetPassword, prefix }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -24,7 +24,7 @@ export default function Login({ status, canResetPassword }) {
 
     const loginAuth = async (e) => {
         e.preventDefault();
-        post(route('login'));
+        post(route(prefix + 'login'));
     };
 
     return (

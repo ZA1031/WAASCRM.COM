@@ -74,9 +74,6 @@ const Leftbar = () => {
           <AlignCenter className='status_toggle middle sidebar-toggle' id='sidebar-toggle' />
         </div>
       </Col>
-      <Col xxl='5' xl='6' lg='5' md='4' sm='3' className='left-header p-0'>
-        <NotificationSlider />
-      </Col>
     </Fragment>
   );
 };

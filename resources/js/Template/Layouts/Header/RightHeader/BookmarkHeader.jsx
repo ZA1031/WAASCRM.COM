@@ -1,12 +1,14 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import { Col, Input, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { MENUITEMS } from '../../Sidebar/Menu';
-import SvgIcon from '../../../Components/Common/Component/SvgIcon';
+import { MENUITEMS, MENUITEMS_TENANT } from '../Sidebar/Menu';
+import SvgIcon from '../../Components/Common/Component/SvgIcon';
+import { useSelector } from 'react-redux'
 import { Btn } from '../../../AbstractElements';
 
 const BookmarkHeader = (props) => {
   // eslint-disable-next-line
+  const actualUser = useSelector((state) => state.auth.value);
   const [mainmenu, setMainMenu] = useState(MENUITEMS);
   const [searchValue, setSearchValue] = useState('');
   const [searchResult, setSearchResult] = useState(false);

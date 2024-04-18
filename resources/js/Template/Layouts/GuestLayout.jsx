@@ -1,4 +1,4 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
+import ApplicationLogo from '@/Template/Components/ApplicationLogo';
 import { Container, Row, Col } from 'reactstrap';
 
 export default function Guest({ children }) {

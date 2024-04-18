@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Http\Controllers\Central;
+
+use App\Http\Controllers\Controller;
+use App\Models\Central\AdminCatalog;
+use App\Models\Central\Company;
+use App\Models\Central\Product;
+use App\Models\Central\SparePart;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+
+class CompanyController extends Controller
+{
+    public function index()
+    {
+        return Inertia::render('Central/Companies/CompanyList', ['title' => 'Empresas']);
+    }
+
+    public function list(Request $request)
+    {
+        $data = Company::get()->map(function($pr){
+            $pr->logo_url = $pr->logo_url;
+            $pr->products = $pr->getProducts();
+            return $pr;
+        });
+        
+        return $data;
+    }
+
+    public function create()
+    {
+        $statuses = [];
+        for ($i = 0; $i <= Company::MAX_STATUS; $i++) $statuses[] = ['value' => $i, 'label' => Company::decodeStatus($i)];
+        return Inertia::render('Central/Companies/CompanyForm', [
+            'title' => 'Agregar Empresa',
+            'company' => new Company(),
+            'products' => Product::select('name as label', 'id as value')->get(),
+            'statuses' => $statuses,
+        ]);
+    }
+
+    public function edit(Company $company)
+    {
+        $statuses = [];
+        for ($i = 0; $i <= Company::MAX_STATUS; $i++) $statuses[] = ['value' => $i, 'label' => Company::decodeStatus($i)];
+        $company->logo_url = $company->logo_url;
+        return Inertia::render('Central/Companies/CompanyForm', [
+            'title' => 'Editar Empresa',
+            'company' => $company,
+            'products' => Product::select('name as label', 'id as value')->get(),
+            'statuses' => $statuses,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $id = $request->id;
+        if (empty($id)) $id = 0;
+        return $this->upsertData($request, $id);
+    }
+
+    public function upsertData($request, $id){
+        $this->validateForm($request, $id);
+
+        if (empty($request->id)) $company = new Company($request->except(['id']));
+        else {
+            $company = Company::find($request->id);
+            if ($company) $company->fill($request->all());
+            else $company = new Company($request->except(['id']));
+        }
+        $company->users = json_encode($request->users);
+        $company->products = implode(',', $request->input('products', []));
+        $company->save();
+
+        ///Save Logo
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $name = $file->hashName();
+            $file->storeAs('', $name, 'companies');
+            $company->logo = $name;
+            $company->save();
+        }
+
+        return redirect()->route('companies')->with('message', 'Datos guardados correctamente.');
+    }
+
+    public function destroy($cid)
+    {
+        $company = Company::findOrFail($cid);
+        $company->delete();
+        return redirect()->back()->with('message', 'Empresa borrada correctamente.');
+    }
+
+    private function validateForm(Request $request, $id){
+        return $request->validate([
+            'domain' => 'required|max:100|unique:companies,domain,'.$id,
+            'name' => 'required|max:255',
+            'business_name' => 'required|max:255',
+            'cif' => 'required|max:100',
+            'email' => 'required|email|max:100|unique:companies,email,'.$id,
+            'address' => 'required|max:255',
+            'fiscal_address' => 'max:255',
+            'price' => 'required|numeric'
+        ]);
+    }
+
+    public function changeStatus(Request $request, $cid)
+    {
+        $company = Company::findOrFail($cid);
+        $company->status = !$company->status;
+        $company->save();
+        return redirect()->back()->with('message', 'Empresa '.($company->status ? 'Activada' : 'Desactivada').' correctamente.');
+    }
+}

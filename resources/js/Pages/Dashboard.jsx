@@ -1,9 +1,7 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
 export default function Dashboard({ auth }) {
-    console.log(auth);
-
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard x" />

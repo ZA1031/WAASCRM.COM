@@ -1,4 +1,4 @@
-export const MENUITEMS = [
+/*export const MENUITEMS = [
   {
     menutitle: 'General',
     menucontent: 'Dashboards,Widgets',
@@ -428,5 +428,71 @@ export const MENUITEMS = [
       { path: `/app/knowledgebase`, icon: 'knowledgebase', type: 'link', active: false, title: 'Knowledgebase' },
       { path: `/app/supportticket`, icon: 'support-tickets', type: 'link', active: false, title: 'SupportTicket' },
     ],
+  },
+];
+*/
+
+export const MENUITEMS = [
+	{
+		menutitle: 'General',
+		menucontent: 'Dashboards,Widgets',
+		Items: [
+			{ path: `/central-dashboard`, icon: 'home', type: 'link', active: false, title: 'Dashboard' },
+			{ path: `/products`, icon: 'widget', type: 'link', active: false, title: 'Productos' },
+			{ path: `/spare-parts`, icon: 'task', type: 'link', active: false, title: 'Recambios' },
+			{ path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Empresas' },
+			{
+				title: 'Catalogo',
+				icon: 'others',
+				type: 'sub',
+				badge: 'badge badge-light-primary',
+				active: false,
+				children: [
+					{ path: `/catalog/1`, title: 'Familia', type: 'link' },
+					{ path: `/catalog/2`, title: 'Grupo de Familia', type: 'link' },
+					{ path: `/catalog/3`, title: 'Caracteristicas', type: 'link' },
+					{ path: `/catalog/4`, title: 'Categoria de Productos', type: 'link' },
+          { path: `/catalog/5`, title: 'Tipos de Familia', type: 'link' },
+				],
+			},
+		]
+  }
+]
+
+export const MENUITEMS_TENANT = [
+  {
+		menutitle: 'General',
+		menucontent: 'Dashboards,Widgets',
+		Items: [
+			{ path: `/dashboard`, icon: 'home', type: 'link', active: false, title: 'Dashboard' },
+			{ path: `/products`, icon: 'widget', type: 'link', active: false, title: 'Mantenimientos' },
+			{ path: `/spare-parts`, icon: 'task', type: 'link', active: false, title: 'Instalaciones' },
+			{ path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Calculadora Horeca' },
+      { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Contactos' },
+      { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Propuestas' },
+      { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Agenda' },
+      { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Clientes' },
+		]
+  },
+  {
+		menutitle: 'Configuración',
+		menucontent: 'Dashboards,Widgets',
+		Items: [
+			{ path: `/company`, icon: 'home', type: 'link', active: false, title: 'Datos' },
+      { path: `/users`, icon: 'home', type: 'link', active: false, title: 'Usuarios' },
+      { path: `/dashboard`, icon: 'home', type: 'link', active: false, title: 'Productos' },
+      { path: `/materials`, icon: 'home', type: 'link', active: false, title: 'Materiales' },
+			{
+				title: 'Fichas',
+				icon: 'others',
+				type: 'sub',
+				badge: 'badge badge-light-primary',
+				active: false,
+				children: [
+					{ path: `/catalogs/1`, title: 'Origen de los Leads', type: 'link' },
+					{ path: `/catalogs/2`, title: 'Estado de los Clientes', type: 'link' },
+				],
+			},
+		]
   },
 ];

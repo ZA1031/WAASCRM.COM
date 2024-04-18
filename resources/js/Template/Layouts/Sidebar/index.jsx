@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect, useContext } from 'react';
 import CustomContext from '../../_helper/Customizer';
-import { MENUITEMS } from './Menu';
+import { MENUITEMS, MENUITEMS_TENANT } from '../Sidebar/Menu';
+import { useSelector } from 'react-redux'
 import SidebarIcon from './SidebarIcon';
 import SidebarLogo from './SidebarLogo';
 import SidebarMenu from './SidebarMenu';
@@ -13,7 +14,9 @@ const Sidebar = (props) => {
 
   const layout = id ? id : defaultLayout;
   // eslint-disable-next-line
-  const [mainmenu, setMainMenu] = useState(MENUITEMS);
+  const actualUser = useSelector((state) => state.auth.value);
+  const ITEMS = actualUser.is_tenant ? MENUITEMS_TENANT : MENUITEMS;
+  const [mainmenu, setMainMenu] = useState(ITEMS);
 
   const [width, setWidth] = useState(0);
 
@@ -75,7 +78,7 @@ const Sidebar = (props) => {
   };
 
   const setNavActive = (item) => {
-    MENUITEMS.map((menuItems) => {
+    ITEMS.map((menuItems) => {
       menuItems.Items.filter((Items) => {
         if (Items !== item) {
           Items.active = false;
