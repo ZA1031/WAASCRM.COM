@@ -14,12 +14,13 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Tenant/Products/ProductList', ['title' => 'Productos']);
+        return Inertia::render('Tenant/Products/ProductList', ['title' => 'Productos', 'allowed' => ALLOWED_PRODUCTS]);
     }
 
     public function list(Request $request)
     {
-        $data = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->get()->map(function($pr){
+        $data = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->get()->map(function($pr){
+            $pr->main_image = $pr->getMainImage();
             return $pr;
         });
         
@@ -31,7 +32,10 @@ class ProductController extends Controller
         $prod = TenantProduct::find($pid);
         return Inertia::render('Tenant/Products/ProductForm', [
             'title' => 'Editar Producto',
-            'user' => $prod,
+            'product' => $prod,
+            'familyName' => $prod->family->name ?? '',
+            'dues' => Lerph::getDues(),
+            'attributes' => $prod->attributes,
         ]);
     }
 
@@ -47,7 +51,7 @@ class ProductController extends Controller
 
         $product = TenantProduct::find($request->id);
         $product->fill($request->except(['id']));
-        $product->inner_prices = json_encode($request->input('prices'));
+        $product->inner_prices = json_encode($request->input('inner_prices'));
         $product->inner_active = $request->input('inner_active') ? 1 : 0;
         $product->save();
 
@@ -64,5 +68,11 @@ class ProductController extends Controller
     private function validateForm(Request $request, $id){
         return $request->validate([
         ]);
+    }
+
+    public function pdf($id){
+        $product = TenantProduct::find($id);
+        //$pdf = \PDF::loadView('pdf.product', ['product' => $product]);
+        //return $pdf->download('product_'.$product->id.'.pdf');
     }
 }

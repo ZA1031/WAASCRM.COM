@@ -19,7 +19,12 @@ class ProductAttr extends Model
     protected $fillable = [
         'product_id',
         'attribute_id',
-        'text'
+        'text',
+        'text_en',
+    ];
+
+    protected $appends = [
+        'attr_name'
     ];
 
     public function attribute()
@@ -30,5 +35,10 @@ class ProductAttr extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getAttrNameAttribute()
+    {
+        return $this->attribute->name ?? '';
     }
 }

@@ -21,11 +21,6 @@ class SparePartsController extends Controller
     public function list(Request $request)
     {
         $data = SparePart::get()->map(function($pr){
-            $others = $pr->others->map(function($ot){
-                return $ot->product->name;
-            });
-            $pr->more_products = $others;
-            $pr->product = $pr->compatibility->name;
             return $pr;
         });
         

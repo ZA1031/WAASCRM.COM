@@ -24,6 +24,7 @@ export default function Catalog({ auth, title, type, related }) {
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         type: type,
         name: '',
+        name_en: '',
         description: '',
         id : 0,
         extra_1 : []
@@ -96,7 +97,8 @@ export default function Catalog({ auth, title, type, related }) {
             setData({
                 id: response.data.id,
                 name: response.data.name,
-                description: response.data.description ?? ''
+                description: response.data.description ?? '',
+                name_en: response.data.name_en ?? '',
             });
 
             let extras = response.data.extra_1.split(',');
@@ -184,6 +186,21 @@ export default function Catalog({ auth, title, type, related }) {
                                 }}
                                 errors = {errors.name}
                             />
+
+                            {type == 1 || type == 3 ?
+                            <FloatingInput 
+                                label={{label : 'Nombre Inglés'}} 
+                                input={{ 
+                                    placeholder : 'Nombre Inglés', 
+                                    onChange : handleChange,
+                                    name : 'name_en',
+                                    value : data.name_en
+                                }}
+                                errors = {errors.name_en}
+                            />
+                            :
+                            null
+                            }
                             
                             <FloatingInput 
                                 label={{label : 'Descripción'}} 

@@ -22,8 +22,10 @@ class Product extends Model
         'parts',
         'other_parts',
         'dismantling',
+        'model_en',
+        'name_en',
     ];
-
+    
     public function family()
     {
         return $this->belongsTo(AdminCatalog::class, 'family_id');
@@ -41,27 +43,28 @@ class Product extends Model
 
     public function attributes()
     {
-        return $this->hasMany(ProductAttr::class);
+        return $this->hasMany(ProductAttr::class, 'product_id');
     }
 
     public function images()
     {
-        return $this->hasMany(ProductFile::class)->where('type', 1)->orderBy('order');
+        return $this->hasMany(ProductFile::class, 'product_id')->where('type', 1)->orderBy('order');
     }
 
     public function videos()
     {
-        return $this->hasMany(ProductFile::class)->where('type', 2)->orderBy('order');
+        return $this->hasMany(ProductFile::class, 'product_id')->where('type', 2)->orderBy('order');
     }
 
     public function documents()
     {
-        return $this->hasMany(ProductFile::class)->where('type', 3)->orderBy('order');
+        return $this->hasMany(ProductFile::class, 'product_id')->where('type', 3)->orderBy('order');
     }
 
-    public function getMainImageAttribute()
+    public function getMainImage()
     {
-        return $this->images->first();
+        $img = $this->images->first();
+        return $img ? $img->getUrlAttribute() : 'https://ui-avatars.com/api/?name=Aqua&color=7F9CF5&background=EBF4FF';
     }
 
     public function getFilesData($t)

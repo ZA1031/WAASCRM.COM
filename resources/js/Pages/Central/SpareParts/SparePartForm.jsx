@@ -32,6 +32,7 @@ export default function SparePartForm({ auth, title, part, products, others}) {
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         id : part.id,
         name : part.name,
+        name_en : part.name_en,
         description : part.description,
         stock : part.stock,
         reference : part.reference,
@@ -83,14 +84,21 @@ export default function SparePartForm({ auth, title, part, products, others}) {
                                         errors = {errors.name}
                                     />
                                 </Col>
-                                <Col xs='12' sm='6' md='4'>
+                                <Col xs='12' sm='12' md='4'>
+                                    <FloatingInput 
+                                        label={{label : 'Nombre Inglés'}} 
+                                        input={{placeholder : 'Nombre', onChange : handleChange, name : 'name_en', value : data.name_en, required : true}} 
+                                        errors = {errors.name_en}
+                                    />
+                                </Col>
+                                <Col xs='12' sm='6' md='2'>
                                     <FloatingInput 
                                         label={{label : 'Stock'}} 
                                         input={{placeholder : 'Stock', onChange : handleChange, name : 'stock', value : data.stock, required : true, type : 'number'}} 
                                         errors = {errors.stock}
                                     />
                                 </Col>
-                                <Col xs='12' sm='6' md='4'>
+                                <Col xs='12' sm='6' md='2'>
                                     <FloatingInput 
                                         label={{label : 'Referencia Proveedor'}} 
                                         input={{placeholder : 'Referencia Proveedor', onChange : handleChange, name : 'reference', value : data.reference , required : true}} 

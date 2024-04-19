@@ -85,7 +85,11 @@ class Lerph {
             case 5:
                 return 'Técnicos';
             case 6:
-                return 'Telemarketers';
+                return 'Telemarketing';
         }
+    }
+
+    public static function getDues(){
+        return [12, 24, 36, 48, 60];
     }
 }

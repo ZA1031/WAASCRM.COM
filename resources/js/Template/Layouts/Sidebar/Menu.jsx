@@ -478,10 +478,10 @@ export const MENUITEMS_TENANT = [
 		menutitle: 'Configuración',
 		menucontent: 'Dashboards,Widgets',
 		Items: [
-			{ path: `/company`, icon: 'home', type: 'link', active: false, title: 'Datos' },
-      { path: `/users`, icon: 'home', type: 'link', active: false, title: 'Usuarios' },
-      { path: `/dashboard`, icon: 'home', type: 'link', active: false, title: 'Productos' },
-      { path: `/materials`, icon: 'home', type: 'link', active: false, title: 'Materiales' },
+			{ path: `/company`, icon: 'file', type: 'link', active: false, title: 'Datos' },
+      { path: `/users`, icon: 'user', type: 'link', active: false, title: 'Usuarios' },
+      { path: `/prs`, icon: 'widget', type: 'link', active: false, title: 'Productos' },
+      { path: `/materials`, icon: 'board', type: 'link', active: false, title: 'Materiales' },
 			{
 				title: 'Fichas',
 				icon: 'others',

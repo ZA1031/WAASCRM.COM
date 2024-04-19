@@ -88,6 +88,11 @@ body {
     padding-right: 0px;
     min-height: 40px;
   }
+
+  .input-disabled {
+    border: none !important;
+    cursor: default;
+  }
 }
 
 .select-floating {

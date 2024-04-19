@@ -24,4 +24,12 @@ class TenantProduct extends Product
         'inner_stock_max',
         'inner_active'
     ];
+
+    protected $appends = [
+        'final_name',
+    ];
+
+    public function getFinalNameAttribute(){
+        return !empty($this->inner_name) ? $this->inner_name : $this->name;
+    }
 }

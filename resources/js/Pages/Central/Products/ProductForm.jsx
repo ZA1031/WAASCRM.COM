@@ -59,6 +59,8 @@ export default function ProductForm({ auth, title, product, families, categories
         id : product.id,
         model : product.model,
         name : product.name,
+        model_en : product.model_en,
+        name_en : product.name_en,
         code : product.code,
         active : product.active,
         family_id : product.family_id,
@@ -88,7 +90,7 @@ export default function ProductForm({ auth, title, product, families, categories
         if (attributes.length > 0){
             let attr = [];
             attributes.forEach((item, index) => {
-                attr.push({id : item.attribute_id, text : item.text});
+                attr.push({id : item.attribute_id, text : item.text, text_en : item.text_en});
             });
             setData('attributes', attr);
         }
@@ -146,11 +148,11 @@ export default function ProductForm({ auth, title, product, families, categories
         setData('attributes', attr);
     }
 
-    const handleChangeAttrTxt = (key, e) => {
+    const handleChangeAttrTxt = (key, e, k2) => {
         key = key.toString();
         let attr = data.attributes;
         attr.forEach((item, index) => {
-            if (item.id == key) item.text = e.target.value;
+            if (item.id == key) item[k2] = e.target.value;
         });
         setData('attributes', attr);
     }
@@ -164,17 +166,16 @@ export default function ProductForm({ auth, title, product, families, categories
         return checked;
     }
 
-    const getAttrTxt = (key) => {
+    const getAttrTxt = (key, k2) => {
         let attr = data.attributes;
         let txt = '';
         attr.forEach((item, index) => {
-            if (item.id == key) txt = item.text;
+            if (item.id == key) txt = item[k2];
         });
         return txt;
     }
 
     const setFiles = (w, key) => {
-        console.log(w);
         setData(key, w);
     }
 
@@ -229,11 +230,18 @@ export default function ProductForm({ auth, title, product, families, categories
                             <TabContent activeTab={activeTab}>
                                 <TabPane className='fade show' tabId='1'>
                                     <Row>
-                                        <Col xs='12' md='4'>
+                                        <Col xs='12' md='2'>
                                             <FloatingInput 
                                                 label={{label : 'Referencia Proveedor'}} 
                                                 input={{placeholder : 'Referencia Proveedor', onChange : handleChange, name : 'model', value : data.model, required : true}} 
                                                 errors = {errors.model}
+                                            />
+                                        </Col>
+                                        <Col xs='12' md='2'>
+                                            <FloatingInput 
+                                                label={{label : 'Referencia Inglés'}} 
+                                                input={{placeholder : 'Referencia Inglés', onChange : handleChange, name : 'model_en', value : data.model_en, required : true}} 
+                                                errors = {errors.model_en}
                                             />
                                         </Col>
                                         <Col xs='12' md='4'>
@@ -241,6 +249,13 @@ export default function ProductForm({ auth, title, product, families, categories
                                                 label={{label : 'Nombre'}} 
                                                 input={{placeholder : 'Nombre', onChange : handleChange, name : 'name', value : data.name, required : true}} 
                                                 errors = {errors.name}
+                                            />
+                                        </Col>
+                                        <Col xs='12' md='4'>
+                                            <FloatingInput 
+                                                label={{label : 'Nombre Inglés'}} 
+                                                input={{placeholder : 'Nombre Inglés', onChange : handleChange, name : 'name_en', value : data.name_en, required : true}} 
+                                                errors = {errors.name_en}
                                             />
                                         </Col>
                                         <Col xs='12' md='4'>
@@ -256,6 +271,15 @@ export default function ProductForm({ auth, title, product, families, categories
                                                 errors = {errors.family_id}
                                             />
                                         </Col>
+                                        <Col xs='12' md='2'>
+                                            <Switch 
+                                                label={'Activo'} 
+                                                input={{onChange : () => handleChangeSwitch('active'), name : 'active', checked : data.active}} 
+                                                errors = {errors.active}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row>
                                         <Col xs='12' md='4'>
                                             <Select 
                                                 label={{label : 'Partes'}} 
@@ -286,13 +310,6 @@ export default function ProductForm({ auth, title, product, families, categories
                                                     closeMenuOnSelect : false,
                                                 }}
                                                 errors = {errors.others}
-                                            />
-                                        </Col>
-                                        <Col xs='12' md='2'>
-                                            <Switch 
-                                                label={'Activo'} 
-                                                input={{onChange : () => handleChangeSwitch('active'), name : 'active', checked : data.active}} 
-                                                errors = {errors.active}
                                             />
                                         </Col>
                                         <Col xs='12'>
@@ -364,14 +381,27 @@ export default function ProductForm({ auth, title, product, families, categories
                                                             errors = {errors.active}
                                                         />
                                                     </Col>
-                                                    <Col xs='8'>
+                                                    <Col xs='4'>
                                                         <FloatingInput 
                                                             label={{label : item.name}} 
                                                             input={{
                                                                 placeholder : item.name, 
-                                                                onChange : (e) => handleChangeAttrTxt(item.id, e), 
+                                                                onChange : (e) => handleChangeAttrTxt(item.id, e, 'text'), 
                                                                 name : 'active2' + item.id, 
-                                                                value : getAttrTxt(item.id),
+                                                                value : getAttrTxt(item.id, 'text'),
+                                                                disabled : !isAttrChecked(item.id)
+                                                            }} 
+                                                            errors = {errors[item.name]}
+                                                        />
+                                                    </Col>
+                                                    <Col xs='4'>
+                                                        <FloatingInput 
+                                                            label={{label : 'Texto Inglés'}} 
+                                                            input={{
+                                                                placeholder : 'Texto Inglés', 
+                                                                onChange : (e) => handleChangeAttrTxt(item.id, e, 'text_en'), 
+                                                                name : 'active3' + item.id, 
+                                                                value : getAttrTxt(item.id, 'text_en'),
                                                                 disabled : !isAttrChecked(item.id)
                                                             }} 
                                                             errors = {errors[item.name]}

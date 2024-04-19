@@ -18,6 +18,7 @@ class AdminCatalog extends Model
         'name',
         'description',
         'extra_1',
+        'name_en'
     ];
 
     public function getExtraData()

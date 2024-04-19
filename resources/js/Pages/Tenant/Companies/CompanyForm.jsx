@@ -74,7 +74,7 @@ export default function CompanyForm({ auth, title, company, products}) {
                                         <Col xs='12' sm='6' md='6' lg='6'>
                                             <FloatingInput 
                                                 label={{label : 'Dominio'}} 
-                                                input={{placeholder : 'Dominio', name : 'domain', value : company.domain, disabled : true, className : 'input-disabled'}} 
+                                                input={{placeholder : 'Dominio', name : 'domain', value : company.domain, readOnly : true, className : 'input-disabled'}} 
                                                 errors = {errors.domain}
                                             />
                                         </Col>
@@ -150,7 +150,7 @@ export default function CompanyForm({ auth, title, company, products}) {
                                                 <Col xs='12' sm='12' md='6' lg='4' key={index}>
                                                     <FloatingInput 
                                                         label={{label : item.title}} 
-                                                        input={{placeholder : item.title, name : 'users', value : getUsers(index), type : 'number', disabled : true, className : 'input-disabled'}} 
+                                                        input={{placeholder : item.title, name : 'users', value : getUsers(index), type : 'number', readOnly : true, className : 'input-disabled'}} 
                                                         errors = {errors.users}
                                                     />
                                                 </Col>

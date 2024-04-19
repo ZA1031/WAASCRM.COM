@@ -119,13 +119,15 @@ class ProductsController extends Controller
         $product->attributes()->delete();
         if ($request->input('attributes')) {
             foreach ($request->input('attributes') as $attr) {
-                $id = $text = null;
+                $id = $text = $textEn = null;
                 if (isset($attr['id'])) $id = $attr['id'];
                 if (isset($attr['text'])) $text = $attr['text'];
+                if (isset($attr['text_en'])) $textEn = $attr['text_en'];
                 if (!empty($id) && !empty($text)) {
                     $product->attributes()->create([
                         'attribute_id' => $id,
-                        'text' => $text
+                        'text' => $text,
+                        'text_en' => $textEn
                     ]);
                 }
             }

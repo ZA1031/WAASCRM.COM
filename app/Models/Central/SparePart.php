@@ -18,7 +18,8 @@ class SparePart extends Model
         'description',
         'stock',
         'reference',
-        'compatibility_id'
+        'compatibility_id',
+        'name_en'
     ];
 
     public function compatibility()
