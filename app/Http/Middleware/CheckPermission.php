@@ -28,7 +28,7 @@ class CheckPermission
         ///valido que pueda entrar a la ruta
         if (!in_array(auth()->user()->rol_id, $roles)) {
             abort(403, 'Access denied');
-        }
+        } 
 
         $company = Company::first();
         define('COMPANY', $company);

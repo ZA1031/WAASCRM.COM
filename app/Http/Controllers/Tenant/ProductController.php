@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
+use App\Models\Central\ProductAttr;
+use App\Models\Central\SparePart;
 use App\Models\Tenant\TenantProduct;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -72,7 +77,37 @@ class ProductController extends Controller
 
     public function pdf($id){
         $product = TenantProduct::find($id);
-        //$pdf = \PDF::loadView('pdf.product', ['product' => $product]);
-        //return $pdf->download('product_'.$product->id.'.pdf');
+
+        // PARTES
+        $pids = explode(',', $product->parts);
+        $parts = new Collection();
+        foreach ($pids as $pid){
+            $part = SparePart::find($pid);
+            $parts->push($part);
+        }
+        
+        //ATRIBUTOS
+        $attrs = ProductAttr::where('product_id', $id)->get(); //dd($attrs);
+
+
+        //$logo = Storage::disk('public')->url('pdf/logo_producto.png'); //dd($logo);
+        $images = $product->getFilesData(1); 
+        $logo = public_path('pdf/logo_producto.png'); //dd($logo);
+
+        $pdf = Pdf::loadView('pdfs.pdf1', [
+            'product' => $product,
+            'logo' => $logo,
+            'parts' => $parts,
+            'attrs' => $attrs
+        ]);
+
+        return $pdf->stream('pdf1.pdf');
+
+        return view('pdfs.pdf1', [
+            'product' => $product,
+            'logo' => $logo,
+            'parts' => $parts,
+            'attrs' => $attrs
+        ]);
     }
 }
