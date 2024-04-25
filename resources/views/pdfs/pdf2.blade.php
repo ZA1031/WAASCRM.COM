@@ -10,9 +10,11 @@
     body {
         font-family:system-ui, sans-serif;
     }
+    
     .page-break {
         page-break-after: always;
     }
+
     .container {
         width: 100%;
         padding-right: 15px;
@@ -20,33 +22,40 @@
         margin-right: auto;
         margin-left: auto;
     }
+
     .section {
         width: 100%;
         height: 300px;
     }
+
     .header {
         width: 100%;
         height: auto;
-        border-bottom: 4px solid #dee2e6 !important;
+        border-bottom: 4px solid #7d91f5 !important;
     }
+
     .title-1-right{
         font-size: 40px;
         text-align: right;
     }
+
     .title-2-right{
         font-size: 50px;
         text-align: right;
         font-weight: bold;
     }
+
     .title-1-left{
         font-size: 40px;
         text-align: left;
     }
+
     .title-2-left{
         font-size: 50px;
         text-align: left;
         font-weight: bold;
     }
+
     .header-image{
         position: absolute;
         top: 50%;
@@ -64,9 +73,8 @@
     .row {
         display: flex;
         flex-wrap: wrap;
-        /* margin-right: -15px;
-        margin-left: -15px; */
     }
+
     .row::after {
         content: "";
         clear: both;
@@ -77,8 +85,6 @@
         width: 50%;
         float: left;
         box-sizing: border-box;
-        /* padding-right: 15px;
-        padding-left: 15px; */
     }
 
     .text-primary {
@@ -88,7 +94,26 @@
     .text-secondary {
         color: #7d91f5;
     }
+    
+    .product-image {
+        width: 100%;
+        height: 500px;
+    }
 
+    .product-data {
+        width: 100%;
+        height: 390px;
+        border-bottom: 4px solid #7d91f5 !important;
+        border-top: 4px solid #7d91f5 !important;
+    }
+
+    .signature-image {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 200px; /* Ajusta el ancho de acuerdo a tu preferencia */
+        margin-bottom: 20px; /* Ajusta el margen inferior según sea necesario */
+    }
 
 </style>
 <body>
@@ -176,5 +201,92 @@
             </div>
         </div>
     </div>
+<div class="page-break"></div>
+    <div class="image-container">
+        <div class="product-image">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
+            <p class="text-secondary" style="margin-top:40px; font-size: 20px;">Modelo: xxxx</p>
+        </div>
+    </div>
+    <div class="product-data">
+        <div class="row">
+            <div class="col-2">
+                <p class="text-secondary" style="font-size: 12px;"><strong>Código</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Temperatura</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Sistemas de funcionamiento</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Membrana</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Temperatura agua fría</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Capacidad de enfriamiento</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Control temperatura agua fría</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Válvula de corte</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Compresor</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Temperatura agua caliente</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Bomba booster</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Peso</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Color</strong></p>
+                <p class="text-secondary" style="font-size: 12px;"><strong>Sistema de tratamiento de agua</strong></p>
+            </div>
+            <div class="col-2">
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
+             </div>
+        </div>
+    </div>
+<div class="page-break"></div>
+    <div class="row">
+        <div class="col-2">
+            <div class="title-1-left">
+                <span class="text-secondary">Propuesta</span>
+            </div>
+            <div class="title-2-left">
+                <span class="text-primary"><strong>Aquaidam</strong></span>
+            </div>
+                <div class="title-1-left" style="font-size:30px">Venta</div>
+                <div class="title-1-left text-secondary" style="margin-top: 40px; font-size: 15px;"><strong>Empresa:</strong> MI TIERRA</div>
+        </div>
+        <div class="col-2">
+            <div class="product-image">
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="header">
+            <div class="title-1-left">
+                <span class="text-secondary">Modelo <span class="title-2-left text-primary">40 - CON GAS</span></span>
+            </div>            
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <p class="text-secondary">Cuotas: </p>
+                <p class="text-secondary">Instalación</p>
+                <p class="text-secondary">Mantenimiento</p>
+                <p class="text-secondary">Extras</p>
+            </div>
+            <div class="col-2">
+                <p class="text-primary"><strong>99.90 € + IVA</strong></p>
+                <p class="text-primary"><strong>Incluida</strong></p>
+                <p class="text-primary"><strong>Incluida</strong></p>
+                <p class="text-primary"><strong>42 BOTELLAS PERSONALIZADAS</strong></p>
+            </div>
+        </div>
+        <div class="signature-image">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
+    </div>
+    </div>
+  
+
 </body>
 </html>

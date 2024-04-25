@@ -73,7 +73,7 @@ Route::middleware('check-permission:0,1,2,3,4,5,6')->group(function () {
     Route::get('/budgets/{cid}/create', [BudgetController::class, 'create'])->name('budgets.create');
     Route::get('/budgets/{cid}/{id}', [BudgetController::class, 'edit'])->name('budgets.edit');
     Route::post('/budgets/details/validate', [BudgetController::class, 'validateDetailsForm'])->name('budgets.details.validate');
-    Route::get('/budgets/pdf/{id}', [BudgetController::class, 'downloadBudget'])->name('budgets.pdf'); ///Aca es el pdf
+    Route::get('/budgets/pdf/download/{id}', [BudgetController::class, 'downloadBudget'])->name('budgets.pdf'); ///Aca es el pdf
 
     Route::post('/budgets/reject/{id}', [BudgetController::class, 'reject'])->name('budgets.reject');
     Route::post('/budgets/accept/{id}', [BudgetController::class, 'accept'])->name('budgets.accept');
