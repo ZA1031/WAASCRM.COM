@@ -30,7 +30,7 @@ const MainDataProvider = (props) => {
     };
 
     const formatPrice = (price) => {
-        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '€';
+        return price ? price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '€' : 0;
     }
 
     return (

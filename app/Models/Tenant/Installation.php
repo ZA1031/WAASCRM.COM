@@ -100,4 +100,23 @@ class Installation extends Model
     public function client(){
         return $this->belongsTo(Client::class);
     }
+
+    public function getFilesData($t)
+    {
+        $files = $this->files()->where('type', $t)->get();
+        $data = [];
+        foreach ($files as $file) {
+            $data[] = [
+                'id' => $file->id,
+                'title' => $file->title,
+                'file' => $file->file,
+                'size' => $file->size,
+                'order' => $file->order,
+                'img' => $file->url,
+                'type' => $t == 1 ? 'image' : ($t == 2 ? 'video' : 'file'),
+                'image_type' => $file->image_type ?? '0'
+            ];
+        }
+        return $data;
+    }
 }

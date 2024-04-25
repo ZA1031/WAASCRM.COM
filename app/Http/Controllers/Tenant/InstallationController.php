@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant;
 
+use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
 use App\Models\Central\AdminCatalog;
 use App\Models\Central\Product;
@@ -11,6 +12,7 @@ use App\Models\Tenant\Installation;
 use App\Models\Tenant\Material;
 use App\Models\Tenant\TenantProduct;
 use App\Models\Tenant\TenantUser;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -21,21 +23,26 @@ class InstallationController extends Controller
 {
     public function index()
     {
-        return $this->showIndex('Instalaciones pendientes', 0);
+        $isInst = $this->isInstallationPage();
+        return $this->showIndex(($isInst ? 'Instalaciones' : 'Mantenimientos'). ' pendientes', 0);
     }
 
     public function pending()
     {
-        return $this->showIndex('Instalaciones pendientes de Asignar', 1);
+        $isInst = $this->isInstallationPage();
+        return $this->showIndex(($isInst ? 'Instalaciones' : 'Mantenimientos').' pendientes de Asignar', 1);
     }
 
     public function allData()
     {
-        return $this->showIndex('Instalaciones', 2);
+        $isInst = $this->isInstallationPage();
+        return $this->showIndex(($isInst ? 'Instalaciones' : 'Mantenimientos'), 2);
     }
 
     private function showIndex($title, $pending)
     {
+        $isInst = $this->isInstallationPage();
+
         $tecnics = TenantUser::select('name as label', 'last_name', 'id as value')->where('rol_id', 5)->get()->map(function($t){
             $t->label = $t->label . ' ' . $t->last_name;
             return $t;
@@ -58,32 +65,71 @@ class InstallationController extends Controller
             'pending' => $pending,
             'tecnics' => $tecnics,
             'clients' => $clients,
+            'isInstallation' => $isInst,
             'products' => TenantProduct::select('name as label', 'id as value', 'inner_prices as prices')->whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get(),
         ]);
     }
 
     public function list(Request $request)
     {
+        $isInst = $this->isInstallationPage();
         $pending = $request->input('pending', 0);
-        $query = Installation::query();
+        $query = Installation::where('is_maintenance', !$isInst);
         if ($pending == 1) $query->whereNull('assigned_to');
-        else if ($pending == 0) $query->whereNotNull('assigned_to');
+        else if ($pending == 0) $query->whereNotNull('assigned_to')->whereIn('status', [0,3]);
         $data = $query->get()->map(function($inst){
             $inst->client_data = $inst->client;
-            $inst->address = $inst->address;
+            $inst->address;
+            $inst->product;
+            $inst->installation_date = Lerph::showDateTime($inst->installation_date);
             return $inst;
         });
         
         return $data;
     }
 
-    public function edit(Installation $installation)
+    public function edit($id)
     {
+        $installation = Installation::find($id);
+        $installation->client;
+        $installation->address;
+        $installation->product;
+        $installation->assigned;
+        $installation->installation_date = Lerph::showDateTime($installation->installation_date);
         return Inertia::render('Tenant/Installations/InstallationForm', [
             'title' => 'Realizar Instalación',
             'installation' => $installation,
             'allMaterials' => Material::select('name as label', 'id as value')->where('active', 1)->get(),
-            'materials' => []
+            'materials' => $installation->materials,
+            'files0' => $installation->getFilesData(0),
+            'files1' => $installation->getFilesData(1),
+            'files2' => $installation->getFilesData(2),
+            'files3' => $installation->getFilesData(3),
+            'readOnly' => false,
+            'allParts' => SparePart::select('name as label', 'id as value')->get(),
+            'parts' => $installation->parts,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $installation = Installation::find($id);
+        $installation->client;
+        $installation->address;
+        $installation->product;
+        $installation->assigned;
+        $installation->installation_date = Lerph::showDateTime($installation->installation_date);
+        return Inertia::render('Tenant/Installations/InstallationForm', [
+            'title' => 'Ver Instalación',
+            'installation' => $installation,
+            'allMaterials' => Material::select('name as label', 'id as value')->where('active', 1)->get(),
+            'materials' => $installation->materials,
+            'files0' => $installation->getFilesData(0),
+            'files1' => $installation->getFilesData(1),
+            'files2' => $installation->getFilesData(2),
+            'files3' => $installation->getFilesData(3),
+            'readOnly' => true,
+            'parts' => SparePart::select('name as label', 'id as value')->get(),
         ]);
     }
 
@@ -123,6 +169,7 @@ class InstallationController extends Controller
     public function upsertData($request, $installation){
         $this->validateForm($request, $installation->id);
         $installation->fill($request->all());
+        if (!$installation->finished) $installation->status = 1;
         $installation->save();
 
         $this->upsertMaterials($request, $installation);
@@ -132,6 +179,24 @@ class InstallationController extends Controller
         $this->upsertFiles($request, $installation, $installation->files1, 'files1', 1);
         $this->upsertFiles($request, $installation, $installation->files2, 'files2', 2);
         $this->upsertFiles($request, $installation, $installation->files3, 'files3', 3);
+
+        ////Creo el mantenimiento
+        if ($installation->status == 1){
+            $maintence = new Installation([
+                'client_id' => $installation->client_id,
+                'address_id' => $installation->address_id,
+                'product_id' => $installation->product_id,
+                'installation_date' => Carbon::parse($installation->installation_date)->addMonths($installation->next_maintenance)->format('Y-m-d H:i'),
+                'hours' => 1,
+                'assigned_to' => $installation->assigned_to,
+                'is_maintenance' => 1,
+                'status' => 0,
+                'serial_number' => $installation->serial_number,
+                'next_maintenance' => $installation->next_maintenance,
+                'budget_detail_id' => $installation->budget_detail_id,
+            ]);
+            $maintence->save();
+        }
 
         return redirect()->route('installations')->with('message', 'Datos guardados correctamente.');        
     }
@@ -144,7 +209,10 @@ class InstallationController extends Controller
 
     private function validateForm(Request $request, $id){
         return $request->validate([
-
+            'client_name' => 'required|string:max:100',
+            'client_dni' => 'required|string:max:100',
+            'serial_number' => 'required|string:max:100',
+            'next_maintenance' => 'required',
         ]);
     }
 
@@ -214,7 +282,6 @@ class InstallationController extends Controller
                 if ($sf->id == $file['id']) {
                     $saved = true;
                     $sf->title = $file['title'];
-                    $sf->image_type = $file['image_type'];
                     $sf->save();
                 }
             }
@@ -223,8 +290,7 @@ class InstallationController extends Controller
                     'type' => $type,
                     'file' => $file['file'],
                     'title' => $file['title'],
-                    'size' => $file['size'],
-                    'image_type' => $file['image_type']
+                    'size' => $file['size']
                 ]);
 
                 Storage::disk('installations')->put(tenant('id').'/'.$installation->id . '/' . $file['file'], Storage::disk('tmp')->get($file['file']));
@@ -240,5 +306,10 @@ class InstallationController extends Controller
                 Storage::disk('installations')->delete(tenant('id').'/'.$installation->id . '/' . $sf->file);
             }
         }
+    }
+
+    private function isInstallationPage()
+    {
+        return strstr(request()->route()->uri(), 'installations') !== false;
     }
 }

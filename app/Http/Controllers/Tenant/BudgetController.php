@@ -226,4 +226,18 @@ class BudgetController extends Controller
             'detail_id' => ['required']
         ]);
     }
+
+    public function downloadBudget($bid){
+        $budget = Budget::find($bid);
+        $products = [];
+        $quantities = explode(',', $budget->quantities);
+        foreach (explode(',', $budget->products) as $key => $product) {
+            $pr = TenantProduct::find($product);
+            if (!$pr) continue;
+            for ($i = 0; $i < $quantities[$key]; $i++) $products[] = $pr;
+        }
+
+        //$pdf = \PDF::loadView('pdf.budget', ['budget' => $budget, 'products' => $products]);
+        //return $pdf->download('presupuesto-'.$budget->id.'.pdf');
+    }
 }

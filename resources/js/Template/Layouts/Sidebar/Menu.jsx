@@ -487,9 +487,9 @@ export const MENUITEMS_TENANT = [
 				badge: 'badge badge-light-primary',
 				active: false,
 				children: [
-					{ path: `/installations`, title: 'Pendientes', type: 'link' },
-					{ path: `/installations/pending`, title: 'Pendientes de Asignar', type: 'link' },
-          { path: `/installations/all`, title: 'Todas', type: 'link' },
+					{ path: `/maintenances`, title: 'Pendientes', type: 'link' },
+					{ path: `/maintenances/pending`, title: 'Pendientes de Asignar', type: 'link' },
+          { path: `/maintenances/all`, title: 'Todas', type: 'link' },
 				],
 			},
 		]

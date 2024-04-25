@@ -11,6 +11,7 @@ import Trash from '@/Template/CommonElements/Trash';
 import AddBtn from '@/Template/CommonElements/AddBtn';
 import FloatingInput from '@/Template/CommonElements/FloatingInput';
 import MainDataContext from '@/Template/_helper/MainData';
+import Switch from "@/Template/CommonElements/Switch";
 
 export default function Catalog({ auth, title, type, related }) {
     const [modal, setModal] = useState(false);
@@ -23,8 +24,13 @@ export default function Catalog({ auth, title, type, related }) {
         type: type,
         name: '',
         description: '',
-        id : 0
+        id : 0,
+        extra_1 : false
     }); 
+
+    const handleChangeSwitch = (key) => {
+        setData(key, !data[key]);
+    }
 
     const getCatalog = async () => {
         const response = await axios.post(route('catalogs.list', type));
@@ -47,6 +53,17 @@ export default function Catalog({ auth, title, type, related }) {
             selector: row => row['description'],
             sortable: true,
             center: false,
+        },
+        {
+            name: 'Finaliza',
+            selector: row => {
+                return (
+                    <Badge color={row['extra_1'] ? 'success' : 'danger'}>{row['extra_1'] ? 'Si' : 'No'}</Badge>
+                )
+            },
+            sortable: true,
+            center: false,
+            omit : (type === 1 || type === 2) ? false : true
         },
         {
             name: 'Acciones',
@@ -73,7 +90,8 @@ export default function Catalog({ auth, title, type, related }) {
             setData({
                 id: response.data.id,
                 name: response.data.name,
-                description: response.data.description ?? ''
+                description: response.data.description ?? '',
+                extra_1: response.data.extra_1 ? true : false
             });
         }
     };
@@ -142,6 +160,12 @@ export default function Catalog({ auth, title, type, related }) {
                                     value : data.name
                                 }}
                                 errors = {errors.name}
+                            />
+                               
+                            <Switch 
+                                label={'Finaliza'} 
+                                input={{onChange : () => handleChangeSwitch('extra_1'), name : 'finished', checked : data.extra_1}} 
+                                errors = {errors.extra_1}
                             />
                             
                             <FloatingInput 

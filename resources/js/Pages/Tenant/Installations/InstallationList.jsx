@@ -12,9 +12,11 @@ import { Modal, ModalBody, ModalFooter, ModalHeader, Form, Badge, Row, Col } fro
 import FloatingInput from "@/Template/CommonElements/FloatingInput";
 import Select from '@/Template/CommonElements/Select';
 import Trash from "@/Template/CommonElements/Trash";
-import { set } from "date-fns";
+import Address from "@/Template/Components/Address";
+import Phone from "@/Template/CommonElements/Phone";
+import Email from "@/Template/CommonElements/Email";
 
-export default function InstallationList({ auth, title, pending, tecnics, clients, products}) {
+export default function InstallationList({ auth, title, pending, tecnics, clients, products, isInstallation}) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
     const [selectedOptionTc, setSelectedOptionTc] = useState(null);
@@ -57,7 +59,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
     }
 
     const getInstallations = async () => {
-        const response = await axios.post(route('installations.list'), {pending: pending});
+        const response = await axios.post(isInstallation ? route('installations.list') : route('maintenances.list'), {pending: pending});
         setDataList(response.data);
     }
 
@@ -110,9 +112,12 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             selector: (row) => {
                 return (
                     <>
-                        {row['client_data'].company_name}
-                        {row['client_data'].phone}
-                        {row['client_data'].email}
+                        <div>{row['client_data'].company_name}</div>
+                        <div class="small text-muted">
+                            <Phone client={row['client_data']} /><br />
+                            <Email client={row['client_data']} />
+                        </div>
+                        
                     </>
                 )
             },
@@ -121,13 +126,15 @@ export default function InstallationList({ auth, title, pending, tecnics, client
         },
         {
             name: 'Dirección',
-            selector: row => row['address']?.full_address,
+            selector: (row) => {
+                return <Address address={row['address']} />
+            },
             sortable: true,
             center: false,
         },
         {
             name: 'Producto',
-            selector: row => row['product_id'],
+            selector: row => row['product'].final_name,
             sortable: true,
             center: false,
         },
@@ -143,7 +150,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                 return (
                     <>
                         {row['status'] == 0 && <Badge color="warning">Pendiente</Badge>}
-                        {row['status'] == 1 && <Badge color="success">Asignado</Badge>}
+                        {row['status'] == 1 && <Badge color="success">Finalizado</Badge>}
                         {row['status'] == 2 && <Badge color="danger">Rechazado</Badge>}
                         {row['status'] == 3 && <Badge color="info">Pospuesto</Badge>}
                     </>
@@ -190,7 +197,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                                     getHistory(row['id']);
                                 }}
                             />
-                            {row['status'] != 2 &&
+                            {row['status'] != 2 && row['status'] != 1 &&
                             <>
                                 <Icon 
                                     icon="Clock" 
@@ -220,11 +227,19 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                                     id={'accept-' + row['id']} 
                                     tooltip="Instalar"
                                     className="text-success"
-                                    onClick={() => router.visit(route('installations.edit', [row['id']]))}
+                                    onClick={() => router.visit(route(isInstallation ? 'installations.edit' : 'maintenances.edit', [row['id']]))}
                                 />
                             </>
                             }
-                            
+                            {row['status'] == 1 &&
+                            <Icon 
+                                icon="Eye" 
+                                id={'see-' + row['id']} 
+                                tooltip="Ver Detalles"
+                                className="text-success"
+                                onClick={() => router.visit(route(isInstallation ? 'installations.show' : 'maintenances.edit', [row['id']]))}
+                            />
+                            }
                         </>
                         }
                     </>
@@ -253,6 +268,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                     />
                 </div>
 
+                {isInstallation &&
                 <AddBtn
                     onClick={() => {
                         toggleModal(); 
@@ -262,6 +278,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                         setData(data => ({...data, id : 0}));
                     }} 
                 />
+                }
             </Fragment>
 
             <Modal isOpen={modal} toggle={toggleModal} className="mainModal" centered>

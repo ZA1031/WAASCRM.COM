@@ -9,6 +9,7 @@ import { useForm, router } from '@inertiajs/react';
 const FileManager = (props) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [myfile, setMyFile] = useState(props.files);
+    const [isReadOnly, setIsReadOnly] = useState(props.readOnly || false);
 
     useEffect(() => {
         
@@ -58,13 +59,15 @@ const FileManager = (props) => {
                         }
                     </div>
                 </a>
-                <i className='fa fa-times f-18 remove pointer text-danger' onClick={() => deleteFile(i)}></i>
+                {!isReadOnly && <i className='fa fa-times f-18 remove pointer text-danger' onClick={() => deleteFile(i)}></i> }
                 <div className='file-bottom'>
                     <H6>{data.file}</H6>
                     <P attrPara={{ className: 'mb-0 mb-1' }}>{formatBytes(data.size)}</P>
+                    {!isReadOnly &&
                     <P>
                         <Input placeholder='Titulo' value={data.title} onChange={(e) => changeInput(e, i)}/>
                     </P>
+                    }
                     {
                     props.id == 'images' ?
                     <Input name="select" type="select" value={data.image_type} onChange={(e) => changeSelect(e, i)}>
@@ -142,6 +145,7 @@ const FileManager = (props) => {
                         <H4 attrH4={{ className: 'mb-3' }}>{ props.title }</H4>
                         }
                         <Media body className='text-end'>
+                            {!isReadOnly &&
                             <div className='d-inline-flex'>
                                 <div className='btn btn-primary' onClick={getFile}>
                                     <PlusSquare />
@@ -151,6 +155,7 @@ const FileManager = (props) => {
                                     <Input accept={props.accept} id={'upfile' + props.id} multiple type='file' onChange={(e) => onFileChange(e)} />
                                 </div>
                             </div>
+                            }
                         </Media>
                     </Media>
                 </CardHeader>
