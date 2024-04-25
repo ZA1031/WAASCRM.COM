@@ -110,4 +110,15 @@ class ProductController extends Controller
             'attrs' => $attrs
         ]);
     }
+
+    public function pdf2($id)
+    {
+        $pdf = Pdf::loadView('pdfs.pdf2', [
+        ]);
+
+        return $pdf->stream('pdf2.pdf');
+
+        return view('pdfs.pdf2', [
+        ]);
+    }
 }
