@@ -61,6 +61,10 @@ class CatalogController extends Controller
                 return 'Origen de los Leads';
             case 2:
                 return 'Estado de los Clientes';
+            case 3:
+                return 'Estado de los Contactos';
+            case 4:
+                return 'Extras';
         }
     }
 

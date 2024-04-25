@@ -19,4 +19,6 @@
     <body class="font-sans antialiased">
         @inertia
     </body>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('MAPS_API') }}&libraries=places"async></script>
+
 </html>

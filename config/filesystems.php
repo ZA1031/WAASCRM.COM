@@ -68,6 +68,22 @@ return [
             'throw' => false,
         ],
 
+        'installations' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/installations'),
+            'url' => env('APP_URL').'/storage/installations',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'clients' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/clients'),
+            'url' => env('APP_URL').'/storage/clients',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         'users' => [
             'driver' => 'local',
             'root' => storage_path('app/public/users'),

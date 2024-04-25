@@ -89,7 +89,6 @@ export default function ProductForm({ auth, title, product, familyName, dues, at
     }
 
     const saveForm = async () => {
-        console.log(data);
         post(route('prs.store'));
     };
 

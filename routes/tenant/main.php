@@ -1,7 +1,13 @@
 <?php
 use App\Helpers\Lerph;
+use App\Http\Controllers\Tenant\AddressController;
+use App\Http\Controllers\Tenant\BudgetController;
 use App\Http\Controllers\Tenant\CatalogController;
+use App\Http\Controllers\Tenant\ClientController;
 use App\Http\Controllers\Tenant\CompanyController;
+use App\Http\Controllers\Tenant\FileController;
+use App\Http\Controllers\Tenant\InstallationController;
+use App\Http\Controllers\Tenant\InstallationNoteController;
 use App\Http\Controllers\Tenant\MaterialController;
 use App\Http\Controllers\Tenant\ProductController;
 use App\Http\Controllers\Tenant\UserController;
@@ -43,4 +49,46 @@ Route::middleware('check-permission:0,1,2,3,4,5,6')->group(function () {
     Route::post('/prs/changeStatus/{cid}', [ProductController::class, 'changeStatus'])->name('prs.change.status');
     Route::get('/prs/pdf/{id}', [ProductController::class, 'pdf'])->name('prs.pdf'); ///Aca es el pdf
 
+    ///Clients
+    Route::resource('/clients', ClientController::class, ['names' => ['index' => 'clients']]);
+    Route::post('/clients/list', [ClientController::class, 'list'])->name('clients.list');
+    Route::get('/clients/addresses/{cid}', [ClientController::class, 'getAddresses'])->name('clients.addresses');
+
+    ///Contactos
+    Route::resource('/contacts', ClientController::class, ['names' => ['index' => 'contacts']]);
+    Route::post('/contacts/list', [ClientController::class, 'list'])->name('contacts.list');
+    Route::post('/contacts/client/{cid}', [ClientController::class, 'convertClient'])->name('contacts.convert');
+
+    ///Addresses
+    Route::post('/address/validate', [AddressController::class, 'validateForm'])->name('address.validate');
+    Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
+
+    ///Budgets
+    Route::get('/budgets/{cid}', [BudgetController::class, 'index'])->name('budgets.index');
+    Route::get('/budgets/{cid}/get/{id}', [BudgetController::class, 'get'])->name('budgets.get');
+    Route::post('/budgets/{cid}/list', [BudgetController::class, 'list'])->name('budgets.list');
+    Route::post('/budgets/{cid}/store', [BudgetController::class, 'store'])->name('budgets.store');
+    Route::delete('/budgets/{bid}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
+    Route::get('/budgets/{cid}/create', [BudgetController::class, 'create'])->name('budgets.create');
+    Route::get('/budgets/{cid}/{id}', [BudgetController::class, 'edit'])->name('budgets.edit');
+    Route::post('/budgets/details/validate', [BudgetController::class, 'validateDetailsForm'])->name('budgets.details.validate');
+
+    Route::post('/budgets/reject/{id}', [BudgetController::class, 'reject'])->name('budgets.reject');
+    Route::post('/budgets/accept/{id}', [BudgetController::class, 'accept'])->name('budgets.accept');
+
+    ///Instalations
+    Route::get('/installations/pending', [InstallationController::class, 'pending'])->name('installations.pendings');
+    Route::get('/installations/all', [InstallationController::class, 'allData'])->name('installations.all');
+    Route::resource('/installations', InstallationController::class, ['names' => ['index' => 'installations']]);
+    Route::post('/installations/list', [InstallationController::class, 'list'])->name('installations.list');
+    Route::post('/installations/create', [InstallationController::class, 'create'])->name('installations.create');
+    Route::post('/installations/assign', [InstallationController::class, 'assign'])->name('installations.assign');
+
+    ///TMP files
+    Route::post('/tenant/uploads/tmp/{type}', [FileController::class, 'uploadFile'])->name('tenant.upload.tmp');
+
+    ///Installation Notes
+    Route::get('/installations/{iid}/notes', [InstallationNoteController::class, 'list'])->name('installations.notes');
+    Route::post('/installations/{iid}/notes/store', [InstallationNoteController::class, 'store'])->name('installations.notes.store');
+    Route::delete('/installations/notes/{notes}', [InstallationNoteController::class, 'destroy'])->name('installations.notes.destroy');
 });

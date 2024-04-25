@@ -131,12 +131,16 @@ const FileManager = (props) => {
             <div className='file-content'>
                 <CardHeader style={{ paddingTop : '0px', paddingBottom : '10px' }}>
                     <Media>
+                        {props.search != 'hide' ?  
                         <div className='search-file form-inline'>
                             <div className='mb-0 form-group'>
                                 <i className='fa fa-search'></i>
                                 <input className='form-control-plaintext' type='text' value={searchTerm} onChange={(e) => handleChange(e)} placeholder='Buscar...' />
                             </div>
                         </div>
+                        :
+                        <H4 attrH4={{ className: 'mb-3' }}>{ props.title }</H4>
+                        }
                         <Media body className='text-end'>
                             <div className='d-inline-flex'>
                                 <div className='btn btn-primary' onClick={getFile}>
@@ -152,7 +156,7 @@ const FileManager = (props) => {
                 </CardHeader>
                 {filelist.length ? (
                     <CardBody className='file-manager'>
-                        <H4 attrH4={{ className: 'mb-3' }}>{ props.title }</H4>
+                        {props.search != 'hide' && <H4 attrH4={{ className: 'mb-3' }}>{ props.title }</H4> }
                         <UL attrUL={{ className: 'simple-list files' }}> 
                             {filelist}
                         </UL>

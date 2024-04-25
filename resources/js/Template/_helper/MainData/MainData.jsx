@@ -29,13 +29,18 @@ const MainDataProvider = (props) => {
         });
     };
 
+    const formatPrice = (price) => {
+        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '€';
+    }
+
     return (
         <Context.Provider
         value={{
             ...props,
             handleDelete,
             deleteCounter,
-            setDeleteCounter
+            setDeleteCounter,
+            formatPrice
         }}
         >
         {props.children}

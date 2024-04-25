@@ -189,3 +189,7 @@ body {
     border-radius: 10px;
   }
 }
+
+.pac-container {
+  z-index: 9999999 !important;
+}

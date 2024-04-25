@@ -90,6 +90,13 @@ class Lerph {
     }
 
     public static function getDues(){
-        return [12, 24, 36, 48, 60];
+        return [1, 12, 24, 36, 48, 60];
+    }
+
+    public static function getDuesSelect(){
+        $dues = self::getDues();
+        $items = [];
+        foreach ($dues as $d) $items[] = ['label' => $d, 'value' => $d];
+        return $items;
     }
 }
