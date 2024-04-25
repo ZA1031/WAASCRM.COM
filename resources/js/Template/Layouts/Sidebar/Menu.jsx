@@ -465,13 +465,33 @@ export const MENUITEMS_TENANT = [
 		menucontent: 'Dashboards,Widgets',
 		Items: [
 			{ path: `/dashboard`, icon: 'home', type: 'link', active: false, title: 'Dashboard' },
-			{ path: `/products`, icon: 'widget', type: 'link', active: false, title: 'Mantenimientos' },
-			{ path: `/spare-parts`, icon: 'task', type: 'link', active: false, title: 'Instalaciones' },
-			{ path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Calculadora Horeca' },
-      { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Contactos' },
-      { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Propuestas' },
       { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Agenda' },
-      { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Clientes' },
+      { path: `/contacts`, icon: 'user', type: 'link', active: false, title: 'Contactos / Leads' },
+      { path: `/clients`, icon: 'user', type: 'link', active: false, title: 'Clientes' },
+      {
+				title: 'Instalaciones',
+				icon: 'others',
+				type: 'sub',
+				badge: 'badge badge-light-primary',
+				active: false,
+				children: [
+					{ path: `/installations`, title: 'Pendientes', type: 'link' },
+					{ path: `/installations/pending`, title: 'Pendientes de Asignar', type: 'link' },
+          { path: `/installations/all`, title: 'Todas', type: 'link' },
+				],
+			},
+      {
+				title: 'Mantenimientos',
+				icon: 'others',
+				type: 'sub',
+				badge: 'badge badge-light-primary',
+				active: false,
+				children: [
+					{ path: `/installations`, title: 'Pendientes', type: 'link' },
+					{ path: `/installations/pending`, title: 'Pendientes de Asignar', type: 'link' },
+          { path: `/installations/all`, title: 'Todas', type: 'link' },
+				],
+			},
 		]
   },
   {
@@ -491,6 +511,8 @@ export const MENUITEMS_TENANT = [
 				children: [
 					{ path: `/catalogs/1`, title: 'Origen de los Leads', type: 'link' },
 					{ path: `/catalogs/2`, title: 'Estado de los Clientes', type: 'link' },
+          { path: `/catalogs/3`, title: 'Estado de los Contactos', type: 'link' },
+          { path: `/catalogs/4`, title: 'Extras', type: 'link' },
 				],
 			},
 		]

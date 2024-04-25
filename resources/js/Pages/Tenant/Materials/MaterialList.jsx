@@ -11,7 +11,7 @@ import AddBtn from '@/Template/CommonElements/AddBtn';
 import MainDataContext from '@/Template/_helper/MainData';
 import { Image } from "react-bootstrap";
 import { Check, X }  from 'react-feather';
-import { Badge } from 'reactstrap';
+import Icon from '@/Template/CommonElements/Icon';
 
 export default function MaterialList({ auth, title}) {
     const [dataList, setDataList] = useState([]);
@@ -84,15 +84,11 @@ export default function MaterialList({ auth, title}) {
                 console.log(row)  ;
                 return (
                     <>
-                        <Fragment>
-                            {row['active'] != 1 ? 
-                                <Check color="green" size={20} id={'change-' + row['id']} onClick={() => enableDisableMaterial(row['id'])}/> : 
-                                <X color="red" size={20} id={'change-' + row['id']} onClick={() => enableDisableMaterial(row['id'])}/>
-                            }
-                            <ToolTip attrToolTip={{ placement:'left', isOpen:tooltip, target: 'change-' + row['id'], toggle:toggle }}>
-                                {row['status'] === 1 ? 'Desactivar' : 'Activar'}
-                            </ToolTip>
-                        </Fragment>
+                        
+                        {row['active'] != 1 ? 
+                            <Icon icon="Check" id={'activate-' + row['id']} tooltip="Activar" onClick={() => enableDisableMaterial(row['id'])} className="text-success"/> :
+                            <Icon icon="X" id={'de-' + row['id']} tooltip="Desactivar" onClick={() => enableDisableMaterial(row['id'])} className="text-danger"/>
+                        }
                         <Edit onClick={() => router.visit(route('materials.edit', row['id']))} id={'edit-' + row['id']}/>
                         <Trash onClick={() => handleDelete(route('materials.destroy', row['id']))} id={'delete-' + row['id']}/>
                     </>

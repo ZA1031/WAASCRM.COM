@@ -27,6 +27,8 @@ class TenantUser extends User
         'picture'
     ];
 
+    protected $appends = ['full_name', 'avatar_url'];
+
     public function getFullNameAttribute()
     {
         return $this->name . ' ' . $this->last_name;

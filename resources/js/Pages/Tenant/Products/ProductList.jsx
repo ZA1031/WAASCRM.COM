@@ -8,11 +8,10 @@ import { customStyles } from "@/Template/Styles/DataTable";
 import Edit from '@/Template/CommonElements/Edit';
 import { Check, X }  from 'react-feather';
 import { Image } from "react-bootstrap";
+import Icon from '@/Template/CommonElements/Icon';
 
 export default function ProductList({ auth, title}) {
     const [dataList, setDataList] = useState([]);
-    const [tooltip, setTooltip] = useState(false);
-    const toggle = () => setTooltip(!tooltip);
 
     const getProducts = async () => {
         const response = await axios.post(route('prs.list'));
@@ -75,15 +74,10 @@ export default function ProductList({ auth, title}) {
             selector: (row) => {
                 return (
                     <>
-                        <Fragment>
-                            {row['inner_active'] != 1 ? 
-                                <Check color="green" size={20} id={'change-' + row['id']} onClick={() => enableDisable(row['id'])}/> : 
-                                <X color="red" size={20} id={'change-' + row['id']} onClick={() => enableDisable(row['id'])}/>
-                            }
-                            <ToolTip attrToolTip={{ placement:'left', isOpen:tooltip, target: 'change-' + row['id'], toggle:toggle }}>
-                                {row['status'] === 1 ? 'Desactivar' : 'Activar'}
-                            </ToolTip>
-                        </Fragment>
+                        {row['inner_active'] != 1 ? 
+                            <Icon icon="Check" id={'activate-' + row['id']} tooltip="Activar" onClick={() => enableDisable(row['id'])} className="text-success"/> :
+                            <Icon icon="X" id={'de-' + row['id']} tooltip="Desactivar" onClick={() => enableDisable(row['id'])} className="text-danger"/>
+                        }
                         <Edit onClick={() => router.visit(route('prs.edit', row['id']))} id={'edit-' + row['id']}/>
                     </>
                 )
