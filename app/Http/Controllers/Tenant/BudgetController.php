@@ -237,6 +237,8 @@ class BudgetController extends Controller
             for ($i = 0; $i < $quantities[$key]; $i++) $products[] = $pr;
         }
 
+        dd($quantities, $products);
+
         //$pdf = \PDF::loadView('pdf.budget', ['budget' => $budget, 'products' => $products]);
         //return $pdf->download('presupuesto-'.$budget->id.'.pdf');
     }
