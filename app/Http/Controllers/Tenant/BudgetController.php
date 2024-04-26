@@ -254,6 +254,9 @@ class BudgetController extends Controller
         return $pdf->stream('pdf2.pdf');
 
         // return view('pdfs.pdf2', [
+        //     'products' => $products,
+        //     'budgets' => $budgets
+
         // ]);
 
     }
