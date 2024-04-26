@@ -5,11 +5,13 @@ use App\Http\Controllers\Tenant\BudgetController;
 use App\Http\Controllers\Tenant\CalendarController;
 use App\Http\Controllers\Tenant\CatalogController;
 use App\Http\Controllers\Tenant\ClientController;
+use App\Http\Controllers\Tenant\CommonNoteController;
 use App\Http\Controllers\Tenant\CompanyController;
 use App\Http\Controllers\Tenant\FileController;
 use App\Http\Controllers\Tenant\InstallationController;
 use App\Http\Controllers\Tenant\InstallationNoteController;
 use App\Http\Controllers\Tenant\MaterialController;
+use App\Http\Controllers\Tenant\OrecaController;
 use App\Http\Controllers\Tenant\ProductController;
 use App\Http\Controllers\Tenant\TaskController;
 use App\Http\Controllers\Tenant\UserController;
@@ -116,5 +118,11 @@ Route::middleware('check-permission:0,1,2,3,4,5,6')->group(function () {
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
     Route::post('/calendar/list', [CalendarController::class, 'list'])->name('calendar.list');
 
-    ///Oportunities
+    ///Common Notes
+    Route::get('/notes/list/{type}/{tid}', [CommonNoteController::class, 'list'])->name('notes.list');
+    Route::post('/notes/store', [CommonNoteController::class, 'store'])->name('notes.store');
+    Route::delete('/notes/{notes}', [CommonNoteController::class, 'destroy'])->name('notes.destroy');
+
+    ///Oreca
+    Route::post('/oreca/calculate', [OrecaController::class, 'calculate'])->name('oreca.calculate');
 });

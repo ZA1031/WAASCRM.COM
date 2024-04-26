@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant;
 
+use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
@@ -22,8 +23,10 @@ class ClientController extends Controller
 
     public function list(Request $request)
     {
-        $data = Client::where('is_client', $this->isClientPage())->get()->map(function($pr){
-            return $pr;
+        $data = Client::where('is_client', $this->isClientPage())->get()->map(function($cl){
+            $cl->total_comments = $cl->comments->count();
+            $cl->origin;
+            return $cl;
         });
         
         return $data;
@@ -52,6 +55,39 @@ class ClientController extends Controller
             'client' => $client,
             'statuses' => Catalog::select('name as label', 'id as value')->where('type', $isClient ? 2 : 3)->get(),
             'origins' => Catalog::select('name as label', 'id as value')->where('type', 1)->get(),
+            'addresses' => $client->addresses
+        ]);
+    }
+
+    public function show($uid)
+    {
+        $client = Client::find($uid);
+        $isClient = $this->isClientPage();
+        $client->comments->map(function($c){
+            $c->user;
+            $c->date = Lerph::showDateTime($c->created_at);
+            return $c;
+        });
+        $client->budgets->map(function($b){
+            $b->date = Lerph::showDateTime($b->created_at);
+            $b->status;
+            $b->status_name = $b->getStatus();
+            $b->details;
+            return $b;
+        });
+        $client->tasks->map(function($t){
+            $t->date = Lerph::showDateTime($t->date);
+            $t->date_end = Lerph::showDateTime($t->date_end);
+            $t->user;
+            return $t;
+        });
+
+        $client->origin;
+        $client->status;
+        return Inertia::render('Tenant/Clients/ClientView', [
+            'title' => 'Ver '.($isClient ? 'Cliente' : 'Contacto'),
+            'isClient' => $isClient,
+            'client' => $client,
             'addresses' => $client->addresses
         ]);
     }

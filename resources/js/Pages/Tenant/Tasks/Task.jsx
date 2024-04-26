@@ -12,12 +12,16 @@ import AddBtn from '@/Template/CommonElements/AddBtn';
 import TaskModal from '@/Template/Components/TaskModal';
 import MainDataContext from '@/Template/_helper/MainData';
 import Icon from "@/Template/CommonElements/Icon";
+import NotesModal from "@/Template/Components/NotesModal";
 
 export default function Task({ auth, title, clients, users}) {
     const [action, setAction] = useState(-1); ///0: Add; 1: Edit; 2: View; -1: None
     const [taskId, setTaskId] = useState(0);
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
+
+    const [notesModal, setNotesModal] = useState(false);
+    const toggleNotesModal = () => setNotesModal(!notesModal);
 
     const getTasks = async () => {
         const response = await axios.post(route('tasks.list'));
@@ -72,6 +76,7 @@ export default function Task({ auth, title, clients, users}) {
             selector: (row) => {
                 return (
                     <>
+                        <Icon icon="MessageSquare" id={'msg-' + row['id']} tooltip="Comentarios" onClick={() => {toggleNotesModal(); setTaskId(row['id'])}} className="me-1"/>
                         <Icon icon="Eye" id={'Eye-' + row['id']} tooltip="Ver" onClick={() => handleEdit(row['id'], true)} className="me-1"/>
                         <Edit onClick={() => handleEdit(row['id'], false)} id={'edit-' + row['id']}/>
                         <Trash onClick={() => handleDelete(route('tasks.destroy', row['id']))} id={'delete-' + row['id']}/>
@@ -115,6 +120,14 @@ export default function Task({ auth, title, clients, users}) {
                     taskId={taskId}
                     getTasks={getTasks}
                     onClose={() => setAction(-1)}
+                    showNotes={toggleNotesModal}
+                />
+
+                <NotesModal
+                    type="2"
+                    id={taskId}
+                    modal={notesModal}
+                    onClose={toggleNotesModal}
                 />
             </Fragment>
         </AuthenticatedLayout>
