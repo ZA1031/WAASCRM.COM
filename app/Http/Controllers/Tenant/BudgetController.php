@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
+use App\Models\Central\ProductAttr;
 use App\Models\Tenant\Budget;
 use App\Models\Tenant\BudgetDetail;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
 use App\Models\Tenant\TenantProduct;
 use App\Models\Tenant\TenantUser;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -229,17 +231,30 @@ class BudgetController extends Controller
 
     public function downloadBudget($bid){
         $budget = Budget::find($bid);
+        $budgets = BudgetDetail::where('budget_id', $bid)->get();
         $products = [];
         $quantities = explode(',', $budget->quantities);
+        // dd($budgets);
+        // foreach($budgets as $budget){
+        //     dd($budget, $budget->details);
+        // }
+
         foreach (explode(',', $budget->products) as $key => $product) {
-            $pr = TenantProduct::find($product);
+            $pr = TenantProduct::find($product); //dd($pr->attributes);
             if (!$pr) continue;
             for ($i = 0; $i < $quantities[$key]; $i++) $products[] = $pr;
         }
 
-        dd($quantities, $products);
+        $pdf = Pdf::loadView('pdfs.pdf2', [
+            'products' => $products,
+            'budgets' => $budgets
 
-        //$pdf = \PDF::loadView('pdf.budget', ['budget' => $budget, 'products' => $products]);
-        //return $pdf->download('presupuesto-'.$budget->id.'.pdf');
+        ]);
+
+        return $pdf->stream('pdf2.pdf');
+
+        // return view('pdfs.pdf2', [
+        // ]);
+
     }
 }

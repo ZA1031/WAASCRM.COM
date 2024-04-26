@@ -103,10 +103,17 @@
     .product-data {
         width: 100%;
         height: 390px;
+        /* border-bottom: 4px solid #7d91f5 !important;
+        border-top: 4px solid #7d91f5 !important; */
+    }
+    
+    .border-bottom {
         border-bottom: 4px solid #7d91f5 !important;
-        border-top: 4px solid #7d91f5 !important;
     }
 
+    .border-top {
+        border-top: 4px solid #7d91f5 !important;
+    }
     .signature-image {
         position: fixed;
         bottom: 0;
@@ -201,50 +208,31 @@
             </div>
         </div>
     </div>
+
 <div class="page-break"></div>
+@foreach ($products as $product)
     <div class="image-container">
         <div class="product-image">
             <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
-            <p class="text-secondary" style="margin-top:40px; font-size: 20px;">Modelo: xxxx</p>
+            <p class="text-secondary" style="margin-top:40px; font-size: 20px;">Modelo: {{ $product->name }}</p>
         </div>
     </div>
     <div class="product-data">
+        <div class="border-bottom"></div>
         <div class="row">
             <div class="col-2">
-                <p class="text-secondary" style="font-size: 12px;"><strong>Código</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Temperatura</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Sistemas de funcionamiento</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Membrana</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Temperatura agua fría</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Capacidad de enfriamiento</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Control temperatura agua fría</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Válvula de corte</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Compresor</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Temperatura agua caliente</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Bomba booster</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Peso</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Color</strong></p>
-                <p class="text-secondary" style="font-size: 12px;"><strong>Sistema de tratamiento de agua</strong></p>
+                @foreach ($product->attributes as $attr)
+                <p class="text-secondary" style="font-size: 12px;"><strong>{{ $attr->text }}</strong></p>
+                @endforeach
             </div>
             <div class="col-2">
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
-                <p class="text-secondary" style="font-size: 12px; margin-left: 50px;"><strong>xxxxxxx</strong></p>
              </div>
         </div>
+        <div class="border-top"></div>
     </div>
 <div class="page-break"></div>
+@endforeach
+@foreach ($budgets as $budget)
     <div class="row">
         <div class="col-2">
             <div class="title-1-left">
@@ -253,8 +241,8 @@
             <div class="title-2-left">
                 <span class="text-primary"><strong>Aquaidam</strong></span>
             </div>
-                <div class="title-1-left" style="font-size:30px">Venta</div>
-                <div class="title-1-left text-secondary" style="margin-top: 40px; font-size: 15px;"><strong>Empresa:</strong> MI TIERRA</div>
+                <div class="title-1-left" style="font-size:30px">{{ $budget->getType($budget->type) }}</div>
+                <div class="title-1-left text-secondary" style="margin-top: 40px; font-size: 15px;"><strong>Empresa:</strong> {{ $budget->budget->client->company_name }}</div>
         </div>
         <div class="col-2">
             <div class="product-image">
@@ -272,21 +260,27 @@
             <div class="col-2">
                 <p class="text-secondary">Cuotas: </p>
                 <p class="text-secondary">Instalación</p>
+                @if ($budget->init_amount != null) <p class="text-secondary">Costo Inicial</p> @endif
+                @if ($budget->last_amount != null) <p class="text-secondary">Costo Final</p> @endif
+                @if ($budget->discount != null) <p class="text-secondary">Descuento</p> @endif
                 <p class="text-secondary">Mantenimiento</p>
                 <p class="text-secondary">Extras</p>
             </div>
             <div class="col-2">
-                <p class="text-primary"><strong>99.90 € + IVA</strong></p>
-                <p class="text-primary"><strong>Incluida</strong></p>
-                <p class="text-primary"><strong>Incluida</strong></p>
-                <p class="text-primary"><strong>42 BOTELLAS PERSONALIZADAS</strong></p>
+                <p class="text-primary"><strong>{{ $budget->price }}€ {{ $budget->iva == true ? '+ IVA' : ''}}</strong></p>
+                <p class="text-primary"><strong>{{ $budget->installation == true ? 'Incluida' : 'No Incluida - '.$budget->installation_cost.' €' }}</strong></p>
+                @if ($budget->init_amount != null)<p class="text-primary"><strong>{{ $budget->init_amount }} €</strong></p> @endif
+                @if ($budget->last_amount != null)<p class="text-primary"><strong>{{ $budget->last_amount }} €</strong></p> @endif
+                @if ($budget->discount != null)<p class="text-primary"><strong>{{ $budget->discount }} €</strong></p> @endif
+                <p class="text-primary"><strong>{{ $budget->maintenance == 0 ? 'No Incluido' : $budget->maintenance .' meses' }}</strong></p>
+                <p class="text-primary"><strong>{{ $budget->notes }}</strong></p>
             </div>
         </div>
         <div class="signature-image">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
+        </div>
     </div>
-    </div>
-  
-
+<div class="page-break"></div>
+@endforeach
 </body>
 </html>
