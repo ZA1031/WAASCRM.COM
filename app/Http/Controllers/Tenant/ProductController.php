@@ -82,8 +82,11 @@ class ProductController extends Controller
         $pids = explode(',', $product->parts);
         $parts = new Collection();
         foreach ($pids as $pid){
-            $part = SparePart::find($pid);
-            $parts->push($part);
+            if (!empty($pid)){
+                $part = SparePart::find($pid);
+                $parts->push($part);
+            }
+            
         }
         
         //ATRIBUTOS
