@@ -87,27 +87,33 @@ class ProductController extends Controller
         }
         
         //ATRIBUTOS
-        $attrs = ProductAttr::where('product_id', $id)->get(); //dd($attrs);
+        $attrs = ProductAttr::where('product_id', $id)->get();
 
+        $files = $product->getFilesData(1);
+        $mainImage = [];
+        $techImage = [];
+        foreach ($files as $file){
+            if ($file['image_type'] == 1) $mainImage[] = $file['img'];
+            if ($file['image_type'] == 2) $techImage[] = $file['img'];
+        }
 
-        //$logo = Storage::disk('public')->url('pdf/logo_producto.png'); //dd($logo);
-        $images = $product->getFilesData(1); 
-        $logo = public_path('pdf/logo_producto.png'); //dd($logo);
-
+        // $logo = public_path('pdf/logo_producto.png'); 
         $pdf = Pdf::loadView('pdfs.pdf1', [
             'product' => $product,
-            'logo' => $logo,
+            // 'logo' => $logo,
             'parts' => $parts,
-            'attrs' => $attrs
+            'attrs' => $attrs,
+            'mainImage' => $mainImage
         ]);
 
-        return $pdf->stream('pdf1.pdf');
+        // return $pdf->stream('pdf1.pdf');
 
         return view('pdfs.pdf1', [
             'product' => $product,
-            'logo' => $logo,
+            // 'logo' => $logo,
             'parts' => $parts,
-            'attrs' => $attrs
+            'attrs' => $attrs,
+            'mainImage' => $mainImage
         ]);
     }
 

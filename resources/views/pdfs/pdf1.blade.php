@@ -217,7 +217,7 @@ body {
             </div>
             <div class="col-md-4">
                 <div class="" style="position: relative;">
-                    <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 100%; height: auto;" alt="">
+                    <img src="{{ $mainImage[0] }}" style="width: 100%; height: auto;" alt="">
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. In suscipit consequuntur eaque velit asperiores! Error temporibus quod maxime beatae tenetur praesentium recusandae facere odit hic placeat. Totam perspiciatis, corrupti consectetur esse rerum velit magni iusto quis assumenda suscipit consequatur. Earum perferendis accusantium aspernatur quam delectus animi placeat perspiciatis ipsa cupiditate.
                 </div>
             </div>

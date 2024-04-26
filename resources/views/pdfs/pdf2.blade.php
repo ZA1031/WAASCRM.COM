@@ -208,6 +208,7 @@
             </div>
         </div>
     </div>
+    @php use App\Models\Tenant\TenantProduct; @endphp    
 
 <div class="page-break"></div>
 @foreach ($products as $product)
@@ -233,6 +234,15 @@
 <div class="page-break"></div>
 @endforeach
 @foreach ($budgets as $budget)
+
+    @php 
+    $products = explode(',', $budget->budget->products);
+    $model = '';
+    foreach ($products as $pid){
+        $prod = TenantProduct::find($pid);
+        $prod->model = $model;
+    }
+    @endphp
     <div class="row">
         <div class="col-2">
             <div class="title-1-left">
@@ -253,7 +263,7 @@
     <div class="section">
         <div class="header">
             <div class="title-1-left">
-                <span class="text-secondary">Modelo <span class="title-2-left text-primary">40 - CON GAS</span></span>
+                <span class="text-secondary">Modelo <span class="title-2-left text-primary">{{ $model }}</span></span>
             </div>            
         </div>
         <div class="row">

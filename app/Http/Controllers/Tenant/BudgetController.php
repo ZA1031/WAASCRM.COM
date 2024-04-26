@@ -234,17 +234,20 @@ class BudgetController extends Controller
         $budgets = BudgetDetail::where('budget_id', $bid)->get();
         $products = [];
         $quantities = explode(',', $budget->quantities);
-        // dd($budgets);
-        // foreach($budgets as $budget){
-        //     dd($budget, $budget->details);
-        // }
 
         foreach (explode(',', $budget->products) as $key => $product) {
             $pr = TenantProduct::find($product); //dd($pr->attributes);
             if (!$pr) continue;
             for ($i = 0; $i < $quantities[$key]; $i++) $products[] = $pr;
+            // dd($pr);
         }
-
+        // foreach ($budgets as $budget){
+        //     $products = explode(',', $budget->budget->products);
+        //     foreach ($products as $pid){
+        //         $prod = TenantProduct::find($pid);
+        //     }
+        // }
+        
         $pdf = Pdf::loadView('pdfs.pdf2', [
             'products' => $products,
             'budgets' => $budgets
