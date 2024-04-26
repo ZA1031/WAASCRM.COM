@@ -2,6 +2,7 @@
 use App\Helpers\Lerph;
 use App\Http\Controllers\Tenant\AddressController;
 use App\Http\Controllers\Tenant\BudgetController;
+use App\Http\Controllers\Tenant\CalendarController;
 use App\Http\Controllers\Tenant\CatalogController;
 use App\Http\Controllers\Tenant\ClientController;
 use App\Http\Controllers\Tenant\CompanyController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Tenant\InstallationController;
 use App\Http\Controllers\Tenant\InstallationNoteController;
 use App\Http\Controllers\Tenant\MaterialController;
 use App\Http\Controllers\Tenant\ProductController;
+use App\Http\Controllers\Tenant\TaskController;
 use App\Http\Controllers\Tenant\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -51,15 +53,18 @@ Route::middleware('check-permission:0,1,2,3,4,5,6')->group(function () {
     Route::get('/prs/pdf2/{id}', [ProductController::class, 'pdf2'])->name('prs.pdf2');
 
     ///Clients
+    Route::get('/clients/opportunities', [ClientController::class, 'opportunities'])->name('clients.opportunities');
     Route::resource('/clients', ClientController::class, ['names' => ['index' => 'clients']]);
     Route::post('/clients/list', [ClientController::class, 'list'])->name('clients.list');
     Route::get('/clients/addresses/{cid}', [ClientController::class, 'getAddresses'])->name('clients.addresses');
-
+    Route::post('/clients/board/updateStatus/{cid}', [ClientController::class, 'updateStatus'])->name('clients.board.updateStatus');
+    
     ///Contactos
+    Route::get('/contacts/opportunities', [ClientController::class, 'opportunities'])->name('contacts.opportunities');
     Route::resource('/contacts', ClientController::class, ['names' => ['index' => 'contacts']]);
     Route::post('/contacts/list', [ClientController::class, 'list'])->name('contacts.list');
     Route::post('/contacts/client/{cid}', [ClientController::class, 'convertClient'])->name('contacts.convert');
-
+    
     ///Addresses
     Route::post('/address/validate', [AddressController::class, 'validateForm'])->name('address.validate');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
@@ -101,4 +106,15 @@ Route::middleware('check-permission:0,1,2,3,4,5,6')->group(function () {
     Route::post('/maintenances/list', [InstallationController::class, 'list'])->name('maintenances.list');
     Route::post('/maintenances/create', [InstallationController::class, 'create'])->name('maintenances.create');
     Route::post('/maintenances/assign', [InstallationController::class, 'assign'])->name('maintenances.assign');
+
+    ///Tasks
+    Route::resource('/tasks', TaskController::class, ['names' => ['index' => 'tasks']]);
+    Route::post('/tasks/list', [TaskController::class, 'list'])->name('tasks.list');
+    Route::post('/tasks/status/{id}', [TaskController::class, 'changeStatus'])->name('tasks.status');
+
+    ///Calendar
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
+    Route::post('/calendar/list', [CalendarController::class, 'list'])->name('calendar.list');
+
+    ///Oportunities
 });

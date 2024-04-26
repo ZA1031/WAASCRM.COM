@@ -42,6 +42,7 @@ class CatalogController extends Controller
                 if ($cc) $cc->fill($request->all());
                 else $cc = new Catalog($request->except(['id']));
             }
+            $cc->extra_1 = isset($request->extra_1) && $request->extra_1 != false ? 1: 0;
             $cc->save();
 
             return redirect()->back()->with('message', 'Datos guardados correctamente.');

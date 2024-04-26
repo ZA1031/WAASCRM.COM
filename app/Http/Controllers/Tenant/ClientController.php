@@ -178,4 +178,23 @@ class ClientController extends Controller
         $client = Client::findOrFail($cid);
         return $client->addresses;
     }
+
+    public function opportunities()
+    {
+        $isClient = $this->isClientPage();
+        $statuses = Catalog::where('type', $isClient ? 2 : 3)->where('extra_1', '!=', 1)->get();
+        return Inertia::render('Tenant/Clients/Opportunities', [
+            'title' =>  $isClient ? 'Clientes' : 'Contactos', 
+            'isClient' => $isClient,
+            'statuses' => $statuses
+        ]);
+    }
+
+    public function updateStatus(Request $request, $cid)
+    {
+        $client = Client::findOrFail($cid);
+        $client->status_id = $request->status;
+        $client->save();
+        return redirect()->back()->with('message', 'Datos guardados correctamente.');
+    }
 }

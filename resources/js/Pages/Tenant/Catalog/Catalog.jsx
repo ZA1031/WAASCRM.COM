@@ -40,7 +40,7 @@ export default function Catalog({ auth, title, type, related }) {
     useEffect(() => {
         getCatalog();
     }, [deleteCounter]);
-
+    
     const tableColumns = [
         {
             name: 'Nombre',
@@ -58,12 +58,12 @@ export default function Catalog({ auth, title, type, related }) {
             name: 'Finaliza',
             selector: row => {
                 return (
-                    <Badge color={row['extra_1'] ? 'success' : 'danger'}>{row['extra_1'] ? 'Si' : 'No'}</Badge>
+                    <Badge color={row['extra_1'] == 1 ? 'success' : 'danger'}>{row['extra_1'] == 1 ? 'Si' : 'No'}</Badge>
                 )
             },
             sortable: true,
             center: false,
-            omit : (type === 1 || type === 2) ? false : true
+            omit : !(type == 2 || type == 3)
         },
         {
             name: 'Acciones',
@@ -91,7 +91,7 @@ export default function Catalog({ auth, title, type, related }) {
                 id: response.data.id,
                 name: response.data.name,
                 description: response.data.description ?? '',
-                extra_1: response.data.extra_1 ? true : false
+                extra_1: response.data.extra_1 == 1 ? true : false
             });
         }
     };
@@ -161,12 +161,14 @@ export default function Catalog({ auth, title, type, related }) {
                                 }}
                                 errors = {errors.name}
                             />
-                               
+                            
+                            {(type == 2 || type == 3) &&
                             <Switch 
                                 label={'Finaliza'} 
                                 input={{onChange : () => handleChangeSwitch('extra_1'), name : 'finished', checked : data.extra_1}} 
                                 errors = {errors.extra_1}
                             />
+                            }
                             
                             <FloatingInput 
                                 label={{label : 'Descripción'}} 

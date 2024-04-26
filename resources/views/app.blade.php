@@ -20,5 +20,6 @@
         @inertia
     </body>
     <script src="https://maps.googleapis.com/maps/api/js?key={{ env('MAPS_API') }}&libraries=places"async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.min.js" referrerpolicy="no-referrer"></script>
 
 </html>

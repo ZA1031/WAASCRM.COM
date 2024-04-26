@@ -464,13 +464,43 @@ export const MENUITEMS_TENANT = [
 		menutitle: 'General',
 		menucontent: 'Dashboards,Widgets',
 		Items: [
-			{ path: `/dashboard`, icon: 'home', type: 'link', active: false, title: 'Dashboard' },
-      { path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Agenda' },
-      { path: `/contacts`, icon: 'user', type: 'link', active: false, title: 'Contactos / Leads' },
-      { path: `/clients`, icon: 'user', type: 'link', active: false, title: 'Clientes' },
+			{ path: `/dashboard`, icon: 'landing-page', type: 'link', active: false, title: 'Dashboard' },
+      {
+				title: 'Tareas',
+				icon: 'calendar',
+				type: 'sub',
+				badge: 'badge badge-light-primary',
+				active: false,
+				children: [
+					{ path: `/tasks`, title: 'Tareas', type: 'link' },
+					{ path: `/calendar`, title: 'Agenda', type: 'link' },
+				],
+			},
+      {
+				title: 'Contactos / Leads',
+				icon: 'contact',
+				type: 'sub',
+				badge: 'badge badge-light-primary',
+				active: false,
+				children: [
+					{ path: `/contacts`, title: 'Listado', type: 'link' },
+					{ path: `/contacts/opportunities`, title: 'Board', type: 'link' },
+				],
+			},
+      {
+				title: 'Clientes',
+				icon: 'landing-page',
+				type: 'sub',
+				badge: 'badge badge-light-primary',
+				active: false,
+				children: [
+					{ path: `/clients`, title: 'Listado', type: 'link' },
+					{ path: `/clients/opportunities`, title: 'Board', type: 'link' },
+				],
+			},
       {
 				title: 'Instalaciones',
-				icon: 'others',
+				icon: 'widget',
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
@@ -482,7 +512,7 @@ export const MENUITEMS_TENANT = [
 			},
       {
 				title: 'Mantenimientos',
-				icon: 'others',
+				icon: 'social',
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
