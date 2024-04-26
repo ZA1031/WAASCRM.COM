@@ -216,6 +216,7 @@ const TaskModal = (props) => {
                 <>
                     <Btn attrBtn={{ color: 'secondary cancel-btn', onClick: () => setStatus(2), disabled : processing }}>Cancelar Tarea</Btn>
                     <Btn attrBtn={{ color: 'primary save-btn', onClick:  () => setStatus(1), disabled : processing}}>Finalizar Tarea</Btn>
+                    <Btn attrBtn={{ color: 'primary', onClick:  () => props.showNotes(), disabled : processing}}>Notas</Btn>
                 </>
                 }
             </ModalFooter>

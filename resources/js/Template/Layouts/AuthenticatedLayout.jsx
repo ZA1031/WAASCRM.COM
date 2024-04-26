@@ -40,7 +40,7 @@ export default function Authenticated({ user, children }) {
 
     return (
         <Fragment>
-        {/* <Loader /> */}
+        {/* <Loader /> <ThemeCustomize /> */}
         <Taptop />
         <div className={`page-wrapper ${layout1}`} sidebar-layout={sideBarIcon} id='pageWrapper'>
             <Header />
@@ -56,7 +56,7 @@ export default function Authenticated({ user, children }) {
                 <Footer />
             </div>
         </div>
-        <ThemeCustomize />
+        
         <ToastContainer />
         </Fragment>
     );

@@ -14,7 +14,7 @@ const UserHeader = () => {
   const [name, setName] = useState('Emay Walter');
   const { layoutURL } = useContext(CustomizerContext);
   const authenticated = JSON.parse(localStorage.getItem('authenticated'));
-  const auth0_profile = actualUser.picture;
+  const auth0_profile = actualUser.avatar_url ?? profile;
 
   useEffect(() => {
     setProfile(localStorage.getItem('profileURL') || man);
@@ -40,7 +40,8 @@ const UserHeader = () => {
         <Image
           attrImage={{
             className: 'b-r-10 m-0',
-            src: `${authenticated ? auth0_profile.picture : profile}`,
+            src: `${auth0_profile}`,
+            style: {height: '35px' }, 
             alt: '',
           }}
         />

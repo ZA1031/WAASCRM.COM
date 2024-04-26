@@ -62,4 +62,19 @@ class Client extends Model
     {
         return $this->getImage();
     }
+
+    public function comments()
+    {
+        return $this->hasMany(CommonNote::class, 'type_id')->where('type', 1);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function budgets()
+    {
+        return $this->hasMany(Budget::class);
+    }
 }

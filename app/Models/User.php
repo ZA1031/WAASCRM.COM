@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Storage;
 
 class User extends Authenticatable
 {
@@ -53,5 +54,8 @@ class User extends Authenticatable
         return $this->name;
     }
 
-    
+    public function getImageUrl()
+    {
+        return !empty($this->picture) ? Storage::disk('users')->url($this->picture) : 'https://ui-avatars.com/api/?name='.$this->full_name.'&color=7F9CF5&background=EBF4FF';
+    }
 }

@@ -11,12 +11,18 @@ import AddBtn from '@/Template/CommonElements/AddBtn';
 import MainDataContext from '@/Template/_helper/MainData';
 import { Image } from "react-bootstrap";
 import { Eye, FileText, User }  from 'react-feather';
+import Icon from "@/Template/CommonElements/Icon";
+import NotesModal from "@/Template/Components/NotesModal";
 
 export default function ClientList({ auth, title, isClient}) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
     const [tooltip, setTooltip] = useState(false);
     const toggle = () => setTooltip(!tooltip);
+
+    const [clientId, setClientId] = useState(0);
+    const [notesModal, setNotesModal] = useState(false);
+    const toggleNotesModal = () => setNotesModal(!notesModal);
 
     const getClients = async () => {
         const response = await axios.post(route(isClient ? 'clients.list' : 'contacts.list'));
@@ -70,35 +76,23 @@ export default function ClientList({ auth, title, isClient}) {
                 return (
                     <>
                         {!isClient &&
-                        <Fragment>
-                            <User 
-                                onClick={() => {
-                                    router.post(route('contacts.convert', row['id']), {
-                                        onSuccess : () => {
-                                            getClients()
-                                        }
-                                    });
-                                }}
-                                id={'cl-' + row['id']} 
-                                className="me-1 text-primary pt-1"
-                            />
-                        </Fragment>
-                        }
-                        <FileText 
-                            onClick={() => router.visit(route('budgets.index', row['id']))} 
-                            id={'prs-' + row['id']} 
-                            className="me-1 text-primary pt-1"
+                        <Icon 
+                            icon="User" 
+                            id={'usr-' + row['id']} 
+                            tooltip="Convertir en Cliente" 
+                            onClick={() => {
+                                router.post(route('contacts.convert', row['id']), {
+                                    onSuccess : () => {
+                                        getClients()
+                                    }
+                                });
+                            }}
+                            className="me-1"
                         />
-                        <Fragment>
-                            <Eye 
-                                onClick={() => router.visit(route(isClient ? 'clients.show' : 'contacts.show', row['id']))} 
-                                id={'view-' + row['id']} 
-                                className="me-1 text-primary pt-1"
-                            />
-                            <ToolTip attrToolTip={{ placement:'left', isOpen:tooltip, target: 'view-' + row['id'], toggle:toggle }}>
-                                Ver
-                            </ToolTip>
-                        </Fragment>
+                        }
+                        <Icon icon="MessageSquare" id={'msg-' + row['id']} tooltip="Comentarios" onClick={() => {toggleNotesModal(); setClientId(row['id'])}} className="me-1"/>
+                        <Icon icon="FileText" id={'ft-' + row['id']} tooltip="Presupuestos" onClick={() => router.visit(route('budgets.index', row['id']))}  className="me-1"/>
+                        <Icon icon="Eye" id={'Eye-' + row['id']} tooltip="Ver" onClick={() => router.visit(route(isClient ? 'clients.show' : 'contacts.show', row['id']))}  className="me-1"/>
                         <Edit onClick={() => router.visit(route(isClient ? 'clients.edit' : 'contacts.edit', row['id']))} id={'edit-' + row['id']}/>
                         <Trash onClick={() => handleDelete(route(isClient ? 'clients.destroy' : 'contacts.destroy', row['id']))} id={'delete-' + row['id']}/>
                     </>
@@ -128,6 +122,13 @@ export default function ClientList({ auth, title, isClient}) {
                 </div>
 
                 <AddBtn onClick={() => router.visit(route(isClient ? 'clients.create' : 'contacts.create'))} />
+
+                <NotesModal
+                    type="1"
+                    id={clientId}
+                    modal={notesModal}
+                    onClose={toggleNotesModal}
+                />
             </Fragment>
         </AuthenticatedLayout>
     )

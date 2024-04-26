@@ -34,6 +34,7 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
             $user->rol_name = $request->user()->rol_name ?? '';
             $user->is_tenant = !empty(tenant('id'));
+            $user->avatar_url = $user->getImageUrl() ?? '';
         }
         return [
             ...parent::share($request),

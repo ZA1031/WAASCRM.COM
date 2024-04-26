@@ -10,12 +10,16 @@ import '@fullcalendar/react/dist/vdom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { Badge } from "reactstrap";
+import NotesModal from "@/Template/Components/NotesModal";
 
 export default function Task({ auth, title, clients, users}) {
     const [action, setAction] = useState(-1); ///0: Add; 1: Edit; 2: View; -1: None
     const [taskId, setTaskId] = useState(0);
     const [events, setEvents] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
+
+    const [notesModal, setNotesModal] = useState(false);
+    const toggleNotesModal = () => setNotesModal(!notesModal);
 
     const getEvents = async () => {
         const response = await axios.post(route('calendar.list'));
@@ -50,7 +54,6 @@ export default function Task({ auth, title, clients, users}) {
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
 
-                <div className="shadow-sm">
                     <FullCalendar
                         plugins={[dayGridPlugin]}
                         initialView='dayGridMonth'
@@ -58,7 +61,6 @@ export default function Task({ auth, title, clients, users}) {
                         eventContent={renderEventContent}
                         eventClick={handleEventClick}
                     />
-                </div>
 
                 <AddBtn onClick={() => setAction(0)} />
 
@@ -69,6 +71,14 @@ export default function Task({ auth, title, clients, users}) {
                     taskId={taskId}
                     getTasks={getEvents}
                     onClose={() => setAction(-1)}
+                    showNotes={toggleNotesModal}
+                />
+
+                <NotesModal
+                    type="2"
+                    id={taskId}
+                    modal={notesModal}
+                    onClose={toggleNotesModal}
                 />
             </Fragment>
         </AuthenticatedLayout>
