@@ -47,7 +47,7 @@ body {
 .col-2 {
     width: 50%;
     float: left;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
     /* padding-right: 15px;
     padding-left: 15px; */
 }
@@ -73,14 +73,30 @@ body {
     margin-bottom: 5rem !important;
 }
 
-.col-md-8 {
-    flex: 0 0 66.66667% !important;
-    max-width: 66.66667% !important;
+.col-md-4 {
+    width: 33.33333%;
+    /* float: left; */
 }
 
-.col-md-4 {
-    flex: 0 0 33.33333% !important;
-    max-width: 33.33333% !important;
+.col-md-6 {
+    width: 50%;
+    /* float:; */
+}
+
+.col-md-8 {
+    width: 66.66667%;
+    float: left;
+}
+
+.col-md-12 {
+    width: 100%;
+    /* float:; */
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
 }
 
 .table {
@@ -102,20 +118,11 @@ body {
     text-align: left !important;
 }
 
-.col-md-6 {
-    flex: 0 0 50% !important;
-    max-width: 50% !important;
-}
-
 .my-5 {
     margin-top: 5rem !important;
     margin-bottom: 5rem !important;
 }
 
-.col-md-12 {
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
-}
 .container {
     width: 100%;
     padding-right: 15px;
@@ -149,13 +156,15 @@ body {
         <!-- NOMBRE Y CATEGORÍA -->
         <div class="row">
             <div class="col-md-8">
-                <div class="row">
-                    <div class="col-2">
+                <div class="row clearfix">
+                    <div class="col-md-6" style="float: left;">
                         <h4 style="font-size: 18px; margin-bottom:0; font-weight: lighter;"><span style="color: rgb(3,68,107);">{{ $product->category->name }} </span>/ Category 1{{$product->category->name_en }}</h4>
                         <h3 style="font-size: 20px; margin-top:0;"><span style="color: rgb(3,68,107);">{{ $product->name }}</span> / {{ $product->name_en }}</h3>
                     </div>
-                    <div class="col-2" style="display: flex; align-items: center;">
-                        <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 80%; height: auto;" alt="">
+                    <div class="col-md-6" style="float:right;">
+                        <div>
+                            <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 80%; height: auto;" alt="">
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -173,8 +182,8 @@ body {
                             </tr>
                         </tbody>
                     </table>
-                    <div class="row">
-                        <div class="col-2" style="margin-right: 2px; margin-top: 4px; margin-bottom: 10px;">
+                    <div class="row clearfix" style="height:300px;">
+                        <div class="col-md-6" style="float: left;">
                             <h4 class="text-start" style="color: rgb(3,68,107);">Datos técnicos:</h4>
                             <ul style="padding-left: 15px;">
                             @foreach ($attrs as $attr)
@@ -182,7 +191,7 @@ body {
                             @endforeach
                             </ul>
                         </div>
-                        <div class="col-2">
+                        <div class="col-md-6" style="float: right;">
                             <h4 class="text-start text-muted">Features:</h4>
                             <ul style="padding-left: 15px;">
                             @foreach ($attrs as $attr)
@@ -191,7 +200,7 @@ body {
                             </ul>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" style="margin-top: 20px;">
                         <h4 style="color: rgb(3,68,107); font-size: 18px; margin-bottom:0; font-weight:bold;"><strong>{{ $product->model }}</strong></h4>
                         <h3 style=" font-size: 18px; margin-top:0;"><span style="color: rgb(3,68,107);">MEMBRANA Y FILTROS </span>/ MEMBRANE AND FILTER</h3>
                         <table class="table table-striped table-sm" style="width:100%">
@@ -216,9 +225,9 @@ body {
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="" style="position: relative;">
-                    <img src="{{ $mainImage[0] }}" style="width: 100%; height: auto;" alt="">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. In suscipit consequuntur eaque velit asperiores! Error temporibus quod maxime beatae tenetur praesentium recusandae facere odit hic placeat. Totam perspiciatis, corrupti consectetur esse rerum velit magni iusto quis assumenda suscipit consequatur. Earum perferendis accusantium aspernatur quam delectus animi placeat perspiciatis ipsa cupiditate.
+                <div class="" style="position: relative; top: 50px;">
+                    <img src="{{ $mainImage }}" style="width: 100%; height: auto;" alt="">
+                    <img src="{{ $techImage }}" style="width: 100%; height: auto;" alt="">
                 </div>
             </div>
         </div>

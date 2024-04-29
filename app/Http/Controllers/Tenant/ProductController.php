@@ -90,31 +90,33 @@ class ProductController extends Controller
         $attrs = ProductAttr::where('product_id', $id)->get();
 
         $files = $product->getFilesData(1);
-        $mainImage = [];
-        $techImage = [];
+        $mainImage = '';
+        $techImage = '';
         foreach ($files as $file){
-            if ($file['image_type'] == 1) $mainImage[] = $file['img'];
-            if ($file['image_type'] == 2) $techImage[] = $file['img'];
+            if ($file['image_type'] == 1) $mainImage = $file['img'];
+            if ($file['image_type'] == 2) $techImage = $file['img'];
         }
-
+        // dd($mainImage, $techImage);
         // $logo = public_path('pdf/logo_producto.png'); 
         $pdf = Pdf::loadView('pdfs.pdf1', [
             'product' => $product,
             // 'logo' => $logo,
             'parts' => $parts,
             'attrs' => $attrs,
-            'mainImage' => $mainImage
+            'mainImage' => $mainImage,
+            'techImage' => $techImage
         ]);
 
-        // return $pdf->stream('pdf1.pdf');
+        return $pdf->stream('pdf1.pdf');
 
-        return view('pdfs.pdf1', [
-            'product' => $product,
-            // 'logo' => $logo,
-            'parts' => $parts,
-            'attrs' => $attrs,
-            'mainImage' => $mainImage
-        ]);
+        // return view('pdfs.pdf1', [
+        //     'product' => $product,
+        //     // 'logo' => $logo,
+        //     'parts' => $parts,
+        //     'attrs' => $attrs,
+        //     'mainImage' => $mainImage,
+        //     'techImage' => $techImage
+        // ]);
     }
 
     public function pdf2($id)
