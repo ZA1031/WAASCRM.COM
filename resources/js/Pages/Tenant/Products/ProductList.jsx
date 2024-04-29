@@ -74,6 +74,9 @@ export default function ProductList({ auth, title}) {
             selector: (row) => {
                 return (
                     <>
+                        <a href={route('prs.pdf', row['id'])} target="_blank">
+                            <Icon icon="File" id={'ficha' + row['id']} tooltip="Ficha Técnica"/>
+                        </a>
                         {row['inner_active'] != 1 ? 
                             <Icon icon="Check" id={'activate-' + row['id']} tooltip="Activar" onClick={() => enableDisable(row['id'])} className="text-success"/> :
                             <Icon icon="X" id={'de-' + row['id']} tooltip="Desactivar" onClick={() => enableDisable(row['id'])} className="text-danger"/>
