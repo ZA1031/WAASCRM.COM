@@ -212,9 +212,20 @@
 
 <div class="page-break"></div>
 @foreach ($products as $product)
+    @php 
+        $files = $product->getFilesData(1); 
+        $prImage = null;
+        foreach ($files as $file) {
+            if ($file['image_type'] == 1) {
+                $prImage = $file['img'];
+                break;
+            }
+        }
+    @endphp
     <div class="image-container">
         <div class="product-image">
-            <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
+            <img src="{{ $prImage }}" style="width: 60%; height: auto;" alt="">
+            <!-- <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt=""> -->
             <p class="text-secondary" style="margin-top:40px; font-size: 20px;">Modelo: {{ $product->name }}</p>
         </div>
     </div>
@@ -234,13 +245,22 @@
 <div class="page-break"></div>
 @endforeach
 @foreach ($budgets as $budget)
-
+       
     @php 
+    
     $products = explode(',', $budget->budget->products);
-    $model = '';
     foreach ($products as $pid){
         $prod = TenantProduct::find($pid);
-        $prod->model = $model;
+        $model = $prod->model;
+
+        $files = $prod->getFilesData(1); 
+        $prImage = null;
+            foreach ($files as $file) {
+                if ($file['image_type'] == 1) {
+                    $prImage = $file['img'];
+                    break;
+                }
+            }
     }
     @endphp
     <div class="row">
@@ -256,7 +276,8 @@
         </div>
         <div class="col-2">
             <div class="product-image">
-                <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
+                <img src="{{ $prImage }}" style="width: 100%; height: auto;" alt="">
+                <!-- <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt=""> -->
             </div>
         </div>
     </div>
@@ -268,7 +289,7 @@
         </div>
         <div class="row">
             <div class="col-2">
-                <p class="text-secondary">Cuotas: </p>
+                <p class="text-secondary">Cuotas: {{ $budget->dues }}</p>
                 <p class="text-secondary">Instalación</p>
                 @if ($budget->init_amount != null) <p class="text-secondary">Costo Inicial</p> @endif
                 @if ($budget->last_amount != null) <p class="text-secondary">Costo Final</p> @endif
