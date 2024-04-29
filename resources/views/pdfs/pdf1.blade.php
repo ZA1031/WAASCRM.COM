@@ -140,6 +140,7 @@ body {
 
 </style>
 <body>
+@php use App\Models\Central\AdminCatalog; @endphp
 <div class="blue-bar"></div>
     <div class="container">
         <div class="header border-bottom border-5">
@@ -187,7 +188,8 @@ body {
                             <h4 class="text-start" style="color: rgb(3,68,107);">Datos técnicos:</h4>
                             <ul style="padding-left: 15px;">
                             @foreach ($attrs as $attr)
-                                <li>{{ $attr->text }}</li>
+                                @php $category = AdminCatalog::find($attr->attribute_id); @endphp
+                                <li>{{ $category->name }}: {{ $attr->text }}</li>
                             @endforeach
                             </ul>
                         </div>
@@ -195,7 +197,8 @@ body {
                             <h4 class="text-start text-muted">Features:</h4>
                             <ul style="padding-left: 15px;">
                             @foreach ($attrs as $attr)
-                                <li>{{ $attr->text_en }}</li>
+                                @php $category = AdminCatalog::find($attr->attribute_id); @endphp
+                                <li>{{ $category->name_en }}: {{ $attr->text_en }}</li>
                             @endforeach
                             </ul>
                         </div>

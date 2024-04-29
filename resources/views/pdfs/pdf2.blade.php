@@ -208,7 +208,10 @@
             </div>
         </div>
     </div>
-    @php use App\Models\Tenant\TenantProduct; @endphp    
+    @php
+        use App\Models\Tenant\TenantProduct; 
+        use App\Models\Central\AdminCatalog;
+    @endphp    
 
 <div class="page-break"></div>
 @foreach ($products as $product)
@@ -231,14 +234,19 @@
     </div>
     <div class="product-data">
         <div class="border-bottom"></div>
-        <div class="row">
-            <div class="col-2">
+        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+            <div style="width: 100%; height: auto;">
                 @foreach ($product->attributes as $attr)
-                <p class="text-secondary" style="font-size: 12px;"><strong>{{ $attr->text }}</strong></p>
+                @php $category = AdminCatalog::find($attr->attribute_id); @endphp
+                <div style="font-size: 12px; overflow: auto;">
+                    <span class="text-secondary" style="float: left; width: 30%;"><strong>{{ $category->name }}</strong></span>
+                    <span class="text-secondary" style="float: right; width: 80%; text-align: right;">{{ $attr->text }}</span>
+                </div>
+                <br>
                 @endforeach
             </div>
-            <div class="col-2">
-             </div>
+            <!-- <div class="col-2">
+             </div> -->
         </div>
         <div class="border-top"></div>
     </div>

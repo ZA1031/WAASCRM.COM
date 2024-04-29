@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
+use App\Models\Central\AdminCatalog;
 use App\Models\Central\ProductAttr;
 use App\Models\Central\SparePart;
 use App\Models\Tenant\TenantProduct;
+use Attribute;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -76,6 +78,7 @@ class ProductController extends Controller
     }
 
     public function pdf($id){
+        set_time_limit(180);
         $product = TenantProduct::find($id);
 
         // PARTES
@@ -86,7 +89,6 @@ class ProductController extends Controller
                 $part = SparePart::find($pid);
                 $parts->push($part);
             }
-            
         }
         
         //ATRIBUTOS
