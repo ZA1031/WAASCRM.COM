@@ -14,6 +14,7 @@ use App\Models\Tenant\TenantUser;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -231,7 +232,7 @@ class BudgetController extends Controller
     }
 
     public function downloadBudget($bid){
-        set_time_limit(120);
+        set_time_limit(180);
         $budget = Budget::find($bid);
         $budgets = BudgetDetail::where('budget_id', $bid)->get();
         $products = [];
@@ -245,11 +246,14 @@ class BudgetController extends Controller
 
         ///FECHA DE CREACIÓN DE PROPUESTA
         $date = (new Carbon($budget->created_at))->format('Y-m-d');
+
+        $signature = Storage::disk('public')->url('pdf/firma.jpg');
         
         $pdf = Pdf::loadView('pdfs.pdf2', [
             'products' => $products,
             'budgets' => $budgets,
-            'date' => $date
+            'date' => $date,
+            'signature' => $signature
 
         ]);
 
@@ -258,7 +262,8 @@ class BudgetController extends Controller
         // return view('pdfs.pdf2', [
         //     'products' => $products,
         //     'budgets' => $budgets,
-                // 'date' => $date
+        //     'date' => $date,
+        //     'signature' => $signature
 
         // ]);
 

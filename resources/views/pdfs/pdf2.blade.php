@@ -328,7 +328,7 @@
             </div>
         </div>
         <div class="signature-image">
-            <img src="{{ public_path('pdf\firma.jpg') }}" style="width: 60%; height: auto;" alt="">
+            <img src="{{ $signature }}" style="width: 60%; height: auto;" alt="">
         </div>
     </div>
 <div class="page-break"></div>
