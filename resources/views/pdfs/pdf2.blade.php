@@ -118,12 +118,24 @@
         position: fixed;
         bottom: 0;
         right: 0;
-        width: 200px; /* Ajusta el ancho de acuerdo a tu preferencia */
-        margin-bottom: 20px; /* Ajusta el margen inferior según sea necesario */
+        width: 200px;
+        margin-bottom: 20px;
     }
 
 </style>
 <body>
+    <div class="container">
+        <div style="text-align: center;">
+            <img src="{{ public_path('pdf\logo_empresa.jpg') }}" style="width: 50%; display: block; margin: 0 auto;">
+        </div>
+        <div style="text-align: center;">
+            <img src="{{ public_path('pdf\logo_empresa.jpg') }}" style="width: 50%; display: block; margin: 0 auto; margin-top:30px;">
+        </div>
+        <div class=""style="text-align:center; font-size: 30px; font-weight: bold; margin-top:150px">
+            <span class="text-primary">Propuesta <br>
+            {{ $date }}</span>
+        </div>
+    </div>
 <div class="page-break"></div>
     <div class="container">
         <div class="section">
@@ -229,7 +241,7 @@
         <div class="product-image">
             <img src="{{ $prImage }}" style="width: 60%; height: auto;" alt="">
             <!-- <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt=""> -->
-            <p class="text-secondary" style="margin-top:40px; font-size: 20px;">Modelo: {{ $product->name }}</p>
+            <p class="text-secondary" style="margin-top:40px; font-size: 20px;">Modelo: <span style="font-weight: bold;" class="text-primary">{{ $product->name }}</span></p>
         </div>
     </div>
     <div class="product-data">
@@ -316,7 +328,7 @@
             </div>
         </div>
         <div class="signature-image">
-            <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt="">
+            <img src="{{ public_path('pdf\firma.jpg') }}" style="width: 60%; height: auto;" alt="">
         </div>
     </div>
 <div class="page-break"></div>

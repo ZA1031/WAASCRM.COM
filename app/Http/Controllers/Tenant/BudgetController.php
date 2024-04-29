@@ -12,6 +12,7 @@ use App\Models\Tenant\Client;
 use App\Models\Tenant\TenantProduct;
 use App\Models\Tenant\TenantUser;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -241,10 +242,14 @@ class BudgetController extends Controller
             if (!$pr) continue;
             for ($i = 0; $i < $quantities[$key]; $i++) $products[] = $pr;
         }
+
+        ///FECHA DE CREACIÓN DE PROPUESTA
+        $date = (new Carbon($budget->created_at))->format('Y-m-d');
         
         $pdf = Pdf::loadView('pdfs.pdf2', [
             'products' => $products,
-            'budgets' => $budgets
+            'budgets' => $budgets,
+            'date' => $date
 
         ]);
 
@@ -252,7 +257,8 @@ class BudgetController extends Controller
 
         // return view('pdfs.pdf2', [
         //     'products' => $products,
-        //     'budgets' => $budgets
+        //     'budgets' => $budgets,
+                // 'date' => $date
 
         // ]);
 
