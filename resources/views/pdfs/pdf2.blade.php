@@ -122,6 +122,69 @@
         margin-bottom: 20px;
     }
 
+    /* FICHA TÉCNICA */
+
+    .row-t {
+    display: flex;
+    flex-wrap: wrap;
+    /* margin-right: -15px;
+    margin-left: -15px; */
+    }
+    .row-t::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    .col-md-4-t {
+    width: 33.33333%;
+    /* float: left; */
+}
+
+.col-md-6-t {
+    width: 50%;
+    /* float:; */
+}
+
+.col-md-8-t {
+    width: 66.66667%;
+    float: left;
+}
+
+.col-md-12-t {
+    width: 100%;
+    /* float:; */
+}
+
+.clearfix-t::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.table {
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    color: #212529 !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.table-active {
+    background-color: rgba(0, 0, 255, 0.26) !important;
+    
+}
+
+.text-start-t {
+    text-align: left !important;
+}
+
+    .text-muted-t {
+        color: #6c757d !important;
+    }
+
 </style>
 <body>
     <div class="container">
@@ -223,6 +286,7 @@
     @php
         use App\Models\Tenant\TenantProduct; 
         use App\Models\Central\AdminCatalog;
+        use App\Models\Central\SparePart;
     @endphp    
 
 <div class="page-break"></div>
@@ -237,30 +301,88 @@
             }
         }
     @endphp
-    <div class="image-container">
-        <div class="product-image">
-            <img src="{{ $prImage }}" style="width: 60%; height: auto;" alt="">
-            <!-- <img src="https://cdn-icons-png.flaticon.com/512/25/25297.png" style="width: 60%; height: auto;" alt=""> -->
-            <p class="text-secondary" style="margin-top:40px; font-size: 20px;">Modelo: <span style="font-weight: bold;" class="text-primary">{{ $product->name }}</span></p>
-        </div>
-    </div>
-    <div class="product-data">
-        <div class="border-bottom"></div>
-        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-            <div style="width: 100%; height: auto;">
-                @foreach ($product->attributes as $attr)
-                @php $category = AdminCatalog::find($attr->attribute_id); @endphp
-                <div style="font-size: 12px; overflow: auto;">
-                    <span class="text-secondary" style="float: left; width: 30%;"><strong>{{ $category->name }}</strong></span>
-                    <span class="text-secondary" style="float: right; width: 80%; text-align: right;">{{ $attr->text }}</span>
+    <div class="row-t" style="font-size: 70.25%;">
+        <div class="col-md-8-t">
+            <div class="row-t clearfix-t">
+                <div class="col-md-6-t" style="float: left;">
+                    <h4 style="font-size: 18px; margin-bottom:0; font-weight: lighter;"><span style="color: rgb(3,68,107);">{{ $product->category->name }} </span>/ Category 1{{$product->category->name_en }}</h4>
+                    <h3 style="font-size: 20px; margin-top:0;"><span style="color: rgb(3,68,107);">{{ $product->name }}</span> / {{ $product->name_en }}</h3>
                 </div>
-                <br>
-                @endforeach
+                <div class="col-md-6-t" style="float:right;">
+                    <div>
+                        <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 80%; height: auto;" alt="">
+                    </div>
+                </div>
             </div>
-            <!-- <div class="col-2">
-             </div> -->
+            <div class="col-md-12-t">
+                <table class="table table-striped table-sm" style="width:100%">
+                    <thead>
+                        <tr class="table-active">
+                            <th>Ref</th>
+                            <th>Descripción / Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding-left: 4px;">{{ $product->model }}</td>
+                            <td style="padding-left: 4px;">{{ $product->description }}<br><span class="text-muted">(Falta descripción en inglés)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row-t clearfix-t" style="height:300px;">
+                    <div class="col-md-6-t" style="float: left;">
+                        <h4 class="text-start-t" style="color: rgb(3,68,107);">Datos técnicos:</h4>
+                        <ul style="padding-left: 15px;">
+                        @foreach ($product->attributes as $attr)
+                            @php $category = AdminCatalog::find($attr->attribute_id); @endphp
+                            <li>{{ $category->name }}: {{ $attr->text }}</li>
+                        @endforeach
+                        </ul>
+                    </div>
+                    <div class="col-md-6-t" style="float: right;">
+                        <h4 class="text-start text-muted">Features:</h4>
+                        <ul style="padding-left: 15px;">
+                        @foreach ($product->attributes as $attr)
+                            @php $category = AdminCatalog::find($attr->attribute_id); @endphp
+                            <li>{{ $category->name_en }}: {{ $attr->text_en }}</li>
+                        @endforeach
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-12-t" style="margin-top: 20px;">
+                    <h4 style="color: rgb(3,68,107); font-size: 18px; margin-bottom:0; font-weight:bold;"><strong>{{ $product->model }}</strong></h4>
+                    <h3 style=" font-size: 18px; margin-top:0;"><span style="color: rgb(3,68,107);">MEMBRANA Y FILTROS </span>/ MEMBRANE AND FILTER</h3>
+                    <table class="table table-striped table-sm" style="width:100%">
+                        <thead>
+                            <tr class="table-active">
+                                <th>Ref</th>
+                                <th>Descripción / Description</th>
+                                <th>Unidades</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $parts = explode(',', $product->parts); @endphp
+
+                            @foreach ($parts as $pid)
+                            @php $part = SparePart::find($pid); @endphp
+                            
+                            <tr>
+                                <td style="padding-left: 4px;">{{ $part->reference }}</td>
+                                <td style="padding-left: 4px;">{{ $part->description }}<br><span class="text-muted">(Falta descripción en inglés)</span></td>
+                                <td style="padding-left: 4px;">1 unidad</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="border-top"></div>
+        <div class="col-md-4-t">
+            <div class="" style="position: relative; top: 50px;">
+                <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 100%; height: auto;" alt="">
+                <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 100%; height: auto;" alt="">
+            </div>
+        </div>
     </div>
 <div class="page-break"></div>
 @endforeach

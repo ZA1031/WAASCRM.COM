@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenant;
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
 use App\Models\Central\ProductAttr;
+use App\Models\Central\SparePart;
 use App\Models\Tenant\Budget;
 use App\Models\Tenant\BudgetDetail;
 use App\Models\Tenant\Catalog;
@@ -253,7 +254,9 @@ class BudgetController extends Controller
             'products' => $products,
             'budgets' => $budgets,
             'date' => $date,
-            'signature' => $signature
+            'signature' => $signature,
+            // 'mainImage' => $mainImage,
+            // 'techImage' => $techImage
 
         ]);
 
@@ -263,7 +266,9 @@ class BudgetController extends Controller
         //     'products' => $products,
         //     'budgets' => $budgets,
         //     'date' => $date,
-        //     'signature' => $signature
+        //     'signature' => $signature,
+                // 'mainImage' => $mainImage,
+                // 'techImage' => $techImage
 
         // ]);
 
