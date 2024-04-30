@@ -91,7 +91,7 @@ export default function Catalog({ auth, title, type, related }) {
                 id: response.data.id,
                 name: response.data.name,
                 description: response.data.description ?? '',
-                extra_1: response.data.extra_1 == 1 ? true : false
+                extra_1: (type == 6) ? response.data.extra_1 : (response.data.extra_1 == 1 ? true : false)
             });
         }
     };
@@ -166,6 +166,21 @@ export default function Catalog({ auth, title, type, related }) {
                             <Switch 
                                 label={'Finaliza'} 
                                 input={{onChange : () => handleChangeSwitch('extra_1'), name : 'finished', checked : data.extra_1}} 
+                                errors = {errors.extra_1}
+                            />
+                            }
+
+                            {
+                            type == 6 &&
+                            <FloatingInput 
+                                label={{label : 'Color'}} 
+                                input={{ 
+                                    placeholder : 'Color', 
+                                    onChange : handleChange,
+                                    name : 'extra_1',
+                                    value : data.extra_1,
+                                    type : 'color'
+                                }}
                                 errors = {errors.extra_1}
                             />
                             }

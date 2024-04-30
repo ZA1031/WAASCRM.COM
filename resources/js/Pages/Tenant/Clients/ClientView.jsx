@@ -10,6 +10,7 @@ import Address from "@/Template/Components/Address";
 import Image from 'react-bootstrap/Image';
 import CollapseCard from "@/Template/Components/CollapseCard";
 import NotesModal from "@/Template/Components/NotesModal";
+import Phone from "@/Template/CommonElements/Phone";
 
 export default function ClientView({ auth, title, isClient, client, addresses}) {
     const [addressList, setAddressList] = useState(addresses);
@@ -131,7 +132,12 @@ export default function ClientView({ auth, title, isClient, client, addresses}) 
                                         return (
                                             <Media className="mt-2">
                                                 <Media body>
-                                                    <div><b>{item.name}</b></div>
+                                                    <div>
+                                                        <b>{item.name} </b>
+                                                        ({item.contact_name} -  
+                                                        <Phone phone={item.contact_phone} />
+                                                        )
+                                                    </div>
                                                     <Address address={item} />
                                                 </Media>
                                             </Media>

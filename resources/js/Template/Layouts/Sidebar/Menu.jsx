@@ -543,6 +543,9 @@ export const MENUITEMS_TENANT = [
 					{ path: `/catalogs/2`, title: 'Estado de los Clientes', type: 'link' },
           { path: `/catalogs/3`, title: 'Estado de los Contactos', type: 'link' },
           { path: `/catalogs/4`, title: 'Extras', type: 'link' },
+          { path: `/catalogs/5`, title: 'Actividades', type: 'link' },
+          { path: `/catalogs/6`, title: 'Tipo de Tarea', type: 'link' },
+          { path: `/catalogs/7`, title: 'Apreciaciones', type: 'link' },
 				],
 			},
 		]

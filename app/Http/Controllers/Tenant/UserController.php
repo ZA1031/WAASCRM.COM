@@ -60,8 +60,8 @@ class UserController extends Controller
         return $this->upsertData($request, $id);
     }
 
-    public function upsertData($request, $id){
-        $this->validateForm($request, $id);
+    public function upsertData($request, $id, $profile = false){
+        $this->validateForm($request, $id, $profile);
 
         if (empty($request->id)) $user = new TenantUser($request->except(['id']));
         else {
@@ -90,7 +90,7 @@ class UserController extends Controller
             $user->save();
         }
 
-        return redirect()->route('users')->with('message', 'Datos guardados correctamente.');
+        return redirect()->route(!$profile ? 'users' : 'users.profile')->with('message', 'Datos guardados correctamente.');
     }
 
     public function destroy($part)
@@ -100,12 +100,12 @@ class UserController extends Controller
         return redirect()->back()->with('message', 'Usuario borrado correctamente.');
     }
 
-    private function validateForm(Request $request, $id){
+    private function validateForm(Request $request, $id, $profile){
         $rol = $request->input('rol_id');
         $maxs = json_decode(COMPANY->users, true);
         $actual = TenantUser::where('rol_id', $rol)->count() + 1; ///TODO revisar
         $m = isset($maxs[$rol - 1]) && !empty($maxs[$rol - 1]) ? $maxs[$rol - 1] : 0;
-        if ($m < $actual) throw ValidationException::withMessages(['rol_id' => 'Ha alcanzado el máximo de usuarios para este rol.']);
+        if ($m < $actual && !$profile) throw ValidationException::withMessages(['rol_id' => 'Ha alcanzado el máximo de usuarios para este rol.']);
 
         return $request->validate([
             'name' => 'required|max:100',
@@ -113,7 +113,7 @@ class UserController extends Controller
             'email' => 'required|email|max:100|unique:users,email,'.$id,
             'phone' => 'max:100',
             'full_address' => 'max:500',
-            'rol_id' => 'required',
+            'rol_id' => !$profile ? 'required' : '',
         ]);
     }
 
@@ -122,5 +122,22 @@ class UserController extends Controller
         $rols = [];
         for($i = 1; $i <= 6; $i++) $rols[] = ['value' => $i, 'label' => Lerph::getTenantRolName($i)];
         return $rols;
+    }
+
+    public function profile()
+    {
+        $user = auth()->user();
+        $user->avatar = $user->avatar_url;
+        return Inertia::render('Tenant/Users/UserProfile', [
+            'title' => 'Perfil de Usuario',
+            'user' => $user,
+            'rols' => $this->getAllRols()
+        ]);
+    }
+
+    public function profileStore(Request $request)
+    {
+        $id = auth()->id();
+        return $this->upsertData($request, $id, true);
     }
 }

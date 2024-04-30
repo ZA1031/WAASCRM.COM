@@ -29,6 +29,8 @@ class Address extends Model
         'lat',
         'long',
         'notes',
+        'principal',
+        'billing',
     ];
 
     public function clients()

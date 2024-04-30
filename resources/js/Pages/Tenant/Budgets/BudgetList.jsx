@@ -14,6 +14,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader, Form, Badge, Row, Col } fro
 import FloatingInput from "@/Template/CommonElements/FloatingInput";
 import Select from '@/Template/CommonElements/Select';
 import AddAddress from "@/Template/Components/AddAddress";
+import Icon from "@/Template/CommonElements/Icon";
 
 export default function BudgetList({ auth, title, cid}) {
     const [dataList, setDataList] = useState([]);
@@ -155,6 +156,9 @@ export default function BudgetList({ auth, title, cid}) {
             selector: (row) => {
                 return (
                     <>
+                        <a href={route('prs.pdf2', row['id'])} target="_blank">
+                            <Icon icon="File" id={'ficha' + row['id']} tooltip="Descargar"/>
+                        </a>
                         {row['status'] == 0 &&
                         <>
                             <Check color="green" size={20} id={'acecept-' + row['id']} onClick={() => acceptBudget(row['id'])}/>
@@ -230,6 +234,7 @@ export default function BudgetList({ auth, title, cid}) {
                                         defaultValue : selectedOptionDet,
                                     }}
                                     errors = {errors.detail_id}
+                                    zIndex={2000}
                                 />
                             </Col>
                             <Col md="4">
@@ -253,6 +258,7 @@ export default function BudgetList({ auth, title, cid}) {
                                                 defaultValue : selectedOptionAddr,
                                             }}
                                             errors = {errors.product_id}
+                                            zIndex={2000 - index - 1}
                                         />
                                     </Col>
                                     <Col md="4">

@@ -35,9 +35,42 @@ class Company extends Model
         'bank_account',
     ];
 
-    public function tenant()
+    protected static function boot()
     {
-        return $this->belongsTo(Tenant::class);
+        parent::boot();
+
+        static::deleted(function ($company) {
+            if (!empty(tenant('id'))) return;
+            $tenant = Tenant::find($company->tenant_id);
+            if (!$tenant) return;
+            Company::where('id', $company->id)->delete();
+        });
+
+        static::created(function ($company) {
+            if (!empty(tenant('id'))) return;
+            $tenant = Tenant::find($company->tenant_id);
+            if (!$tenant) return;
+            Company::create($company->toArray());
+        });
+
+        static::updated(function ($company) {
+            if (!empty(tenant('id'))){
+                tenancy()->central(function ($tenant) use ($company){
+                    Company::where('id', $company->id)->update($company->toArray());
+                });
+            }else {
+                $tenant = Tenant::find($company->tenant_id);
+                if (!$tenant) return;
+                tenancy()->initialize($tenant);
+                Company::first()->update($company->toArray());
+            }
+           
+        });
+    }
+
+    public function getTenant()
+    {
+        return Tenant::find($this->tenant_id);
     }
 
     public function getLogoUrlAttribute()

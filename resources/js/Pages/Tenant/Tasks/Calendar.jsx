@@ -7,12 +7,12 @@ import AddBtn from '@/Template/CommonElements/AddBtn';
 import TaskModal from '@/Template/Components/TaskModal';
 import MainDataContext from '@/Template/_helper/MainData';
 import '@fullcalendar/react/dist/vdom';
+import esLocale from '@fullcalendar/core/locales/es';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { Badge } from "reactstrap";
 import NotesModal from "@/Template/Components/NotesModal";
 
-export default function Task({ auth, title, clients, users}) {
+export default function Task({ auth, title}) {
     const [action, setAction] = useState(-1); ///0: Add; 1: Edit; 2: View; -1: None
     const [taskId, setTaskId] = useState(0);
     const [events, setEvents] = useState([]);
@@ -38,6 +38,9 @@ export default function Task({ auth, title, clients, users}) {
     const renderEventContent = (eventInfo) => {
         return (
             <>
+                {eventInfo.event.extendedProps.type && 
+                <span className={`badge`} style={{ backgroundColor : eventInfo.event.extendedProps.type.extra_1 }}>{eventInfo.event.extendedProps.type.name}</span>
+                }
                 <b>{eventInfo.timeText}</b>
                 <i className="ms-1">{eventInfo.event.title}</i>
             </>
@@ -60,13 +63,18 @@ export default function Task({ auth, title, clients, users}) {
                         events={events}
                         eventContent={renderEventContent}
                         eventClick={handleEventClick}
+                        height={'80vh'}
+                        locale={esLocale}
+                        headerToolbar= {{
+                            left : 'prev,next',
+                            center: 'title',
+                            right: 'dayGridMonth,dayGridWeek,dayGridDay' // user can switch between the two
+                        }}
                     />
 
                 <AddBtn onClick={() => setAction(0)} />
 
                 <TaskModal
-                    clients={clients}
-                    users={users}
                     action={action}
                     taskId={taskId}
                     getTasks={getEvents}

@@ -24,7 +24,7 @@ const RightHeader = () => {
           */}
 
           <li className='profile-nav'>
-            <Icon icon="Cpu" id={'header-calc'} tooltip="Calculadora Oreca" onClick={togglemodalOreca} className="text-light me-1"/>
+            <Icon icon="Cpu" id={'header-calc'} tooltip="Calculadora HORECA" onClick={togglemodalOreca} className="text-light me-1"/>
           </li>
           <UserHeader />
         </UL>

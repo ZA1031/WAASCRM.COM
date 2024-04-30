@@ -38,7 +38,7 @@ const OrecaCalc = (props) => {
 
     return (
         <Modal isOpen={modalOreca} toggle={togglemodalOreca} className="mainModal" centered>
-            <ModalHeader toggle={togglemodalOreca}>Calculadora Oreca</ModalHeader>
+            <ModalHeader toggle={togglemodalOreca}>Calculadora HORECA</ModalHeader>
             <ModalBody>
                 <Row>
                     <Col xs='12' sm='6' md='6' lg='6'>

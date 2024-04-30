@@ -16,26 +16,8 @@ class CalendarController extends Controller
 {
     public function index()
     {
-        $clients = Client::get()->map(function($t){
-            $t->label = $t->full_name;
-            $t->value = $t->id;
-            $t->addresses = $t->addresses->map(function($a){
-                $a->label = $a->full_address;
-                $a->value = $a->id;
-                return $a;
-            });
-            return $t;
-        });
-
-        $users = TenantUser::select('name as label', 'last_name', 'id as value')->get()->map(function($t){
-            $t->label = $t->label . ' ' . $t->last_name;
-            return $t;
-        });
-
         return Inertia::render('Tenant/Tasks/Calendar', [
-            'title' => 'Agenda',
-            'clients' => $clients,
-            'users' => $users,
+            'title' => 'Agenda'
         ]);
     }
 
@@ -49,6 +31,7 @@ class CalendarController extends Controller
                 'title' => $task->title,
                 'start' => $task->date,
                 'end' => $task->date_end,
+                'type' => $task->type,
             ];
         }
 

@@ -1,18 +1,18 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
-import { Breadcrumbs, ToolTip } from "../../../Template/AbstractElements";
+import { Breadcrumbs } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
-import DataTable from 'react-data-table-component';
 import axios from "axios";
-import { customStyles } from "@/Template/Styles/DataTable";
 import Edit from '@/Template/CommonElements/Edit';
 import Trash from '@/Template/CommonElements/Trash';
 import AddBtn from '@/Template/CommonElements/AddBtn';
 import MainDataContext from '@/Template/_helper/MainData';
-import { Image } from "react-bootstrap";
-import { Eye, FileText, User }  from 'react-feather';
 import Icon from "@/Template/CommonElements/Icon";
 import NotesModal from "@/Template/Components/NotesModal";
+import Email from "@/Template/CommonElements/Email";
+import Phone from "@/Template/CommonElements/Phone";
+import TrafficLights from "@/Template/Components/TrafficLights";
+import FilterTable from "@/Template/Components/FilterTable";
 
 export default function ClientList({ auth, title, isClient}) {
     const [dataList, setDataList] = useState([]);
@@ -35,16 +35,6 @@ export default function ClientList({ auth, title, isClient}) {
 
     const tableColumns = [
         {
-            name: 'Logo',
-            selector: row => {
-                return (
-                    <Image height={50} src={row['logo_url']} rounded/>
-                )
-            },
-            sortable: true,
-            center: false,
-        },
-        {
             name: 'Referencia',
             selector: row => row['external_id'],
             sortable: true,
@@ -52,7 +42,26 @@ export default function ClientList({ auth, title, isClient}) {
         },
         {
             name: 'Nombre',
-            selector: row => row['company_name'],
+            selector: (row) => {
+                return (
+                    <>
+                        <div>{row['company_name']}</div>
+                        <div><small>{row['business_name']}</small></div>
+                    </>
+                )
+            },
+            sortable: true,
+            center: false,
+        },
+        {
+            name: 'Actividad',
+            selector: (row) => row['activity']?.name,
+            sortable: true,
+            center: false,
+        },
+        {
+            name: 'Dirección',
+            selector: (row) => row['mainAddress'],
             sortable: true,
             center: false,
         },
@@ -63,10 +72,37 @@ export default function ClientList({ auth, title, isClient}) {
                 if (row['email']) parts.push(row['email']);
                 if (row['phone']) parts.push(row['phone']);
                 return (
-                    parts.join("/")
+                    <>
+                        {row['email'] && <div><Email email={row['email']} /></div>}
+                        {row['phone'] && <div><Phone phone={row['phone']} /></div>}
+                    </>
                 )
                 
             },
+            sortable: true,
+            center: false,
+        },
+        {
+            name: 'Estado',
+            selector: (row) => {
+                return (
+                    <>
+                        <div className={`badge bg-success`}>{row['status']?.name}</div>
+                    </>
+                )
+            },
+            sortable: true,
+            center: false,
+        },
+        {
+            name: 'Pr.',
+            selector: (row) => <TrafficLights data={row['tasksLights']} />,
+            sortable: true,
+            center: false,
+        },
+        {
+            name: 'A.',
+            selector: (row) => <TrafficLights data={row['budgetsLights']} />,
             sortable: true,
             center: false,
         },
@@ -110,17 +146,10 @@ export default function ClientList({ auth, title, isClient}) {
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
 
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles}
-                    />
-                </div>
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                /> 
 
                 <AddBtn onClick={() => router.visit(route(isClient ? 'clients.create' : 'contacts.create'))} />
 

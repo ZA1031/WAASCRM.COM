@@ -6,7 +6,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
 import { Btn, H4, P } from '../../Template/AbstractElements';
 
-export default function Login({ status, canResetPassword, prefix }) {
+export default function Login({ status, canResetPassword, prefix, logo }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -28,7 +28,7 @@ export default function Login({ status, canResetPassword, prefix }) {
     };
 
     return (
-        <GuestLayout>
+        <GuestLayout logo={logo}>
             <Fragment>
                 <Form className='theme-form'>
                     <H4>Ingreso al sistema</H4>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Central\AdminCatalog;
 use App\Models\Central\Product;
 use App\Models\Central\SparePart;
+use App\Models\Main\Tenant;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -90,7 +91,7 @@ class ProductsController extends Controller
         $product->dismantling = json_encode($request->input('dismantling', []));
         $product->save();
 
-        $this->upsertAttributes($request, $product);
+        //$this->upsertAttributes($request, $product);
 
         $this->upsertFiles($request, $product, $product->images, 'images', 1);
         $this->upsertFiles($request, $product, $product->videos, 'videos', 2);
@@ -144,7 +145,7 @@ class ProductsController extends Controller
                     $saved = true;
                     $sf->order = $n;
                     $sf->title = $file['title'];
-                    $sf->image_type = $file['image_type'];
+                    $sf->image_type = $file['image_type'] ?? 0;
                     $sf->save();
                 }
             }
@@ -155,7 +156,7 @@ class ProductsController extends Controller
                     'title' => $file['title'],
                     'size' => $file['size'],
                     'order' => $n,
-                    'image_type' => $file['image_type']
+                    'image_type' => $file['image_type'] ?? 0
                 ]);
 
                 Storage::disk('products')->put($product->id . '/' . $file['file'], Storage::disk('tmp')->get($file['file']));

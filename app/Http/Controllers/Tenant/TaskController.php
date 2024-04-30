@@ -16,6 +16,13 @@ class TaskController extends Controller
 {
     public function index()
     {
+        return Inertia::render('Tenant/Tasks/Task', [
+            'title' => 'Tareas'
+        ]);
+    }
+
+    public function edit($task)
+    {
         $clients = Client::get()->map(function($t){
             $t->label = $t->full_name;
             $t->value = $t->id;
@@ -32,23 +39,22 @@ class TaskController extends Controller
             return $t;
         });
 
-        return Inertia::render('Tenant/Tasks/Task', [
-            'title' => 'Tareas',
+        $task = Task::find($task);
+        return [
+            'task' => $task ? $task : new Task(), 
+            'types' => Catalog::select('name as label', 'id as value')->where('type', 6)->get(),
             'clients' => $clients,
             'users' => $users,
-        ]);
-    }
-
-    public function edit($task)
-    {
-        return Task::find($task);
+            'appreciations' => Catalog::select('name as label', 'id as value')->where('type', 7)->get()
+        ];
     }
 
     public function list(Request $request)
     {
         $data = Task::get()->map(function($t){
             $t->date = Lerph::showDateTime($t->date).' - '.Lerph::showDateTime($t->date_end);
-            $t->client_full_name = $t->client->full_name;
+            $t->client_full_name = $t->client->full_name ?? '';
+            $t->type;
             return $t;
         });
         
@@ -82,6 +88,7 @@ class TaskController extends Controller
     {
         $task = Task::find($tid);
         $task->status = $request->status;
+        $task->appreciation_id = $request->input('appreciation_id', null);
         $task->save();
         return redirect()->back()->with('message', 'Datos guardados correctamente.');
     }

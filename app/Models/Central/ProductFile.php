@@ -2,6 +2,7 @@
 
 namespace App\Models\Central;
 
+use App\Models\Main\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,6 +23,38 @@ class ProductFile extends Model
         'size',
         'image_type'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($file) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                ProductFile::where('id', $file->id)->delete();
+            }
+        });
+
+        static::created(function ($file) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                ProductFile::create($file->toArray());
+            }
+        });
+
+        static::updated(function ($file) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                ProductFile::where('id', $file->id)->update($file->toArray());
+            }
+        });
+    }
 
     public function product()
     {

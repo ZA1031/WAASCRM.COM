@@ -1,12 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { Grid } from 'react-feather';
-import { Link } from 'react-router-dom';
 import { Image } from '../../AbstractElements';
 import CubaIcon from '../../../../assets/images/logo/logo.png';
 import CubaIconDark from '../../../../assets/images/logo/logo_dark.png';
 import CustomizerContext from '../../_helper/Customizer';
+import { useSelector } from 'react-redux'
+import { Link } from '@inertiajs/react';
 
 const SidebarLogo = () => {
+  const actualUser = useSelector((state) => state.auth.value);
   const { mixLayout, toggleSidebar, layout, layoutURL } = useContext(CustomizerContext);
   const [toggle, setToggle] = useState(false);
 
@@ -20,12 +22,12 @@ const SidebarLogo = () => {
   return (
     <div className='logo-wrapper'>
       {layout1 !== 'compact-wrapper dark-sidebar' && layout1 !== 'compact-wrapper color-sidebar' && mixLayout ? (
-        <Link to={`/dashboard/default/${layoutURL}`}>
-          <Image attrImage={{ className: 'img-fluid d-inline', src: `${CubaIcon}`, alt: '' }} />
+        <Link href={`/`}>
+          <Image attrImage={{ className: 'img-fluid d-inline', src: `${actualUser.company_logo}`, alt: ''}} />
         </Link>
       ) : (
-        <Link to={`/dashboard/default/${layoutURL}`}>
-          <Image attrImage={{ className: 'img-fluid d-inline', src: `${CubaIconDark}`, alt: '' }} />
+        <Link href={`/`}>
+          <Image attrImage={{ className: 'img-fluid d-inline', src: `${actualUser.company_logo}`, alt: '' }} />
         </Link>
       )}
       <div className='back-btn' onClick={() => openCloseSidebar()}>

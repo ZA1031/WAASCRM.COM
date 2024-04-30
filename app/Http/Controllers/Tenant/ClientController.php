@@ -24,8 +24,14 @@ class ClientController extends Controller
     public function list(Request $request)
     {
         $data = Client::where('is_client', $this->isClientPage())->get()->map(function($cl){
+            $addr = $cl->mainAddress();
             $cl->total_comments = $cl->comments->count();
             $cl->origin;
+            $cl->activity;
+            $cl->status;
+            $cl->mainAddress = ($addr ? $addr->province . ', ' . $addr->city : '');
+            $cl->budgetsLigths = $cl->budgetsLigths();
+            $cl->tasksLights = $cl->tasksLights();
             return $cl;
         });
         
@@ -41,6 +47,8 @@ class ClientController extends Controller
             'client' => new Client(),
             'statuses' => Catalog::select('name as label', 'id as value')->where('type', $isClient ? 2 : 3)->get(),
             'origins' => Catalog::select('name as label', 'id as value')->where('type', 1)->get(),
+            'activities' => Catalog::select('name as label', 'id as value')->where('type', 5)->get(),
+            'users' => TenantUser::select('name as label', 'id as value')->get(),
             'addresses' => []
         ]);
     }
@@ -55,6 +63,8 @@ class ClientController extends Controller
             'client' => $client,
             'statuses' => Catalog::select('name as label', 'id as value')->where('type', $isClient ? 2 : 3)->get(),
             'origins' => Catalog::select('name as label', 'id as value')->where('type', 1)->get(),
+            'activities' => Catalog::select('name as label', 'id as value')->where('type', 5)->get(),
+            'users' => TenantUser::select('name as label', 'id as value')->get(),
             'addresses' => $client->addresses
         ]);
     }
@@ -156,6 +166,8 @@ class ClientController extends Controller
                     $sf->lat = $addr['lat'];
                     $sf->long = $addr['long'];
                     $sf->notes = $addr['notes'];
+                    $sf->principal = $addr['principal'] ? 1 : 0;
+                    $sf->billing = $addr['billing'] ? 1 : 0;
                     $sf->save();
                 }
             }
@@ -176,6 +188,8 @@ class ClientController extends Controller
                     'lat' => $addr['lat'],
                     'long' => $addr['long'],
                     'notes' => $addr['notes'],
+                    'principal' => $addr['principal'] ? 1 : 0,
+                    'billing' => $addr['billing'] ? 1 : 0,
                 ]);
             }
         }

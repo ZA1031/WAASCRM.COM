@@ -218,6 +218,7 @@ class BudgetController extends Controller
                         'status' => 0,
                         'notes' => $notes,
                         'product_id' => $product,
+                        'client_id' => $budget->client_id,
                     ]);
                 }
             }

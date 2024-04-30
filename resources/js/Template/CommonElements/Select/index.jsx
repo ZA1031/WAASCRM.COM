@@ -1,16 +1,15 @@
 import React from 'react';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Form from 'react-bootstrap/Form';
 import Select from 'react-select'
 
 const FloatingSelect = (props) => {
+  let zIndex = props.zIndex ?? 1001;
   return (
     <>
-      <div className='form-floating mt-4 select-floating ms-1'>
-        <label>{...props.label.label ?? ''}</label>
+      <div className='form-floating mt-4 select-floating ms-1' style={{zIndex : zIndex }}>
+        <label style={{zIndex : 9}}>{...props.label.label ?? ''}</label>
         {props.readOnly 
         ?
-        <div className='pt-1'>{props.input.defaultValue.label}</div>
+        <div className='pt-1'>{props.input.defaultValue?.label ?? ''}</div>
         :
         <>
           <Select 

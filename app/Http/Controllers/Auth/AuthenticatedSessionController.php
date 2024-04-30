@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Central\Company;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,10 +20,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
+        $company = Company::first();
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
             'prefix' => empty(tenant('id')) ? 'central.' : '',
+            'logo' => $company ? $company->logo_url : '',
         ]);
     }
 

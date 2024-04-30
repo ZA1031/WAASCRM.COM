@@ -25,7 +25,10 @@ class Client extends Model
         'origin_id',
         'status_id',
         'responsible',
-        'is_client'
+        'is_client',
+        'activity_id',
+        'business_name',
+        'assigned_to'
     ];
 
     protected $appends = [
@@ -36,6 +39,11 @@ class Client extends Model
     public function addresses()
     {
         return $this->belongsToMany(Address::class, 'client_addresses')->withPivot('address_id');
+    }
+
+    public function mainAddress()
+    {
+        return $this->addresses()->orderBy('principal', 'desc')->first();
     }
 
     public function origin()
@@ -76,5 +84,41 @@ class Client extends Model
     public function budgets()
     {
         return $this->hasMany(Budget::class);
+    }
+
+    public function assigned()
+    {
+        return $this->belongsTo(TenantUser::class, 'assigned_to');
+    }
+
+    public function activity()
+    {
+        return $this->belongsTo(Catalog::class);
+    }
+
+    public function budgetsLigths()
+    {
+        $p = $this->budgets->where('status', 0)->count();
+        $a = $this->budgets->where('status', 1)->count();
+        $r = $this->budgets->where('status', 2)->count();
+        return [
+            'pendings' => $p,
+            'approved' => $a,
+            'rejected' => $r,
+            'total' => $p + $a + $r
+        ];
+    }
+
+    public function tasksLights()
+    {
+        $p = $this->tasks->where('status', 0)->count();
+        $a = $this->tasks->where('status', 1)->count();
+        $r = $this->tasks->where('status', 2)->count();
+        return [
+            'pendings' => $p,
+            'approved' => $a,
+            'rejected' => $r,
+            'total' => $p + $a + $r
+        ];
     }
 }

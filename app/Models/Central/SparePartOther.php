@@ -2,6 +2,7 @@
 
 namespace App\Models\Central;
 
+use App\Models\Main\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,6 +20,38 @@ class SparePartOther extends Model
         'spare_part_id',
         'product_id'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($sparePartOther) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                SparePartOther::where('id', $sparePartOther->id)->delete();
+            }
+        });
+
+        static::created(function ($sparePartOther) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                SparePartOther::create($sparePartOther->toArray());
+            }
+        });
+
+        static::updated(function ($sparePartOther) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                SparePartOther::where('id', $sparePartOther->id)->update($sparePartOther->toArray());
+            }
+        });
+    }
 
     public function sparePart()
     {

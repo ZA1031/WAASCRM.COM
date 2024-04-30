@@ -2,6 +2,7 @@
 
 namespace App\Models\Central;
 
+use App\Models\Main\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,6 +26,38 @@ class Product extends Model
         'model_en',
         'name_en',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($product) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                Product::where('id', $product->id)->delete();
+            }
+        });
+
+        static::created(function ($product) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                Product::create($product->toArray());
+            }
+        });
+
+        static::updated(function ($product) {
+            if (!empty(tenant('id'))) return;
+            $tenants = Tenant::all();
+            foreach ($tenants as $tenant){
+                tenancy()->initialize($tenant);
+                Product::where('id', $product->id)->update($product->toArray());
+            }
+        });
+    }
     
     public function family()
     {

@@ -42,7 +42,7 @@ class CatalogController extends Controller
                 if ($cc) $cc->fill($request->all());
                 else $cc = new Catalog($request->except(['id']));
             }
-            $cc->extra_1 = isset($request->extra_1) && $request->extra_1 != false ? 1: 0;
+            if ($type != 6) $cc->extra_1 = isset($request->extra_1) && $request->extra_1 != false ? 1: 0;
             $cc->save();
 
             return redirect()->back()->with('message', 'Datos guardados correctamente.');
@@ -66,6 +66,12 @@ class CatalogController extends Controller
                 return 'Estado de los Contactos';
             case 4:
                 return 'Extras';
+            case 5:
+                return 'Actividades';
+            case 6:
+                return 'Tipo de Tareas';
+            case 7:
+                return 'Apreciaciones';
         }
     }
 

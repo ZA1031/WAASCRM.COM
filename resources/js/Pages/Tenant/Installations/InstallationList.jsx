@@ -2,9 +2,7 @@ import React, { Fragment, useState, useEffect, useContext } from "react";
 import { Breadcrumbs, Btn } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head, useForm, router } from '@inertiajs/react';
-import DataTable from 'react-data-table-component';
 import axios from "axios";
-import { customStyles } from "@/Template/Styles/DataTable";
 import AddBtn from '@/Template/CommonElements/AddBtn';
 import MainDataContext from '@/Template/_helper/MainData';
 import Icon from '@/Template/CommonElements/Icon';
@@ -15,6 +13,7 @@ import Trash from "@/Template/CommonElements/Trash";
 import Address from "@/Template/Components/Address";
 import Phone from "@/Template/CommonElements/Phone";
 import Email from "@/Template/CommonElements/Email";
+import FilterTable from "@/Template/Components/FilterTable";
 
 export default function InstallationList({ auth, title, pending, tecnics, clients, products, isInstallation}) {
     const [dataList, setDataList] = useState([]);
@@ -256,17 +255,10 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
 
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles}
-                    />
-                </div>
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                /> 
 
                 {isInstallation &&
                 <AddBtn

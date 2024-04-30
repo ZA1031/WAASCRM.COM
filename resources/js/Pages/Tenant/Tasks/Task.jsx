@@ -3,9 +3,7 @@ import { Badge } from 'reactstrap';
 import { Breadcrumbs } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head} from '@inertiajs/react';
-import DataTable from 'react-data-table-component';
 import axios from "axios";
-import { customStyles } from "@/Template/Styles/DataTable";
 import Edit from '@/Template/CommonElements/Edit';
 import Trash from '@/Template/CommonElements/Trash';
 import AddBtn from '@/Template/CommonElements/AddBtn';
@@ -13,8 +11,9 @@ import TaskModal from '@/Template/Components/TaskModal';
 import MainDataContext from '@/Template/_helper/MainData';
 import Icon from "@/Template/CommonElements/Icon";
 import NotesModal from "@/Template/Components/NotesModal";
+import FilterTable from "@/Template/Components/FilterTable";
 
-export default function Task({ auth, title, clients, users}) {
+export default function Task({ auth, title}) {
     const [action, setAction] = useState(-1); ///0: Add; 1: Edit; 2: View; -1: None
     const [taskId, setTaskId] = useState(0);
     const [dataList, setDataList] = useState([]);
@@ -72,6 +71,18 @@ export default function Task({ auth, title, clients, users}) {
             center: false
         },
         {
+            name: 'Tipo',
+            selector: row => {
+                return (
+                    <>
+                        {row['type'] &&  <span className={`badge`} style={{ backgroundColor : row['type'].extra_1 }}>{row['type'].name}</span>}
+                    </>
+                )
+            },
+            sortable: true,
+            center: false
+        },
+        {
             name: 'Acciones',
             selector: (row) => {
                 return (
@@ -99,23 +110,14 @@ export default function Task({ auth, title, clients, users}) {
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
 
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles} 
-                    />
-                </div>
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                /> 
 
                 <AddBtn onClick={() => setAction(0)} />
 
                 <TaskModal
-                    clients={clients}
-                    users={users}
                     action={action}
                     taskId={taskId}
                     getTasks={getTasks}

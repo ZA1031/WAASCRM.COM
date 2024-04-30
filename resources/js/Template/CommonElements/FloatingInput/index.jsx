@@ -6,7 +6,7 @@ const FloatingInput = (props) => {
   return (
     <>
         <FloatingLabel
-            {...props.label}
+            {...props.label ?? ''}
             className={`m-5 ${ props.label.className ?? '' }`}>
             <Form.Control {...props.input} />
         </FloatingLabel>

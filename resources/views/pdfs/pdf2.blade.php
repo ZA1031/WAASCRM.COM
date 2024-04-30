@@ -278,7 +278,7 @@
                 Gracias a la asociación <strong>Stoplastic</strong> su negocio quedará identificado como empresa colaboradora con el
                 medio ambiente. Ofreciendo <strong>un agua libre de plásticos y sin emisiones de CO2</strong>
                 , ayudando a la sostenibilidad del planeta. <br><br>
-                Además todos nuestros dispensadores cumplen con la Norma <strong>UNE 149101</strong> y con el <strong>Real Decreto 140/2003 
+                Además todos nuestros dispensadores cumplen con la Norma <strong>UNE 149101</strong> y con el <strong>Real Decreto 3/2003 
                 y 742/2013.</strong>
             </div>
         </div>

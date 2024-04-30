@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Central\Company;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -31,10 +32,12 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
+        $company = Company::first();
         if ($user) {
             $user->rol_name = $request->user()->rol_name ?? '';
             $user->is_tenant = !empty(tenant('id'));
             $user->avatar_url = $user->getImageUrl() ?? '';
+            $user->company_logo = $company ? $company->logo_url : '';
         }
         return [
             ...parent::share($request),

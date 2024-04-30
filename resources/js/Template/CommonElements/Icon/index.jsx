@@ -10,7 +10,7 @@ const Icon = (props) => {
 
   return (
     <Fragment>
-      <MyIcon {...props} className={`text-primary ${ props.className }`}  size={20} />
+      <MyIcon {...props} className={`text-primary ${ props.className }`}  size={props.size ? props.size : 20} />
       {props.tooltip &&
       <ToolTip attrToolTip={{ placement:'left', isOpen:tooltip, target: props.id, toggle:toggle }}>
         {props.tooltip}

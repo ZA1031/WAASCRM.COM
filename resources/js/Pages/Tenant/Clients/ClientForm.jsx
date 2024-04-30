@@ -11,8 +11,11 @@ import { PlusSquare } from 'react-feather';
 import AddAddress from "@/Template/Components/AddAddress";
 import Edit from '@/Template/CommonElements/Edit';
 import Trash from '@/Template/CommonElements/Trash';
+import Address from "@/Template/Components/Address";
+import Phone from "@/Template/CommonElements/Phone";
+import Email from "@/Template/CommonElements/Email";
 
-export default function ClientForm({ auth, title, isClient, client, statuses, origins, addresses}) {
+export default function ClientForm({ auth, title, isClient, client, statuses, origins, addresses, activities, users}) {
     const [selectedOptionSt, setSelectedOptionSt] = useState(() => {
         let selected = null;
         statuses.forEach((item, index) => {
@@ -24,6 +27,20 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
         let selected = null;
         origins.forEach((item, index) => {
             if (item.value == client.origin_id) selected = item;
+        });
+        return selected;
+    });
+    const [selectedOptionUs, setSelectedOptionUs] = useState(() => {
+        let selected = null;
+        users.forEach((item, index) => {
+            if (item.value == client.assigned_to) selected = item;
+        });
+        return selected;
+    });
+    const [selectedOptionAct, setSelectedOptionAct] = useState(() => {
+        let selected = null;
+        activities.forEach((item, index) => {
+            if (item.value == client.activity_id) selected = item;
         });
         return selected;
     });
@@ -48,7 +65,10 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
         origin_id : client.origin_id,
         status_id : client.status_id,
         responsible : client.responsible,
-        addresses : addresses
+        addresses : addresses,
+        assigned_to : client.assigned_to,
+        activity_id : client.activity_id,
+        business_name : client.business_name,
     });
 
     useEffect(() => {
@@ -57,7 +77,9 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
 
     const setSelected = (selected, evt) => {
         if (evt.name == 'origin_id') setSelectedOptionOr(selected);
-        else setSelectedOptionSt(selected);
+        else if (evt.name == 'status_id') setSelectedOptionSt(selected);
+        else if (evt.name == 'assigned_to') setSelectedOptionUs(selected);
+        else if (evt.name == 'activity_id') setSelectedOptionAct(selected);
         setData(data => ({...data, [evt.name]: selected.value}))
     }
 
@@ -112,6 +134,39 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
                                                 label={{label : 'Nombre Empresa'}} 
                                                 input={{placeholder : 'Nombre Empresa', name : 'company_name', value : data.company_name , onChange : handleChange, type : 'text'}} 
                                                 errors = {errors.company_name }
+                                            />
+                                        </Col>
+                                        <Col xs='12' sm='6' md='6' lg='6'>
+                                            <FloatingInput 
+                                                label={{label : 'Nombre Comercial'}} 
+                                                input={{placeholder : 'Nombre Comercial', name : 'business_name', value : data.business_name , onChange : handleChange, type : 'text'}} 
+                                                errors = {errors.business_name }
+                                            />
+                                        </Col>
+                                        <Col xs='12' sm='6' md='6' lg='3'>
+                                            <Select 
+                                                label={{label : 'Asignado A'}} 
+                                                input={{ 
+                                                    placeholder : 'Asignado A', 
+                                                    onChange : setSelected,
+                                                    name : 'assigned_to',
+                                                    options : users,
+                                                    defaultValue : selectedOptionUs
+                                                }}
+                                                errors = {errors.assigned_to}
+                                            />
+                                        </Col>
+                                        <Col xs='12' sm='6' md='6' lg='3'>
+                                            <Select 
+                                                label={{label : 'Actividad'}} 
+                                                input={{ 
+                                                    placeholder : 'Actividad', 
+                                                    onChange : setSelected,
+                                                    name : 'activity_id',
+                                                    options : activities,
+                                                    defaultValue : selectedOptionAct
+                                                }}
+                                                errors = {errors.activity_id}
                                             />
                                         </Col>
                                         <Col xs='12' sm='6' md='6' lg='6'>
@@ -196,7 +251,12 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
                                         return (
                                             <Media className="mt-2">
                                                 <Media body>
-                                                    <div><b>{item.name}</b></div>
+                                                    <div>
+                                                        <b>{item.name} </b>
+                                                         ({item.contact_name} - 
+                                                        <Phone phone={item.contact_phone} />
+                                                        )
+                                                    </div>
                                                     <div>{item.full_address}</div>
                                                 </Media>
                                                 <Media right>

@@ -1,10 +1,10 @@
-import GuestLayout from '@/Layouts/GuestLayout';
+import GuestLayout from '@/Template/Layouts/GuestLayout';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function ForgotPassword({ status }) {
+export default function ForgotPassword({ status, logo }) {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
     });
@@ -16,7 +16,7 @@ export default function ForgotPassword({ status }) {
     };
 
     return (
-        <GuestLayout>
+        <GuestLayout logo={logo}>
             <Head title="Forgot Password" />
 
             <div className="mb-4 text-sm text-gray-600">

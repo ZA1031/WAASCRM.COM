@@ -166,6 +166,7 @@ const AddDetails = (props) => {
                                 defaultValue : selectedOptionIns,
                             }}
                             errors = {errors.installation}
+                            zIndex={1110}
                         />
                     </Col>
                     {data.installation == 0 &&
@@ -188,6 +189,7 @@ const AddDetails = (props) => {
                                 defaultValue : selectedOptionTy,
                             }}
                             errors = {errors.type}
+                            zIndex={1100}
                         />
                     </Col>
                 </Row>
@@ -210,6 +212,7 @@ const AddDetails = (props) => {
                                 defaultValue : selectedOptionDu,
                             }}
                             errors = {errors.dues}
+                            zIndex={1090}
                         />
                     </Col>
                     <Col xs='12' sm='12' md='4'>
@@ -245,6 +248,7 @@ const AddDetails = (props) => {
                                 defaultValue : selectedOptionMt,
                             }}
                             errors = {errors.maintenance}
+                            zIndex={1080}
                         />
                     </Col>
                     <Col xs='12' sm='12' md='4'>
@@ -258,6 +262,7 @@ const AddDetails = (props) => {
                                 defaultValue : selectedOptionEx,
                             }}
                             errors = {errors.extra_id}
+                            zIndex={1075}
                         />
                     </Col>
                     <Col xs='12' sm='12' md='4'>
@@ -271,6 +276,7 @@ const AddDetails = (props) => {
                                 defaultValue : selectedOptionIv,
                             }}
                             errors = {errors.iva}
+                            zIndex={1060}
                         />
                     </Col>
                     <Col xs='12' sm='12' md='12'>

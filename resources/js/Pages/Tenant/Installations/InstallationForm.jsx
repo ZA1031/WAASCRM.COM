@@ -13,10 +13,12 @@ import { Trash2 }  from 'react-feather';
 import Email from "@/Template/CommonElements/Email";
 import Address from "@/Template/Components/Address";
 import CollapseCard from "@/Template/Components/CollapseCard";
+import SignatureCanvas from 'react-signature-canvas'
 
 export default function InstallationForm({ auth, title, installation, allMaterials, materials, files0, files1, files2, files3, readOnly, parts, allParts}) {
     const [activeTab, setActiveTab] = useState('1');
-    const [selectedOption, setSelectedOption] = useState([]);    
+    const [selectedOption, setSelectedOption] = useState([]);
+    const [sigPad, setSigPad] = useState(null);
 
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         id : installation.id,
@@ -58,7 +60,12 @@ export default function InstallationForm({ auth, title, installation, allMateria
             });
             setSelectedOption(selected);
         }
+        
     }, []);
+
+    useEffect(() => {
+        if (sigPad) sigPad.fromDataURL(data.client_sign);
+    }, [sigPad]);
 
     const handleChange = (e) => {
         const key = e.target.name;
@@ -160,66 +167,74 @@ export default function InstallationForm({ auth, title, installation, allMateria
                             <TabContent activeTab={activeTab}>
                                 <TabPane className='fade show' tabId='1'>
                                     <Row>
-                                        <Col xs='12' md='6'>
-                                            <FloatingInput 
-                                                label={{label : 'Nombre del Cliente'}} 
-                                                input={{placeholder : 'Nombre del Cliente', onChange : handleChange, name : 'client_name', value : data.client_name, readOnly : readOnly}} 
-                                                errors = {errors.client_name}
-                                            />
+                                        <Col xs='12' md='8'>
+                                            <Row>
+                                                <Col xs='12' md='6'>
+                                                    <FloatingInput 
+                                                        label={{label : 'Nombre del Cliente'}} 
+                                                        input={{placeholder : 'Nombre del Cliente', onChange : handleChange, name : 'client_name', value : data.client_name, readOnly : readOnly}} 
+                                                        errors = {errors.client_name}
+                                                    />
+                                                </Col>
+                                                <Col xs='12' md='6'>
+                                                    <FloatingInput 
+                                                        label={{label : 'DNI del Cliente'}} 
+                                                        input={{placeholder : 'DNI del Cliente', onChange : handleChange, name : 'client_dni', value : data.client_dni, readOnly : readOnly}} 
+                                                        errors = {errors.client_dni}
+                                                    />
+                                                </Col>
+                                                <Col xs='12' md='6'>
+                                                    <FloatingInput 
+                                                        label={{label : 'Número de Serie'}} 
+                                                        input={{placeholder : 'Número de Serie', onChange : handleChange, name : 'serial_number', value : data.serial_number, readOnly : readOnly}} 
+                                                        errors = {errors.serial_number}
+                                                    />
+                                                </Col>
+                                                <Col xs='12' md='6'>
+                                                    <FloatingInput 
+                                                        label={{label : 'Notas de Instalación'}} 
+                                                        input={{placeholder : 'Notas de Instalación', onChange : handleChange, name : 'installation_notes', value : data.installation_notes, readOnly : readOnly}} 
+                                                        errors = {errors.installation_notes}
+                                                    />
+                                                </Col>
+                                                <Col xs='12' md='4'>
+                                                    <FloatingInput 
+                                                        label={{label : 'Próximo Mantenimiento (meses)'}} 
+                                                        input={{placeholder : '', onChange : handleChange, name : 'next_maintenance', value : data.next_maintenance, type : 'number', readOnly : readOnly}} 
+                                                        errors = {errors.next_maintenance}
+                                                    />
+                                                </Col>
+                                                <Col xs='12' md='2'>
+                                                    <Switch 
+                                                        label={'No Finalizada'} 
+                                                        input={{onChange : () => handleChangeSwitch('finished'), name : 'finished', checked : data.finished, readOnly : readOnly}} 
+                                                        errors = {errors.finished}
+                                                    />
+                                                </Col>
+                                                {data.finished &&
+                                                <Col xs='12' md='6'>
+                                                    <FloatingInput 
+                                                        label={{label : 'Motivo de No Finalización'}} 
+                                                        input={{placeholder : 'Motivo de No Finalización', onChange : handleChange, name : 'finished_reason', value : data.finished_reason, readOnly : readOnly}} 
+                                                        errors = {errors.finished_reason}
+                                                    />
+                                                </Col>
+                                                }
+                                            </Row>
                                         </Col>
-                                        <Col xs='12' md='6'>
-                                            <FloatingInput 
-                                                label={{label : 'DNI del Cliente'}} 
-                                                input={{placeholder : 'DNI del Cliente', onChange : handleChange, name : 'client_dni', value : data.client_dni, readOnly : readOnly}} 
-                                                errors = {errors.client_dni}
-                                            />
+                                        <Col xs='12' md='4'>
+                                            <Row>
+                                                <Col xs='12'>
+                                                    <label>Firma del Cliente</label><br></br>
+                                                    <SignatureCanvas 
+                                                        penColor='black' 
+                                                        ref={(ref) => { setSigPad(ref) }} 
+                                                        canvasProps={{width: 500, height: 200, className: 'sigCanvas'}} 
+                                                        onEnd = {() => setData(data => ({...data, ['client_sign']: sigPad.toDataURL()}))}
+                                                    />
+                                                </Col>
+                                            </Row>
                                         </Col>
-                                        <Col xs='12' md='6'>
-                                            <FloatingInput 
-                                                label={{label : 'Número de Serie'}} 
-                                                input={{placeholder : 'Número de Serie', onChange : handleChange, name : 'serial_number', value : data.serial_number, readOnly : readOnly}} 
-                                                errors = {errors.serial_number}
-                                            />
-                                        </Col>
-                                        <Col xs='12' md='6'>
-                                            <FloatingInput 
-                                                label={{label : 'Notas de Instalación'}} 
-                                                input={{placeholder : 'Notas de Instalación', onChange : handleChange, name : 'installation_notes', value : data.installation_notes, readOnly : readOnly}} 
-                                                errors = {errors.installation_notes}
-                                            />
-                                        </Col>
-                                        <Col xs='12' md='6'>
-                                            <FloatingInput 
-                                                label={{label : 'Firma del Cliente'}} 
-                                                input={{placeholder : 'Firma del Cliente', onChange : handleChange, name : 'client_sign', value : data.client_sign, readOnly : readOnly}} 
-                                                errors = {errors.client_sign}
-                                            />
-                                        </Col>
-                                        <Col xs='12' md='2'>
-                                            <Switch 
-                                                label={'No Finalizada'} 
-                                                input={{onChange : () => handleChangeSwitch('finished'), name : 'finished', checked : data.finished, readOnly : readOnly}} 
-                                                errors = {errors.finished}
-                                            />
-                                        </Col>
-                                        {data.finished &&
-                                        <Col xs='12' md='6'>
-                                            <FloatingInput 
-                                                label={{label : 'Motivo de No Finalización'}} 
-                                                input={{placeholder : 'Motivo de No Finalización', onChange : handleChange, name : 'finished_reason', value : data.finished_reason, readOnly : readOnly}} 
-                                                errors = {errors.finished_reason}
-                                            />
-                                        </Col>
-                                        }
-                                        <Col xs='12' md='6'>
-                                            <FloatingInput 
-                                                label={{label : 'Próximo Mantenimiento (meses)'}} 
-                                                input={{placeholder : '', onChange : handleChange, name : 'next_maintenance', value : data.next_maintenance, type : 'number', readOnly : readOnly}} 
-                                                errors = {errors.next_maintenance}
-                                            />
-                                        </Col>
-
-
                                     </Row>
                                 </TabPane>
                                 <TabPane className='fade show' tabId='2'>

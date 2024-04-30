@@ -19,6 +19,8 @@ class Task extends Model
         'description',
         'client_id',
         'status',                   ///0: Pendinte, 1: Completado, 2: Cancelado
+        'type_id',
+        'appreciation_id'
     ];
 
     protected static function boot()
@@ -43,5 +45,15 @@ class Task extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(Catalog::class);
+    }
+
+    public function appreciation()
+    {
+        return $this->belongsTo(Catalog::class);
     }
 }

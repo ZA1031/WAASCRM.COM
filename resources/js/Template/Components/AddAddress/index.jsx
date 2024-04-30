@@ -5,12 +5,17 @@ import { H4, H6, LI, P, UL, Image, Btn } from '../../AbstractElements';
 import { CardBody, CardHeader, Input, Media, Modal, ModalHeader, ModalBody, ModalFooter, Col, Row } from 'reactstrap';
 import { useForm, router } from '@inertiajs/react';
 import FloatingInput from '@/Template/CommonElements/FloatingInput';
+import Switch from '@/Template/CommonElements/Switch';
 
 
 const AddAddress = (props) => {
     const [modal, setModal] = useState(props.isOpen);
     const [modalTitle, setModalTitle] = useState(props.title);
     const toggle = () => props.closeModal();
+
+    const handleChangeSwitch = (key) => {
+        setData(key, !data[key]);
+    }
 
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         id : props.address.id ?? '',
@@ -28,7 +33,9 @@ const AddAddress = (props) => {
         country : props.address.country ?? '',
         notes : props.address.notes ?? '',
         lat : props.address.lat ?? '',
-        long : props.address.long ?? ''
+        long : props.address.long ?? '',
+        principal : props.address.principal ?? false,
+        billing : props.address.billing ?? false,
     });
 
     const setMainData = (address) => {
@@ -48,7 +55,9 @@ const AddAddress = (props) => {
             country : address.country ?? '',
             notes : address.notes ?? '',
             lat : address.lat ?? '',
-            long : address.long ?? ''
+            long : address.long ?? '',
+            principal : address.principal ?? false,
+            billing : address.billing ?? false,
         });
     }
 
@@ -233,6 +242,20 @@ const AddAddress = (props) => {
                                     label={{label : 'CP'}} 
                                     input={{placeholder : 'CP', name : 'postal_code', value : data.postal_code, onChange : handleChange}} 
                                     errors = {errors.postal_code}
+                                />
+                            </Col>
+                            <Col xs='12' md='4'>
+                                <Switch 
+                                    label={'Principal'} 
+                                    input={{onChange : () => handleChangeSwitch('principal'), name : 'principal', checked : data.principal}} 
+                                    errors = {errors.principal}
+                                />
+                            </Col>
+                            <Col xs='12' md='4'>
+                                <Switch 
+                                    label={'Facturación'} 
+                                    input={{onChange : () => handleChangeSwitch('billing'), name : 'billing', checked : data.billing}} 
+                                    errors = {errors.billing}
                                 />
                             </Col>
                         </Row>

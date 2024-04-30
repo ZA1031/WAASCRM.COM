@@ -41,6 +41,8 @@ Route::middleware('check-permission:0,1,2,3,4,5,6')->group(function () {
     ///Users
     Route::resource('/users', UserController::class, ['names' => ['index' => 'users']]);
     Route::post('/users/list', [UserController::class, 'list'])->name('users.list');
+    Route::get('/profile', [UserController::class, 'profile'])->name('users.profile');
+    Route::post('/profile', [UserController::class, 'profileStore'])->name('users.profile.store');
 
     ///Materials
     Route::resource('/materials', MaterialController::class, ['names' => ['index' => 'materials']]);

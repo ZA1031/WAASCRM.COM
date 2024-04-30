@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, LogIn, Mail, User } from 'react-feather';
 import man from '../../../../../assets/images/dashboard/profile.png';
+import { Link, router } from '@inertiajs/react'
 
 import { LI, UL, Image, P } from '../../../AbstractElements';
 import CustomizerContext from '../../../_helper/Customizer';
@@ -22,12 +23,7 @@ const UserHeader = () => {
   }, []);
 
   const Logout = () => {
-    localStorage.removeItem('profileURL');
-    localStorage.removeItem('token');
-    localStorage.removeItem('auth0_profile');
-    localStorage.removeItem('Name');
-    localStorage.setItem('authenticated', false);
-    history(`/login`);
+    router.post('/logout');
   };
 
   const UserMenuRedirect = (redirect) => {
@@ -53,12 +49,11 @@ const UserHeader = () => {
         </div>
       </div>
       <UL attrUL={{ className: 'simple-list profile-dropdown onhover-show-div' }}>
-        <LI
-          attrLI={{
-            onClick: () => UserMenuRedirect(`/app/users/userProfile/${layoutURL}`),
-          }}>
+        <LI>
           <User />
-          <span>Cuenta </span>
+          <Link href={route('users.profile')}>
+            <span>Mis Datos </span>
+          </Link> 
         </LI>
         <LI attrLI={{ onClick: Logout }}>
           <LogIn />
