@@ -78,7 +78,7 @@ class ProductController extends Controller
     }
 
     public function pdf($id){
-        set_time_limit(180);
+        set_time_limit(300);
         $product = TenantProduct::find($id);
 
         // PARTES

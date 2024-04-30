@@ -63,7 +63,7 @@ export default function ClientList({ auth, title, isClient}) {
                 if (row['email']) parts.push(row['email']);
                 if (row['phone']) parts.push(row['phone']);
                 return (
-                    parts.join(' / ')
+                    parts.join("/")
                 )
                 
             },
@@ -75,6 +75,8 @@ export default function ClientList({ auth, title, isClient}) {
             selector: (row) => {
                 return (
                     <>
+                        <Icon icon="Eye" id={'Eye-' + row['id']} tooltip="Ver" onClick={() => router.visit(route(isClient ? 'clients.show' : 'contacts.show', row['id']))}  className="me-1"/>
+                        
                         {!isClient &&
                         <Icon 
                             icon="User" 
@@ -92,7 +94,6 @@ export default function ClientList({ auth, title, isClient}) {
                         }
                         <Icon icon="MessageSquare" id={'msg-' + row['id']} tooltip="Comentarios" onClick={() => {toggleNotesModal(); setClientId(row['id'])}} className="me-1"/>
                         <Icon icon="FileText" id={'ft-' + row['id']} tooltip="Presupuestos" onClick={() => router.visit(route('budgets.index', row['id']))}  className="me-1"/>
-                        <Icon icon="Eye" id={'Eye-' + row['id']} tooltip="Ver" onClick={() => router.visit(route(isClient ? 'clients.show' : 'contacts.show', row['id']))}  className="me-1"/>
                         <Edit onClick={() => router.visit(route(isClient ? 'clients.edit' : 'contacts.edit', row['id']))} id={'edit-' + row['id']}/>
                         <Trash onClick={() => handleDelete(route(isClient ? 'clients.destroy' : 'contacts.destroy', row['id']))} id={'delete-' + row['id']}/>
                     </>

@@ -112,7 +112,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             selector: (row) => {
                 return (
                     <>
-                        <div>{row['client_data'].company_name}</div>
+                        <div>{row['client_data']?.company_name}</div>
                         <div class="small text-muted">
                             <Phone client={row['client_data']} /><br />
                             <Email client={row['client_data']} />
