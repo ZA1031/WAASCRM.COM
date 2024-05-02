@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('admin_catalogs', function (Blueprint $table) {
+        Schema::create('client_histories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('user_id');
             $table->tinyInteger('type');
-            $table->string('name', 100);
-            $table->string('description', 255)->nullable();
-            $table->string('extra_1', 1000)->nullable();
-            $table->softDeletes();
+            $table->unsignedBigInteger('type_id')->nullable();
+            $table->unsignedBigInteger('extra')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('admin_catalogs');
+        Schema::dropIfExists('client_histories');
     }
 };

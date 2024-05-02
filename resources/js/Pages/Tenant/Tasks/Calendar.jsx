@@ -11,23 +11,25 @@ import esLocale from '@fullcalendar/core/locales/es';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import NotesModal from "@/Template/Components/NotesModal";
+import Select from '@/Template/CommonElements/Select';
 
-export default function Task({ auth, title}) {
+export default function Task({ auth, title, users}) {
     const [action, setAction] = useState(-1); ///0: Add; 1: Edit; 2: View; -1: None
     const [taskId, setTaskId] = useState(0);
     const [events, setEvents] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
+    const [uid, setUid] = useState(auth.user.id);
 
     const [notesModal, setNotesModal] = useState(false);
     const toggleNotesModal = () => setNotesModal(!notesModal);
 
-    const getEvents = async () => {
-        const response = await axios.post(route('calendar.list'));
+    const getEvents = async (uu) => {
+        const response = await axios.post(route('calendar.list', {uid : uu}));
         setEvents(response.data);
     }
 
     useEffect(() => {
-        getEvents();
+        getEvents(auth.user.id);
     }, [deleteCounter]);
 
     const handleEdit = async (id, show) => {
@@ -56,6 +58,23 @@ export default function Task({ auth, title}) {
             <Head title={title} />
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
+
+                    <div className="d-flex flex-row-reverse" style={{margin: '-20px 0px 10px 0px'}}>
+                        <div style={{minWidth : '200px'}}>
+                            <Select 
+                                key={'users'} 
+                                label={{label : 'Usuario'}} 
+                                input={{ 
+                                    placeholder : 'Usuario', 
+                                    onChange : (e) => {setUid(e ? e.value : null); getEvents(e ? e.value : null);},
+                                    name : 'uid',
+                                    options : users,
+                                    defaultValue : users.filter(option => option.value == auth.user.id)[0],
+                                }}
+                                zIndex={2000}
+                            />
+                        </div>
+                    </div>
 
                     <FullCalendar
                         plugins={[dayGridPlugin]}

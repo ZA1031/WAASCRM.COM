@@ -15,7 +15,7 @@ import Phone from "@/Template/CommonElements/Phone";
 import Email from "@/Template/CommonElements/Email";
 import FilterTable from "@/Template/Components/FilterTable";
 
-export default function InstallationList({ auth, title, pending, tecnics, clients, products, isInstallation}) {
+export default function InstallationList({ auth, title, pending, tecnics, clients, products, isInstallation, filters}) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
     const [selectedOptionTc, setSelectedOptionTc] = useState(null);
@@ -57,8 +57,10 @@ export default function InstallationList({ auth, title, pending, tecnics, client
         
     }
 
-    const getInstallations = async () => {
-        const response = await axios.post(isInstallation ? route('installations.list') : route('maintenances.list'), {pending: pending});
+    const getInstallations = async (d) => {
+        if (d == undefined) d = {};
+        d.pending = pending;
+        const response = await axios.post(isInstallation ? route('installations.list') : route('maintenances.list'), d);
         setDataList(response.data);
     }
 
@@ -258,6 +260,8 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                 <FilterTable
                     dataList={dataList}
                     tableColumns={tableColumns}
+                    filters={filters}
+                    getList={(d) => getInstallations(d)}
                 /> 
 
                 {isInstallation &&

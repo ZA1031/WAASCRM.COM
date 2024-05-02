@@ -148,7 +148,7 @@ body {
                 <div class="col-2" style="margin-bottom: 0;">
                     <h4 style="font-size:20px; margin-bottom: 0;"><span style="color: rgb(3,68,107);"><strong>FICHA TÉCNICA </strong></span>/ TECHNICAL DATA</h4>
                 </div>
-                <div class="col-2" style="position: relative; text-align: right; top:20px;">
+                <div class="col-2" style="position: relative; text-align: right; top:20px; display:none">
                     <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 40%; height: auto;" alt="">
                 </div>
             </div>
@@ -162,7 +162,7 @@ body {
                         <h4 style="font-size: 18px; margin-bottom:0; font-weight: lighter;"><span style="color: rgb(3,68,107);">{{ $product->category->name }} </span>/ Category 1{{$product->category->name_en }}</h4>
                         <h3 style="font-size: 20px; margin-top:0;"><span style="color: rgb(3,68,107);">{{ $product->name }}</span> / {{ $product->name_en }}</h3>
                     </div>
-                    <div class="col-md-6" style="float:right;">
+                    <div class="col-md-6" style="float:right;  display:none">
                         <div>
                             <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 80%; height: auto;" alt="">
                         </div>
@@ -179,7 +179,7 @@ body {
                         <tbody>
                             <tr>
                                 <td style="padding-left: 4px;">{{ $product->model }}</td>
-                                <td style="padding-left: 4px;">{{ $product->description }}<br><span class="text-muted">(Falta descripción en inglés)</span></td>
+                                <td style="padding-left: 4px;">{{ $product->description }}<br><span class="text-muted">{{ $product->description_en }}</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -218,7 +218,7 @@ body {
                                 @foreach ($parts as $part)
                                 <tr>
                                     <td style="padding-left: 4px;">{{ $part->reference }}</td>
-                                    <td style="padding-left: 4px;">{{ $part->description }}<br><span class="text-muted">(Falta descripción en inglés)</span></td>
+                                    <td style="padding-left: 4px;">{{ $part->name }}<br><span class="text-muted">{{ $part->name_en }}</span></td>
                                     <td style="padding-left: 4px;">1 unidad</td>
                                 </tr>
                                 @endforeach

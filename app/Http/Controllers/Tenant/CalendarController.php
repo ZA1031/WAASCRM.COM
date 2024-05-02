@@ -17,13 +17,14 @@ class CalendarController extends Controller
     public function index()
     {
         return Inertia::render('Tenant/Tasks/Calendar', [
-            'title' => 'Agenda'
+            'title' => 'Agenda',
+            'users' => TenantUser::select('name as label', 'id as value')->get(),
         ]);
     }
 
     public function list(Request $request)
     {
-        $tasks = Task::get();
+        $tasks = Task::where('assigned_to', $request->input('uid'))->get();
         $data = [];
         foreach ($tasks as $task) {
             $data[] = [

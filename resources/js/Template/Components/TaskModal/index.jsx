@@ -12,6 +12,7 @@ const TaskModal = (props) => {
     const [clients, setClients] = useState([]);
     const [appreciations, setAppreciations] = useState([]);
     const [showData, setShowData] = useState(false);
+    const [fixedClient, setFixedClient] = useState(0);
     const [modal, setModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('Agregar Tarea');
     const toggle = () => {
@@ -135,6 +136,10 @@ const TaskModal = (props) => {
         if (props.action == 0) handleAdd();
         if (props.action == 1) handleEdit(props.taskId, false);
         if (props.action == 2) handleEdit(props.taskId, true);
+        if (props.fixedClient) {
+            setFixedClient(props.fixedClient);
+            setData({...data, client_id: props.fixedClient});
+        }
     }, [props.action]);
 
     
@@ -190,6 +195,7 @@ const TaskModal = (props) => {
                                     zIndex={1010}
                                 />
                             </Col>
+                            {fixedClient == 0 &&
                             <Col md={12}>
                                 <Select 
                                     label={{label : 'Cliente'}} 
@@ -204,6 +210,7 @@ const TaskModal = (props) => {
                                     readOnly={showData}
                                 />
                             </Col>
+                            }
                             <Col md={6}>
                                 <FloatingInput 
                                     label={{label : 'Fecha y Hora'}} 

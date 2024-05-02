@@ -65,6 +65,7 @@ export default function ProductForm({ auth, title, product, families, categories
         active : product.active,
         family_id : product.family_id,
         description : product.description,
+        description_en : product.description_en,
         category_id : product.category_id,
         attributes : [],
         images : images,
@@ -266,9 +267,10 @@ export default function ProductForm({ auth, title, product, families, categories
                                                     onChange : setSelected,
                                                     name : 'family_id',
                                                     options : families,
-                                                    defaultValue : selectedOption
+                                                    defaultValue : selectedOption,
                                                 }}
                                                 errors = {errors.family_id}
+                                                zIndex={1100}
                                             />
                                         </Col>
                                         <Col xs='12' md='2'>
@@ -294,6 +296,7 @@ export default function ProductForm({ auth, title, product, families, categories
                                                     closeMenuOnSelect : false,
                                                 }}
                                                 errors = {errors.parts}
+                                                zIndex={1090}
                                             />
                                         </Col>
                                         <Col xs='12' md='6'>
@@ -310,6 +313,7 @@ export default function ProductForm({ auth, title, product, families, categories
                                                     closeMenuOnSelect : false,
                                                 }}
                                                 errors = {errors.others}
+                                                zIndex={1080}
                                             />
                                         </Col>
                                         <Col xs='12'>
@@ -323,6 +327,19 @@ export default function ProductForm({ auth, title, product, families, categories
                                                     as : 'textarea'
                                                 }} 
                                                 errors = {errors.description}
+                                            />
+                                        </Col>
+                                        <Col xs='12'>
+                                            <FloatingInput 
+                                                label={{label : 'Descripción Ingles'}} 
+                                                input={{
+                                                    placeholder : 'Descripción', 
+                                                    onChange : handleChange, 
+                                                    name : 'description_en', 
+                                                    value : data.description_en,
+                                                    as : 'textarea'
+                                                }} 
+                                                errors = {errors.description_en}
                                             />
                                         </Col>
                                     </Row>

@@ -36,6 +36,28 @@ class Client extends Model
         'logo_url'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::created(function ($client) {
+            $client->histories()->create([
+                'type' => 1,
+                'type_id' => $client->id
+            ]);
+        });
+
+        static::updated(function ($client) {
+            if ($client->isDirty('status_id') || $client->isDirty('is_client')){
+                $client->histories()->create([
+                    'type' => $client->isDirty('status_id') ? 2 : 6,
+                    'type_id' => $client->id,
+                    'extra' => $client->status_id ?? 0
+                ]);
+            }
+        });
+    }
+
     public function addresses()
     {
         return $this->belongsToMany(Address::class, 'client_addresses')->withPivot('address_id');
@@ -94,6 +116,11 @@ class Client extends Model
     public function activity()
     {
         return $this->belongsTo(Catalog::class);
+    }
+
+    public function histories()
+    {
+        return $this->hasMany(ClientHistory::class)->orderBy('created_at', 'asc');
     }
 
     public function budgetsLigths()

@@ -1,7 +1,7 @@
 import GuestLayout from '@/Template/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import InputError from '@/Template/Components/InputError';
+import PrimaryButton from '@/Template/Components/PrimaryButton';
+import TextInput from '@/Template/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
 
 export default function ForgotPassword({ status, logo }) {

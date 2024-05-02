@@ -25,6 +25,7 @@ class Product extends Model
         'dismantling',
         'model_en',
         'name_en',
+        'description_en',
     ];
 
     protected static function boot()

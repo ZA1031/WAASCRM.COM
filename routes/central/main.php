@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Central\AdminCatalogController;
 use App\Http\Controllers\Central\CompanyController;
+use App\Http\Controllers\Central\DashboardController;
 use App\Http\Controllers\Central\FileController;
 use App\Http\Controllers\Central\ProductsController;
 use App\Http\Controllers\Central\SparePartsController;
@@ -16,9 +17,7 @@ Route::middleware(['check-permission:1,2'])->group(function () {
     });
 });
 
-Route::get('/central-dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::get('/central-dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 ///Catalogs
 Route::get('/catalog/attributes/{id}', [AdminCatalogController::class, 'getAttributes'])->name('catalog.attributes');

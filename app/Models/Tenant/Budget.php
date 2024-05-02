@@ -32,6 +32,23 @@ class Budget extends Model
         static::creating(function ($model) {
             $model->created_by = auth()->user()->id ?? 0;
         });
+
+        static::created(function ($model) {
+            $model->client->histories()->create([
+                'type' => 4,
+                'type_id' => $model->id
+            ]);
+        });
+
+        static::updated(function ($model) {
+            if ($model->isDirty('status')){
+                $model->client->histories()->create([
+                    'type' => 4,
+                    'type_id' => $model->id,
+                    'extra' => $model->status
+                ]);
+            }
+        });
     }
 
     public function client()

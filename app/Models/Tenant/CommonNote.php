@@ -10,8 +10,8 @@ class CommonNote extends Model
     use HasFactory;
     
     protected $fillable = [
-        'type',
-        'type_id',          ///1: Clients; 2: Tasks
+        'type',             ///1: Clients; 2: Tasks
+        'type_id',          
         'created_by',
         'notes',
         'extra_int',
@@ -24,6 +24,20 @@ class CommonNote extends Model
         static::creating(function ($model) {
             $model->created_by = auth()->user()->id;
         });
+
+        static::created(function ($model) {
+            if ($model->type == 1){
+                $model->client->histories()->create([
+                    'type' => 5,
+                    'type_id' => $model->id
+                ]);
+            }
+        });        
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'type_id');
     }
 
     public function user()

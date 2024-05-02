@@ -7,6 +7,7 @@ use App\Http\Controllers\Tenant\CatalogController;
 use App\Http\Controllers\Tenant\ClientController;
 use App\Http\Controllers\Tenant\CommonNoteController;
 use App\Http\Controllers\Tenant\CompanyController;
+use App\Http\Controllers\Tenant\DashboardController;
 use App\Http\Controllers\Tenant\FileController;
 use App\Http\Controllers\Tenant\InstallationController;
 use App\Http\Controllers\Tenant\InstallationNoteController;
@@ -20,13 +21,9 @@ use Inertia\Inertia;
 
 
 Route::middleware('check-permission:0,1,2,3,4,5,6')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Dashboard');
-    });
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 
     ///Companies
     Route::resource('/company', CompanyController::class, ['names' => ['index' => 'company']]);

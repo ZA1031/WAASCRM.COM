@@ -30,6 +30,25 @@ class Task extends Model
         static::creating(function ($model) {
             $model->created_by = auth()->user()->id;
         });
+
+        static::created(function ($model) {
+            if (!empty($model->client)){
+                $model->client->histories()->create([
+                    'type' => 3,
+                    'type_id' => $model->id
+                ]);
+            }
+        });
+
+        static::updated(function ($model) {
+            if ($model->isDirty('status')){
+                $model->client->histories()->create([
+                    'type' => 3,
+                    'type_id' => $model->id,
+                    'extra' => $model->status
+                ]);
+            }
+        });
     }
 
     public function createdBy()

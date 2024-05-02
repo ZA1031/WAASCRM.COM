@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Breadcrumbs, Btn } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head, router, useForm } from '@inertiajs/react';
+import { Chrono } from 'react-chrono';
 
 import FloatingInput from '@/Template/CommonElements/FloatingInput';
 import Select from '@/Template/CommonElements/Select';
@@ -11,12 +12,23 @@ import Image from 'react-bootstrap/Image';
 import CollapseCard from "@/Template/Components/CollapseCard";
 import NotesModal from "@/Template/Components/NotesModal";
 import Phone from "@/Template/CommonElements/Phone";
+import TaskModal from "@/Template/Components/TaskModal";
+import Icon from "@/Template/CommonElements/Icon";
 
 export default function ClientView({ auth, title, isClient, client, addresses}) {
+    const [action, setAction] = useState(-1); ///0: Add; 1: Edit; 2: View; -1: None
+    const [taskId, setTaskId] = useState(0);
+
     const [addressList, setAddressList] = useState(addresses);
     const [commentsList, setCommentsList] = useState(client.comments);
+    const [tasksList, setTasksList] = useState([]);
     const [notesModal, setNotesModal] = useState(false);
     const toggleNotesModal = () => setNotesModal(!notesModal);
+
+    const getTasks = async () => {
+        const response = await axios.post(route('tasks.list', {cid : client.id}));
+        setTasksList(response.data);
+    }
 
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         id : client.id,
@@ -36,7 +48,7 @@ export default function ClientView({ auth, title, isClient, client, addresses}) 
     });
 
     useEffect(() => {
-        console.log(client.budgets);
+        getTasks();
     }, []);
 
     return (
@@ -210,7 +222,7 @@ export default function ClientView({ auth, title, isClient, client, addresses}) 
                                 })}
                             </CollapseCard>
                             <CollapseCard title="Tareas">
-                                {client.tasks.map((item, index) => {
+                                {tasksList.map((item, index) => {
                                     return (
                                         <Media className="mt-2">
                                             <Media body>
@@ -222,15 +234,45 @@ export default function ClientView({ auth, title, isClient, client, addresses}) 
                                                     </div>
                                                     <div><Badge color="info">{item.date}</Badge></div>
                                                 </div>
-                                                <div>{item.description}</div>
+                                                <div className="d-flex justify-content-between">
+                                                    <div>{item.description}</div>
+                                                    <div>
+                                                        <Icon icon="Eye" id={'Eye-' + item.id} tooltip="Ver" onClick={() => {setTaskId(item.id); setAction(2);}} className="me-1"/>
+                                                    </div>
+                                                </div>
                                                 <hr></hr>
                                             </Media>
                                         </Media>
                                     )
                                 })}
+                                <div className="text-end mt-2">
+                                    <Btn attrBtn={{ color: 'primary save-btn btn-sm', onClick: () => setAction(0) }} >Agregar Tarea</Btn>
+                                </div>
+                            </CollapseCard>
+                        </Col>
+                        <Col xs='12' sm='12' md='12' className="timeline">
+                            <CollapseCard title="Timeline">
+                                <Chrono 
+                                    items={client.timeline}
+                                    mode="HORIZONTAL"
+                                    itemWidth={230}
+                                    cardWidth={200}
+                                    showAllCardsHorizontal={true}
+                                    disableToolbar={true}
+                                    cardHeight={100}
+                                    theme={{
+                                        primary: 'rgb(13, 110, 253)',
+                                        secondary: 'rgb(13, 110, 253)',
+                                        cardBgColor: 'white',
+                                        cardForeColor: 'black',
+                                        titleColorActive: 'white',
+                                    }}
+                                />
                             </CollapseCard>
                         </Col>
                     </Row>
+                    
+
                     <Card>
                         <CardFooter className="text-end">
                             <Btn attrBtn={{ color: 'secondary cancel-btn ms-2', onClick: () => router.visit(route(isClient ? 'clients' : 'contacts')) }} >Volver</Btn>
@@ -243,6 +285,15 @@ export default function ClientView({ auth, title, isClient, client, addresses}) 
                     id={client.id}
                     modal={notesModal}
                     onClose={toggleNotesModal}
+                />
+
+                <TaskModal
+                    action={action}
+                    taskId={taskId}
+                    getTasks={() => getTasks()}
+                    onClose={() => setAction(-1)}
+                    showNotes={toggleNotesModal}
+                    fixedClient={client.id}
                 />
             </Fragment>
         </AuthenticatedLayout>

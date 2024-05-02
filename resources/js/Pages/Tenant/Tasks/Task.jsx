@@ -13,7 +13,7 @@ import Icon from "@/Template/CommonElements/Icon";
 import NotesModal from "@/Template/Components/NotesModal";
 import FilterTable from "@/Template/Components/FilterTable";
 
-export default function Task({ auth, title}) {
+export default function Task({ auth, title, filters}) {
     const [action, setAction] = useState(-1); ///0: Add; 1: Edit; 2: View; -1: None
     const [taskId, setTaskId] = useState(0);
     const [dataList, setDataList] = useState([]);
@@ -22,8 +22,8 @@ export default function Task({ auth, title}) {
     const [notesModal, setNotesModal] = useState(false);
     const toggleNotesModal = () => setNotesModal(!notesModal);
 
-    const getTasks = async () => {
-        const response = await axios.post(route('tasks.list'));
+    const getTasks = async (filters) => {
+        const response = await axios.post(route('tasks.list', filters));
         setDataList(response.data);
     }
 
@@ -113,6 +113,8 @@ export default function Task({ auth, title}) {
                 <FilterTable
                     dataList={dataList}
                     tableColumns={tableColumns}
+                    filters={filters}
+                    getList={(d) => getTasks(d)}
                 /> 
 
                 <AddBtn onClick={() => setAction(0)} />

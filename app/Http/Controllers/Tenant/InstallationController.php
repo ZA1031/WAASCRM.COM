@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Central\AdminCatalog;
 use App\Models\Central\Product;
 use App\Models\Central\SparePart;
+use App\Models\Tenant\Address;
 use App\Models\Tenant\Client;
 use App\Models\Tenant\Installation;
 use App\Models\Tenant\Material;
@@ -58,6 +59,21 @@ class InstallationController extends Controller
             });
             return $t;
         });
+
+        $filters = [];
+        $filters[] = [
+            'label' => 'Estado', 
+            'options' => [['value' => 0, 'label' => 'Pendiente'], ['value' => 1, 'label' => 'Finalizado'], ['value' => 2, 'label' => 'Rechazado']],
+            'type' => 'select', 
+            'name' => 'st'
+        ];
+        $filters[] = ['label' => 'Técnico', 'options' => $tecnics, 'type' => 'select', 'name' => 'tid'];
+        $filters[] = ['label' => 'Cliente', 'options' => $clients, 'type' => 'select', 'name' => 'cid'];
+        $filters[] = ['label' => 'Fecha Desde', 'type' => 'date', 'name' => 'from'];
+        $filters[] = ['label' => 'Fecha Hasta', 'type' => 'date', 'name' => 'to'];
+        $filters[] = ['label' => 'Provincia', 'options' => Address::select('province as label', 'province as value')->whereNotNull('province')->groupBy('province')->get() ,'type' => 'select', 'name' => 'pid'];
+        $filters[] = ['label' => 'Ciudad', 'options' => Address::select('city as label', 'city as value')->whereNotNull('city')->groupBy('city')->get() ,'type' => 'select', 'name' => 'city'];
+
         
         
         return Inertia::render('Tenant/Installations/InstallationList', [
@@ -67,6 +83,7 @@ class InstallationController extends Controller
             'clients' => $clients,
             'isInstallation' => $isInst,
             'products' => TenantProduct::select('name as label', 'id as value', 'inner_prices as prices')->whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get(),
+            'filters' => $filters
         ]);
     }
 
@@ -77,6 +94,19 @@ class InstallationController extends Controller
         $query = Installation::where('is_maintenance', !$isInst);
         if ($pending == 1) $query->whereNull('assigned_to');
         else if ($pending == 0) $query->whereNotNull('assigned_to')->whereIn('status', [0,3]);
+
+        if ($request->has('st') && $request->st !== null) $query->where('status', $request->st);
+        if ($request->has('tid') && $request->tid !== null) $query->where('assigned_to', $request->tid);
+        if ($request->has('cid') && $request->cid !== null) $query->where('client_id', $request->cid);
+        if ($request->has('from') && $request->from !== null) $query->where('installation_date', '>=', $request->from);
+        if ($request->has('to') && $request->to !== null) $query->where('installation_date', '<=', $request->to);
+        if ($request->has('pid') && $request->pid !== null) $query->whereHas('address', function($q) use ($request){
+            $q->where('province', $request->pid);
+        });
+        if ($request->has('city') && $request->city !== null) $query->whereHas('address', function($q) use ($request){
+            $q->where('city', $request->city);
+        });
+
         $data = $query->get()->map(function($inst){
             $inst->client_data = $inst->client;
             $inst->address;

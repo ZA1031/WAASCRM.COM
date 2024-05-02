@@ -198,3 +198,77 @@ body {
   height: 70vh;
 }
 
+/* DASHBOARD */
+
+.social-widget-card .h5, .social-widget-card h5 {
+  color: rgba(43, 43, 43, .7);
+  font-weight: 600;
+  margin-bottom: 30px;
+  padding: 30px 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.redial-social-widget {
+  background-image: linear-gradient(90deg, #f4f4f4 50%, transparent 0, transparent), linear-gradient(90deg, #ecf3fa 50%, #f4f4f4 0, #f4f4f4);
+  font-size: 25px;
+  height: 100px;
+  margin: 0 auto;
+  width: 100px;
+}
+
+.social-widget-card span {
+  color: rgba(43, 43, 43, .7);
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.redial-social-widget.radial-bar-70 {
+  background-image: linear-gradient(342deg, #7366ff 50%, transparent 0, transparent), linear-gradient(270deg, #7366ff 50%, #f4f4f4 0, #f4f4f4);
+  background-image: linear-gradient(342deg, var(--theme-deafult) 50%, transparent 50%, transparent), linear-gradient(270deg, var(--theme-deafult) 50%, #f4f4f4 50%, #f4f4f4);
+}
+
+
+
+.redial-social-widget, .redial-social-widget i {
+  align-items: center;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+/* timeline */
+
+.timeline {
+  .card-description {
+    margin-top: 0px;
+    padding-left: 0px !important;
+
+    p {
+      color: rgba(82, 82, 108, 0.8);
+    }
+  }
+
+  header {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+
+    h1 {
+      margin-bottom: 0px;
+    }
+  }
+
+  .timeline-horz-card-wrapper.horizontal {
+    border-radius: 8px;
+  }
+
+  .timeline-card-content {
+    width: 100%;
+  }
+
+  .timeline-item-title {
+    border-radius: 8px;
+    padding: 4px 10px;
+  }
+}

@@ -13,8 +13,9 @@ import Email from "@/Template/CommonElements/Email";
 import Phone from "@/Template/CommonElements/Phone";
 import TrafficLights from "@/Template/Components/TrafficLights";
 import FilterTable from "@/Template/Components/FilterTable";
+import Address from "@/Template/Components/Address";
 
-export default function ClientList({ auth, title, isClient}) {
+export default function ClientList({ auth, title, isClient, filters}) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
     const [tooltip, setTooltip] = useState(false);
@@ -24,8 +25,8 @@ export default function ClientList({ auth, title, isClient}) {
     const [notesModal, setNotesModal] = useState(false);
     const toggleNotesModal = () => setNotesModal(!notesModal);
 
-    const getClients = async () => {
-        const response = await axios.post(route(isClient ? 'clients.list' : 'contacts.list'));
+    const getClients = async (d) => {
+        const response = await axios.post(route(isClient ? 'clients.list' : 'contacts.list'), d);
         setDataList(response.data);
     }
 
@@ -61,7 +62,7 @@ export default function ClientList({ auth, title, isClient}) {
         },
         {
             name: 'Dirección',
-            selector: (row) => row['mainAddress'],
+            selector: (row) => <Address address={row['address_complete'] ?? {}} />,
             sortable: true,
             center: false,
         },
@@ -97,18 +98,19 @@ export default function ClientList({ auth, title, isClient}) {
         {
             name: 'Pr.',
             selector: (row) => <TrafficLights data={row['tasksLights']} />,
-            sortable: true,
+            sortable: false,
             center: false,
         },
         {
             name: 'A.',
-            selector: (row) => <TrafficLights data={row['budgetsLights']} />,
-            sortable: true,
+            selector: (row) => <TrafficLights data={row['budgetsLigths']} />,
+            sortable: false,
             center: false,
         },
         {
             name: 'Acciones',
             selector: (row) => {
+                console.log(row)
                 return (
                     <>
                         <Icon icon="Eye" id={'Eye-' + row['id']} tooltip="Ver" onClick={() => router.visit(route(isClient ? 'clients.show' : 'contacts.show', row['id']))}  className="me-1"/>
@@ -149,6 +151,8 @@ export default function ClientList({ auth, title, isClient}) {
                 <FilterTable
                     dataList={dataList}
                     tableColumns={tableColumns}
+                    filters={filters}
+                    getList={(d) => getClients(d)}
                 /> 
 
                 <AddBtn onClick={() => router.visit(route(isClient ? 'clients.create' : 'contacts.create'))} />

@@ -125,7 +125,7 @@ export default function CompanyList({ auth, title}) {
                     />
                 </div>
 
-                <AddBtn onClick={() => router.visit(route('companies.create'))} />
+                <AddBtn className='d-none' onClick={() => router.visit(route('companies.create'))} />
             </Fragment>
         </AuthenticatedLayout>
     )

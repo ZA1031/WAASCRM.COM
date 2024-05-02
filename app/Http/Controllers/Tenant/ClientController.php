@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
+use App\Models\Tenant\Address;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
 use App\Models\Tenant\TenantUser;
@@ -15,21 +16,47 @@ class ClientController extends Controller
 {
     public function index()
     {
+        $isClient = $this->isClientPage();
+        
+        $filters = [];
+        $filters[] = ['label' => 'Buscar', 'type' => 'text', 'name' => 'q'];
+        $filters[] = ['label' => 'Actividad', 'options' => Catalog::select('name as label', 'id as value')->where('type', 5)->get(), 'type' => 'select', 'name' => 'aid'];
+        $filters[] = ['label' => 'Origen', 'options' => Catalog::select('name as label', 'id as value')->where('type', 1)->get(), 'type' => 'select', 'name' => 'oid'];
+        $filters[] = ['label' => 'Estado', 'options' => Catalog::select('name as label', 'id as value')->where('type', $isClient ? 2 : 3)->get(), 'type' => 'select', 'name' => 'st'];
+        $filters[] = ['label' => 'Asignado A', 'options' => TenantUser::select('name as label', 'id as value')->get(), 'type' => 'select', 'name' => 'user'];
+        $filters[] = ['label' => 'Provincia', 'options' => Address::select('province as label', 'province as value')->whereNotNull('province')->groupBy('province')->get() ,'type' => 'select', 'name' => 'pid'];
+        $filters[] = ['label' => 'Ciudad', 'options' => Address::select('city as label', 'city as value')->whereNotNull('city')->groupBy('city')->get() ,'type' => 'select', 'name' => 'cid'];
+
         return Inertia::render('Tenant/Clients/ClientList', [
-            'title' => $this->isClientPage() ? 'Clientes' : 'Contactos', 
-            'isClient' => $this->isClientPage()
+            'title' => $isClient ? 'Clientes' : 'Contactos', 
+            'isClient' => $isClient,
+            'filters' => $filters
         ]);
     }
 
     public function list(Request $request)
     {
-        $data = Client::where('is_client', $this->isClientPage())->get()->map(function($cl){
+        $clients = Client::where('is_client', $this->isClientPage());
+        if ($request->has('q') && $request->q !== null) $clients->where('company_name', 'like', '%'.$request->q.'%');
+        if ($request->has('aid') && $request->aid !== null) $clients->where('activity_id', $request->aid);
+        if ($request->has('oid') && $request->oid !== null) $clients->where('origin_id', $request->oid);
+        if ($request->has('st') && $request->st !== null) $clients->where('status_id', $request->st);
+        if ($request->has('user') && $request->user !== null) $clients->where('assigned_to', $request->user);
+        if ($request->has('pid') && $request->pid !== null) $clients->whereHas('addresses', function($q) use ($request){
+            $q->where('province', $request->pid);
+        });
+        if ($request->has('cid') && $request->cid !== null) $clients->whereHas('addresses', function($q) use ($request){
+            $q->where('city', $request->cid);
+        });
+        
+        $data = $clients->get()->map(function($cl){
             $addr = $cl->mainAddress();
             $cl->total_comments = $cl->comments->count();
             $cl->origin;
             $cl->activity;
             $cl->status;
-            $cl->mainAddress = ($addr ? $addr->province . ', ' . $addr->city : '');
+            $cl->main_address = ($addr ? $addr->province . ', ' . $addr->city : '');
+            $cl->address_complete = $addr;
             $cl->budgetsLigths = $cl->budgetsLigths();
             $cl->tasksLights = $cl->tasksLights();
             return $cl;
@@ -94,6 +121,22 @@ class ClientController extends Controller
 
         $client->origin;
         $client->status;
+        $client->budgetsLigths = $client->budgetsLigths();
+        $client->tasksLights = $client->tasksLights();
+    
+        ///Timeline
+        $timeline = [];
+        $client->histories->map(function($h) use (&$timeline){
+            $h->user;
+            $h->type;
+            $timeline[] = [
+                'title' => Lerph::showDateTime($h->created_at),
+                'cardTitle' => $h->getType(),
+                'cardDetailedText' => $h->getSubtitle(),
+            ];
+        });
+        $client->timeline = $timeline;
+
         return Inertia::render('Tenant/Clients/ClientView', [
             'title' => 'Ver '.($isClient ? 'Cliente' : 'Contacto'),
             'isClient' => $isClient,

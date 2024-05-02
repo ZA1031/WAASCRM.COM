@@ -1,6 +1,7 @@
-import GuestLayout from '@/Layouts/GuestLayout';
-import PrimaryButton from '@/Components/PrimaryButton';
+
+import PrimaryButton from '@/Template/Components/PrimaryButton';
 import { Head, Link, useForm } from '@inertiajs/react';
+import GuestLayout from '@/Template/Layouts/GuestLayout';
 
 export default function VerifyEmail({ status }) {
     const { post, processing } = useForm({});
@@ -12,7 +13,7 @@ export default function VerifyEmail({ status }) {
     };
 
     return (
-        <GuestLayout>
+        <GuestLayout >
             <Head title="Email Verification" />
 
             <div className="mb-4 text-sm text-gray-600">

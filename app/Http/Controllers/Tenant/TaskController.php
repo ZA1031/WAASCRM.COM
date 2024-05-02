@@ -16,8 +16,28 @@ class TaskController extends Controller
 {
     public function index()
     {
+        $clients = Client::get()->map(function($t){
+            $t->label = $t->full_name;
+            $t->value = $t->id;
+            return $t;
+        });
+        
+        $filters = [];
+        $filters[] = ['label' => 'Buscar', 'type' => 'text', 'name' => 'q'];
+        $filters[] = [
+            'label' => 'Estado', 
+            'options' => [['value' => 0, 'label' => 'Pendiente'], ['value' => 1, 'label' => 'Completada'], ['value' => 2, 'label' => 'Cancelada']],
+            'type' => 'select', 
+            'name' => 'st'
+        ];
+        $filters[] = ['label' => 'Tipo', 'options' => Catalog::select('name as label', 'id as value')->where('type', 6)->get(), 'type' => 'select', 'name' => 'type'];
+        $filters[] = ['label' => 'Cliente', 'options' => $clients, 'type' => 'select', 'name' => 'cid'];
+        $filters[] = ['label' => 'Fecha Desde', 'type' => 'date', 'name' => 'from'];
+        $filters[] = ['label' => 'Fecha Hasta', 'type' => 'date', 'name' => 'to'];
+
         return Inertia::render('Tenant/Tasks/Task', [
-            'title' => 'Tareas'
+            'title' => 'Tareas',
+            'filters' => $filters
         ]);
     }
 
@@ -51,7 +71,20 @@ class TaskController extends Controller
 
     public function list(Request $request)
     {
-        $data = Task::get()->map(function($t){
+        $tasks = Task::query();
+        if ($request->has('q') && $request->q !== null){
+            $tasks->where(function ($query) use ($request){
+                $query->where('title', 'ilike', '%'. $request->q .'%')
+                    ->orWhere('description', 'ilike', '%'. $request->q .'%');
+            });
+        }
+        if ($request->has('st') && $request->st !== null) $tasks->where('status', $request->st);
+        if ($request->has('type') && $request->type !== null) $tasks->where('type_id', $request->type);
+        if ($request->has('cid') && $request->cid !== null) $tasks->where('client_id', $request->cid);
+        if ($request->has('from') && $request->from !== null) $tasks->where('date', '>=', $request->from);
+        if ($request->has('to') && $request->to !== null) $tasks->where('date', '<=', $request->to);
+        
+        $data = $tasks->get()->map(function($t){
             $t->date = Lerph::showDateTime($t->date).' - '.Lerph::showDateTime($t->date_end);
             $t->client_full_name = $t->client->full_name ?? '';
             $t->type;
