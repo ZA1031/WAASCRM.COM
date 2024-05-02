@@ -78,7 +78,7 @@ export default function ProductForm({ auth, title, product, families, categories
 
     const menuData = [
         {id: 1, title: 'Producto', icon: ''},
-        {id: 5, title: 'Attributos', icon: ''},
+        {id: 5, title: 'Atributos', icon: ''},
         {id: 6, title: 'Despiece', icon: ''},
         {id: 2, title: 'Imágenes', icon: ''},
         {id: 3, title: 'Videos', icon: ''},
@@ -231,31 +231,24 @@ export default function ProductForm({ auth, title, product, families, categories
                             <TabContent activeTab={activeTab}>
                                 <TabPane className='fade show' tabId='1'>
                                     <Row>
-                                        <Col xs='12' md='2'>
+                                        <Col xs='12' md='4'>
                                             <FloatingInput 
                                                 label={{label : 'Referencia Proveedor'}} 
                                                 input={{placeholder : 'Referencia Proveedor', onChange : handleChange, name : 'model', value : data.model, required : true}} 
                                                 errors = {errors.model}
                                             />
                                         </Col>
-                                        <Col xs='12' md='2'>
-                                            <FloatingInput 
-                                                label={{label : 'Referencia Inglés'}} 
-                                                input={{placeholder : 'Referencia Inglés', onChange : handleChange, name : 'model_en', value : data.model_en, required : true}} 
-                                                errors = {errors.model_en}
-                                            />
-                                        </Col>
                                         <Col xs='12' md='4'>
                                             <FloatingInput 
-                                                label={{label : 'Nombre'}} 
-                                                input={{placeholder : 'Nombre', onChange : handleChange, name : 'name', value : data.name, required : true}} 
+                                                label={{label : 'Nombre Proveedor'}} 
+                                                input={{placeholder : 'Nombre Proveedor', onChange : handleChange, name : 'name', value : data.name, required : true}} 
                                                 errors = {errors.name}
                                             />
                                         </Col>
                                         <Col xs='12' md='4'>
                                             <FloatingInput 
-                                                label={{label : 'Nombre Inglés'}} 
-                                                input={{placeholder : 'Nombre Inglés', onChange : handleChange, name : 'name_en', value : data.name_en, required : true}} 
+                                                label={{label : 'Nombre Proveedor Inglés'}} 
+                                                input={{placeholder : 'Nombre Proveedor Inglés', onChange : handleChange, name : 'name_en', value : data.name_en, required : true}} 
                                                 errors = {errors.name_en}
                                             />
                                         </Col>
@@ -284,9 +277,9 @@ export default function ProductForm({ auth, title, product, families, categories
                                     <Row>
                                         <Col xs='12' md='4'>
                                             <Select 
-                                                label={{label : 'Partes'}} 
+                                                label={{label : 'Recambios'}} 
                                                 input={{ 
-                                                    placeholder : 'Partes', 
+                                                    placeholder : 'Recambios', 
                                                     onChange : (e) => setSelectedMultiple(e, 'parts'),
                                                     name : 'parts',
                                                     options : allParts,

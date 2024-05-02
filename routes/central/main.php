@@ -30,6 +30,7 @@ Route::get('/catalog/{type}/{id}', [AdminCatalogController::class, 'get'])->name
 ///Products
 Route::resource('/products', ProductsController::class, ['names' => ['index' => 'products']]);
 Route::post('/products/list', [ProductsController::class, 'list'])->name('products.list');
+Route::get('/products/pdf/{pid}', [ProductsController::class, 'pdf'])->name('products.central.pdf');
 
 ///Spare Parts
 Route::resource('/spare-parts', SparePartsController::class, 

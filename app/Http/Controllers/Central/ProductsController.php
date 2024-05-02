@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Central;
 use App\Http\Controllers\Controller;
 use App\Models\Central\AdminCatalog;
 use App\Models\Central\Product;
+use App\Models\Central\ProductAttr;
 use App\Models\Central\SparePart;
 use App\Models\Main\Tenant;
 use Exception;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProductsController extends Controller
 {
@@ -91,7 +94,7 @@ class ProductsController extends Controller
         $product->dismantling = json_encode($request->input('dismantling', []));
         $product->save();
 
-        //$this->upsertAttributes($request, $product);
+        $this->upsertAttributes($request, $product);
 
         $this->upsertFiles($request, $product, $product->images, 'images', 1);
         $this->upsertFiles($request, $product, $product->videos, 'videos', 2);
@@ -124,7 +127,7 @@ class ProductsController extends Controller
                 if (isset($attr['id'])) $id = $attr['id'];
                 if (isset($attr['text'])) $text = $attr['text'];
                 if (isset($attr['text_en'])) $textEn = $attr['text_en'];
-                if (!empty($id) && !empty($text)) {
+                if (!empty($id)) {
                     $product->attributes()->create([
                         'attribute_id' => $id,
                         'text' => $text,
@@ -172,5 +175,56 @@ class ProductsController extends Controller
                 Storage::disk('products')->delete($product->id . '/' . $sf->file);
             }
         }
+    }
+
+    public function pdf($id){
+        set_time_limit(300);
+        $data = [];
+        $product = Product::find($id);
+        if ($product) $products[] = $product;
+        else $products = Product::all();
+
+        foreach ($products as $product){
+            // PARTES
+            $pids = explode(',', $product->parts);
+            $parts = new Collection();
+            foreach ($pids as $pid){
+                if (!empty($pid)){
+                    $part = SparePart::find($pid);
+                    $parts->push($part);
+                }
+            }
+
+            $files = $product->getFilesData(1);
+            $mainImage = '';
+            $techImage = '';
+            foreach ($files as $file){
+                if ($file['image_type'] == 1) $mainImage = $file['img'];
+                if ($file['image_type'] == 2) $techImage = $file['img'];
+            }
+
+            $data[] = [
+                'product' => $product,
+                'parts' => $parts,
+                'attrs' => $product->attributes,
+                'mainImage' => $mainImage,
+                'techImage' => $techImage
+            ];
+        }
+
+        $pdf = Pdf::loadView('pdfs.pdf1', [
+            'data' => $data
+        ]);
+
+        return $pdf->stream('pdf1.pdf');
+
+        // return view('pdfs.pdf1', [
+        //     'product' => $product,
+        //     // 'logo' => $logo,
+        //     'parts' => $parts,
+        //     'attrs' => $attrs,
+        //     'mainImage' => $mainImage,
+        //     'techImage' => $techImage
+        // ]);
     }
 }

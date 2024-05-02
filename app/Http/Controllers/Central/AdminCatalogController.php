@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Central;
 
 use App\Http\Controllers\Controller;
 use App\Models\Central\AdminCatalog;
+use App\Models\Central\Product;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -12,7 +13,9 @@ class AdminCatalogController extends Controller
 {
     public function index($type)
     {
-        $related = in_array($type, [2, 4]) ? AdminCatalog::select('name as label', 'id as value')->where('type', $type == 2 ? 1 : 3)->get() : null;
+        $related = null;
+        if ($type == 2) $related = Product::select('name as label', 'id as value')->get();
+        else if ($type == 4) $related = AdminCatalog::select('name as label', 'id as value')->where('type', $type == 2 ? 1 : 3)->get();
         return Inertia::render('Central/Catalog', ['title' => $this->getTitle($type), 'type' => $type, 'related' => $related]);
     }
 
@@ -63,9 +66,9 @@ class AdminCatalogController extends Controller
             case 1:
                 return 'Familias';
             case 2:
-                return 'Grupo de Familias';
+                return 'Canales';
             case 3:
-                return 'Caracteristicas';
+                return 'Atributos';
             case 4:
                 return 'Categoria de Productos';
             case 5:

@@ -272,3 +272,15 @@ body {
     padding: 4px 10px;
   }
 }
+
+.file-content .files .file-box .file-top {
+  background-size: contain !important;
+  background-repeat: no-repeat;
+  background-position-x: center;
+  height: 150px;
+}
+
+.file-manager .files h6, .file-manager .files .h6 {
+  overflow: hidden;
+  white-space: nowrap;
+}

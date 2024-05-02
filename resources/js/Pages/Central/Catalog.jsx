@@ -53,7 +53,7 @@ export default function Catalog({ auth, title, type, related }) {
             center: false,
         },
         {
-            name: type == 2 ? 'Familias' : 'Caracteristicas',
+            name: type == 2 ? 'Productos' : 'Caracteristicas',
             selector: (row) => {
                 console.log(row);
                 return (
@@ -61,13 +61,14 @@ export default function Catalog({ auth, title, type, related }) {
                     {
                         row['extra_array'].map((item, index) => {
                             return (
-                                <Badge color="primary">{item.name}</Badge>
+                                <Badge color="primary mb-1">{item.name}</Badge>
                             )
                         })
                     }
                     </>
                 )
             },
+            wrap : true,
             sortable: false,
             center: false,
             omit : (type == 2 || type == 4) ? false : true
@@ -116,6 +117,7 @@ export default function Catalog({ auth, title, type, related }) {
         clearErrors();
         setModalTitle('Agregar ' + title);
         toggle();
+        setSelected(null);
     };
 
     const handleChange = (e) => {
@@ -187,7 +189,7 @@ export default function Catalog({ auth, title, type, related }) {
                                 errors = {errors.name}
                             />
 
-                            {type == 1 || type == 3 ?
+                            {type == 1 || type == 3 || type == 5 ?
                             <FloatingInput 
                                 label={{label : 'Nombre Inglés'}} 
                                 input={{ 
@@ -216,7 +218,7 @@ export default function Catalog({ auth, title, type, related }) {
 
                             { type == 2 || type == 4 ?
                             <Select
-                                label={{label : type == 2 ? 'Familias' : 'Caracteristicas', 'className' : 'mt-5'}} 
+                                label={{label : type == 2 ? 'Productos' : 'Caracteristicas', 'className' : 'mt-5'}} 
                                 input={{ 
                                     placeholder : '', 
                                     onChange : setSelected,

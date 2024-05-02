@@ -71,9 +71,11 @@ const FileManager = (props) => {
                     {
                     props.id == 'images' ?
                     <Input name="select" type="select" value={data.image_type} onChange={(e) => changeSelect(e, i)}>
-                        <option value='0'>Tipo de Imagen</option>
+                        <option value='0'>Varios</option>
                         <option value='1'>Principal</option>
                         <option value='2'>Ficha Técnica</option>
+                        <option value='3'>Despiece</option>
+                        <option value='4'>Vista Lateral</option>
                     </Input> : null
                     } 
                 </div>

@@ -226,6 +226,13 @@ class InstallationController extends Controller
                 'budget_detail_id' => $installation->budget_detail_id,
             ]);
             $maintence->save();
+
+            ///Saco el stock
+            $pr = $installation->product;
+            if ($pr){
+                $pr->inner_stock -= 1;
+                $pr->save();
+            }
         }
 
         return redirect()->route('installations')->with('message', 'Datos guardados correctamente.');        

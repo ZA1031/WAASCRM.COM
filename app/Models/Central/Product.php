@@ -46,7 +46,11 @@ class Product extends Model
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
                 tenancy()->initialize($tenant);
-                Product::create($product->toArray());
+                $data = $product->toArray();
+                unset($data['deleted_at']);
+                unset($data['created_at']);
+                unset($data['updated_at']);
+                Product::create($data);
             }
         });
 
@@ -55,7 +59,11 @@ class Product extends Model
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
                 tenancy()->initialize($tenant);
-                Product::where('id', $product->id)->update($product->toArray());
+                $data = $product->toArray();
+                unset($data['deleted_at']);
+                unset($data['created_at']);
+                unset($data['updated_at']);
+                Product::where('id', $product->id)->update($data);
             }
         });
     }

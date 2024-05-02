@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
-import { Breadcrumbs } from "../../../Template/AbstractElements";
+import { Breadcrumbs, Btn } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import DataTable from 'react-data-table-component';
@@ -10,6 +10,7 @@ import Trash from '@/Template/CommonElements/Trash';
 import AddBtn from '@/Template/CommonElements/AddBtn';
 import MainDataContext from '@/Template/_helper/MainData';
 import { Check, X }  from 'react-feather';
+import Icon from "@/Template/CommonElements/Icon";
 
 export default function ProductList({ auth, title}) {
     const [dataList, setDataList] = useState([]);
@@ -61,6 +62,9 @@ export default function ProductList({ auth, title}) {
             selector: (row) => {
                 return (
                     <>
+                        <a href={route('products.central.pdf', row['id'])} target="_blank" className="me-1">
+                            <Icon icon="File" id={'ficha' + row['id']} tooltip="Ficha Técnica"/>
+                        </a>
                         <Edit onClick={() => router.visit(route('products.edit', row['id']))} id={'edit-' + row['id']}/>
                         <Trash onClick={() => handleDelete(route('products.destroy', row['id']))} id={'delete-' + row['id']}/>
                     </>
@@ -76,6 +80,12 @@ export default function ProductList({ auth, title}) {
             <Head title={title} />
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
+
+                <div className="d-flex flex-row-reverse mb-2">
+                    <a href={route('products.central.pdf', 0)} target="_blank" className="me-1">
+                        <Btn attrBtn={{ color: 'primary', className : 'btn-sm'}}>Descargar Catalogo</Btn>
+                    </a>
+                </div>
 
                 <div className="shadow-sm">
                     <DataTable

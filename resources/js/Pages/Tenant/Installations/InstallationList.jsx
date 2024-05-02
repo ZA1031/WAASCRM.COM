@@ -135,7 +135,21 @@ export default function InstallationList({ auth, title, pending, tecnics, client
         },
         {
             name: 'Producto',
-            selector: row => row['product'].final_name,
+            selector: row => {
+                return (
+                    <>
+                        {row['product'].inner_stock == 0 && <Badge color="danger" className="me-1">Sin Stock</Badge> }
+                        {(isInstallation && row['status'] == 0 ) &&
+                            <>
+                            {(row['product'].inner_stock > 0) && 
+                            <Badge color={row['product'].inner_stock_min <= row['product'].inner_stock ? 'success' : 'warning'} className="me-1">{row['product'].inner_stock}</Badge> }
+                            
+                            </>
+                        }
+                        {row['product'].final_name}
+                    </>
+                )
+            },
             sortable: true,
             center: false,
         },

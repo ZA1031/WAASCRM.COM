@@ -448,11 +448,10 @@ export const MENUITEMS = [
 				badge: 'badge badge-light-primary',
 				active: false,
 				children: [
-					{ path: `/catalog/1`, title: 'Familia', type: 'link' },
-					{ path: `/catalog/2`, title: 'Grupo de Familia', type: 'link' },
-					{ path: `/catalog/3`, title: 'Caracteristicas', type: 'link' },
+					{ path: `/catalog/3`, title: 'Atributos', type: 'link' },
 					{ path: `/catalog/4`, title: 'Categoria de Productos', type: 'link' },
           { path: `/catalog/5`, title: 'Tipos de Familia', type: 'link' },
+          { path: `/catalog/2`, title: 'Canales', type: 'link' },
 				],
 			},
 		]

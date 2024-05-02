@@ -79,7 +79,9 @@ class ProductController extends Controller
 
     public function pdf($id){
         set_time_limit(300);
+        $products = [];
         $product = TenantProduct::find($id);
+        if ($product) $products[] = $product;
 
         // PARTES
         $pids = explode(',', $product->parts);
@@ -101,15 +103,19 @@ class ProductController extends Controller
             if ($file['image_type'] == 1) $mainImage = $file['img'];
             if ($file['image_type'] == 2) $techImage = $file['img'];
         }
+
+        $data[] = [
+            'product' => $product,
+            'parts' => $parts,
+            'attrs' => $product->attributes,
+            'mainImage' => $mainImage,
+            'techImage' => $techImage
+        ];
+
         // dd($mainImage, $techImage);
         // $logo = public_path('pdf/logo_producto.png'); 
         $pdf = Pdf::loadView('pdfs.pdf1', [
-            'product' => $product,
-            // 'logo' => $logo,
-            'parts' => $parts,
-            'attrs' => $attrs,
-            'mainImage' => $mainImage,
-            'techImage' => $techImage
+            'data' => $data
         ]);
 
         return $pdf->stream('pdf1.pdf');

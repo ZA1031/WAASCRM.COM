@@ -59,7 +59,8 @@ class AdminCatalog extends Model
         $data = [];
         foreach(explode(',', $this->extra_1) as $e1){
             if (!empty($e1)){
-                $x = AdminCatalog::find($e1);
+                if ($this->type == 2) $x = Product::find($e1);
+                else $x = AdminCatalog::find($e1);
                 if ($x) $data[] = $x;
             }
         }
