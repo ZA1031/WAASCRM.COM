@@ -22274,7 +22274,7 @@ ol.progtrckr li.progtrckr-todo:hover:before {
   padding: 12px;
 }
 .rdt_Table .rdt_TableBody .rdt_TableRow .rdt_TableCell:nth-child(4) {
-  justify-content: center !important;
+  /*justify-content: center !important;*/
 }
 .rdt_Table .rdt_TableBody .rdt_TableRow .rdt_TableCell + .rdt_TableCell {
   justify-content: flex-start;
@@ -37600,7 +37600,7 @@ ul.dot-group li {
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-wrapper,
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-icon-wrapper {
-  padding: 27px 30px;
+  padding: 19px 30px;
   box-shadow: -9px 0 20px rgba(89, 102, 122, 0.1);
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-icon-wrapper {

@@ -12,6 +12,8 @@ import AddBtn from '@/Template/CommonElements/AddBtn';
 import FloatingInput from '@/Template/CommonElements/FloatingInput';
 import MainDataContext from '@/Template/_helper/MainData';
 import Select from '@/Template/CommonElements/Select';
+import Icon from "@/Template/CommonElements/Icon";
+import FilterTable from "@/Template/Components/FilterTable";
 
 export default function Catalog({ auth, title, type, related }) {
     const [modal, setModal] = useState(false);
@@ -20,6 +22,7 @@ export default function Catalog({ auth, title, type, related }) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
     const [selectedOption, setSelectedOption] = useState(null);
+    const [orderInited, setOrderInited] = useState(false);
     
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         type: type,
@@ -30,9 +33,22 @@ export default function Catalog({ auth, title, type, related }) {
         extra_1 : []
     });    
 
-    const getCatalog = async () => {
-        const response = await axios.post(route('catalog.list', type));
+    const getCatalog = async (d) => {
+        const response = await axios.post(route('catalog.list', type), d);
         setDataList(response.data);
+        if (!orderInited) initOrder();
+    }
+
+    const initOrder = () => {
+        setOrderInited(true);
+
+        dragula([document.getElementById('sortable-table')]).on('drop', function (el, x) {
+            let ids = [];
+            document.querySelectorAll('#sortable-table tr').forEach((el) => {
+                ids.push(el.dataset.id);
+            });
+            axios.post(route('catalog.updateOrder', type), { ids: ids });
+        });
     }
 
     useEffect(() => {
@@ -154,23 +170,50 @@ export default function Catalog({ auth, title, type, related }) {
         );
     };
 
+
+
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title={title} />
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
+                {type != 3 ?
 
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                    filters={[]}
+                    getList={(d) => getCatalog(d)}
+                />
+                :
                 <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles} 
-                    />
+                    <table className="table table-sm">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sortable-table">
+                            {dataList.map((item, index) => {
+                                return (
+                                    <tr key={index} data-id={item.id}>
+                                        <td><Icon icon="Menu" id={'move' + item.id} className="text-black"/></td>
+                                        <td>{item.name}</td>
+                                        <td>{item.description}</td>
+                                        <td>
+                                            <Edit onClick={() => handleEdit(item.id)} id={'edit-' + item.id}/>
+                                            <Trash onClick={() => handleDelete(route('catalog.destroy', item.id))} id={'delete-' + item.id}/>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
                 </div>
+                }   
 
                 <AddBtn onClick={() => handleAdd()} />
 

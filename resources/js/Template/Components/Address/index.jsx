@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Btn } from '../../AbstractElements';
 import { Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import Icon from '@/Template/CommonElements/Icon';
+
 
 
 const Address = (props) => {
@@ -25,16 +27,23 @@ const Address = (props) => {
             map: map
         });
 
-        setMapHref(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`);
+        
     }
 
     useEffect(() => {
-
+        let lat = props.address.lat;
+        let lng = props.address.long;
+        setMapHref(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`);
     }, []);
 
     return (
         <>
-            <div onClick={toggle}>{props.address.full_address}</div>
+            <div> 
+                <a target='_blank' href={mapHref} style={{ top : '2px', position: 'relative' }}>
+                    <Icon icon="MapPin" id={'Map-' + props.address.id} tooltip="Ver" size={15} />
+                </a>
+                <span className='ms-1' onClick={toggle}>{props.address.full_address}</span>
+            </div>
             <Modal isOpen={modal} toggle={toggle} className="mainModal" centered size="xl" onOpened={showMap}>
                 <ModalHeader toggle={toggle}>{props.address.full_address}</ModalHeader>
                 <ModalBody>

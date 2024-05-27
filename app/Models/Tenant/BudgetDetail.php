@@ -28,7 +28,8 @@ class BudgetDetail extends Model
         'discount',
         'notes',
         'iva',
-        'status'            /// 0: Pendiente, 1: Aprobado
+        'status',            /// 0: Pendiente, 1: Aprobado,
+        'horeca_data',
     ];
 
     protected $appends = ['txt'];
@@ -50,6 +51,12 @@ class BudgetDetail extends Model
 
     public function getTxtAttribute($value)
     {
+        if ($this->budget->is_horeca){
+            $horecaData = json_decode($this->horeca_data);
+            $this->type = $horecaData->extra->HORECA_TYPES[0];
+            $this->price = $horecaData->allData->productCost;
+            $this->dues = $horecaData->due;
+        }
         return $this->getType().' por '.Lerph::showPrice($this->price).' en '.$this->dues.' cuota'.($this->dues > 1 ? 's' : '');
     }
 

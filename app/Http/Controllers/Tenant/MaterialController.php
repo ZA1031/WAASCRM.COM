@@ -87,6 +87,12 @@ class MaterialController extends Controller
             'name' => 'required|max:255',
             'reference' => 'required|max:100',
             'description' => 'max:500'
+        ],
+        [],
+        [
+            'name' => 'nombre',
+            'reference' => 'referencia',
+            'description' => 'descripción'
         ]);
     }
 

@@ -14,8 +14,10 @@ import Trash from '@/Template/CommonElements/Trash';
 import Address from "@/Template/Components/Address";
 import Phone from "@/Template/CommonElements/Phone";
 import Email from "@/Template/CommonElements/Email";
+import { set } from "date-fns";
 
-export default function ClientForm({ auth, title, isClient, client, statuses, origins, addresses, activities, users}) {
+export default function ClientForm({ auth, title, isClient, client, statuses, origins, addresses, activities, users, families}) {
+    const [products, setProducts] = useState([]);
     const [selectedOptionSt, setSelectedOptionSt] = useState(() => {
         let selected = null;
         statuses.forEach((item, index) => {
@@ -44,6 +46,26 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
         });
         return selected;
     });
+    const [selectedOptionFm, setSelectedOptionFm] = useState(() => {
+        let selected = null;
+        families.forEach((item, index) => {
+            if (item.value == client.family_id) {
+                setProducts(item.products);
+                selected = item;
+            }
+        });
+        return selected;
+    });
+    const [selectedOptionPr, setSelectedOptionPr] = useState(() => {
+        let selected = null;
+        families.forEach((item, index) => {
+            item.products.forEach((item2, index2) => {
+                if (item2.value == client.product_id) selected = item2;
+            });
+        });
+        return selected;
+    });
+
     const [modalAddress, setModalAddress] = useState(false);
     const toggleAddress = () => setModalAddress(!modalAddress);
     const [modalTitle, setModalTitle] = useState('Agregar Dirección');
@@ -69,6 +91,8 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
         assigned_to : client.assigned_to,
         activity_id : client.activity_id,
         business_name : client.business_name,
+        family_id : client.family_id,
+        product_id : client.product_id
     });
 
     useEffect(() => {
@@ -80,7 +104,12 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
         else if (evt.name == 'status_id') setSelectedOptionSt(selected);
         else if (evt.name == 'assigned_to') setSelectedOptionUs(selected);
         else if (evt.name == 'activity_id') setSelectedOptionAct(selected);
-        setData(data => ({...data, [evt.name]: selected.value}))
+        else if (evt.name == 'family_id') {
+            setSelectedOptionFm(selected);
+            setProducts(selected.products);
+            setSelectedOptionPr(null);
+        }else if (evt.name == 'product_id') setSelectedOptionPr(selected);
+        setData(data => ({...data, [evt.name]: selected ? selected.value : null}))
     }
 
     const handleChange = (e) => {
@@ -300,11 +329,42 @@ export default function ClientForm({ auth, title, isClient, client, statuses, or
                                                 errors = {errors.logo}
                                             />
                                         </Col>
-                                        <Col xs='12' sm='6' md='6' lg='12'>
+                                        <Col xs='12'>
                                             <FloatingInput 
                                                 label={{label : 'Notas'}} 
                                                 input={{placeholder : 'Notas', name : 'notes', value : data.notes, onChange : handleChange, as : 'textarea'}} 
                                                 errors = {errors.notes}
+                                            />
+                                        </Col>
+
+                                        <Col xs='12' className="mt-4"><h6>Interesado En</h6></Col>
+                                        <Col xs='12'>
+                                            <Select 
+                                                label={{label : 'Familia'}} 
+                                                input={{ 
+                                                    placeholder : 'Familia', 
+                                                    onChange : setSelected,
+                                                    name : 'family_id',
+                                                    options : families,
+                                                    defaultValue : selectedOptionFm
+                                                }}
+                                                errors = {errors.family_id}
+                                                zIndex={1100}
+                                            />
+                                        </Col>
+                                        <Col xs='12'>
+                                            <Select 
+                                                label={{label : 'Producto'}} 
+                                                input={{ 
+                                                    placeholder : 'Producto', 
+                                                    onChange : setSelected,
+                                                    name : 'product_id',
+                                                    options : products,
+                                                    defaultValue : selectedOptionPr,
+                                                    isClearable : true
+                                                }}
+                                                errors = {errors.product_id}
+                                                zIndex={1090}
                                             />
                                         </Col>
                                     </Row>

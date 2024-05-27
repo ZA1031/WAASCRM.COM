@@ -37,7 +37,7 @@ class ProductAttr extends Model
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
                 $tenant->run(function () use ($productAttr) {
-                    ProductAttr::where('id', $productAttr->id)->delete();
+                    ProductAttr::where('product_id', $productAttr->product_id)->where('attribute_id', $productAttr->attribute_id)->delete();
                 });
             }
         });

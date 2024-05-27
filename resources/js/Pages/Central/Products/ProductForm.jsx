@@ -73,7 +73,8 @@ export default function ProductForm({ auth, title, product, families, categories
         documents : documents,
         parts : [],
         others : [],
-        dismantling : dismantling !== null ? dismantling : [{reference : '', description : ''}]
+        dismantling : dismantling !== null ? dismantling : [{reference : '', description : ''}],
+        lts : product.lts,
     });
 
     const menuData = [
@@ -266,6 +267,13 @@ export default function ProductForm({ auth, title, product, families, categories
                                                 zIndex={1100}
                                             />
                                         </Col>
+                                        <Col xs='12' md='4'>
+                                            <FloatingInput 
+                                                label={{label : 'Capacidad en Lts'}} 
+                                                input={{placeholder : 'LTs', onChange : handleChange, name : 'lts', value : data.lts, required : true, type : 'number'}} 
+                                                errors = {errors.lts}
+                                            />
+                                        </Col>
                                         <Col xs='12' md='2'>
                                             <Switch 
                                                 label={'Activo'} 
@@ -387,6 +395,7 @@ export default function ProductForm({ auth, title, product, families, categories
                                                     <Col xs='4'>
                                                         <Switch
                                                             label={item.name}
+                                                            helpText={item.description}
                                                             input={{onChange : (e) => handleChangeAttr(item.id, e), name : 'active' + item.id, checked : isAttrChecked(item.id)}} 
                                                             errors = {errors.active}
                                                         />

@@ -11347,7 +11347,7 @@ ol.progtrckr li.progtrckr-todo:hover:before {
   padding: 12px;
 }
 .rdt_Table .rdt_TableBody .rdt_TableRow .rdt_TableCell:nth-child(4) {
-  justify-content: center !important;
+  /*justify-content: center !important;*/
 }
 .rdt_Table .rdt_TableBody .rdt_TableRow .rdt_TableCell + .rdt_TableCell {
   justify-content: flex-start;

@@ -10,13 +10,14 @@ import Trash from '@/Template/CommonElements/Trash';
 import AddBtn from '@/Template/CommonElements/AddBtn';
 import MainDataContext from '@/Template/_helper/MainData';
 import { Badge } from 'reactstrap';
+import FilterTable from "@/Template/Components/FilterTable";
 
 export default function SparePartList({ auth, title}) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);  
 
-    const getParts = async () => {
-        const response = await axios.post(route('parts.list'));
+    const getParts = async (d) => {
+        const response = await axios.post(route('parts.list'), d);
         setDataList(response.data);
     }
 
@@ -30,37 +31,41 @@ export default function SparePartList({ auth, title}) {
             selector: row => row['name'],
             sortable: true,
             center: false,
+            maxWidth: "150px"
         },
         {
             name: 'Stock',
             selector: row => row['stock'],
             sortable: true,
             center: false,
+            maxWidth: "100px"
         },
         {
             name: 'Referencia',
             selector: row => row['reference'],
             sortable: true,
             center: false,
+            maxWidth: "150px"
         },
         {
             name: 'Descripción',
             selector: row => row['description'],
             sortable: true,
-            center: false,
+            center: false
         },
         {
             name: 'Acciones',
             selector: (row) => {
                 return (
-                    <>
+                    <div className="text-right">
                         <Edit onClick={() => router.visit(route('parts.edit', row['id']))} id={'edit-' + row['id']}/>
                         <Trash onClick={() => handleDelete(route('parts.destroy', row['id']))} id={'delete-' + row['id']}/>
-                    </>
+                    </div>
                 )
             },
             sortable: false,
             center: true,
+            maxWidth: "100px"
         },
     ];
 
@@ -69,18 +74,13 @@ export default function SparePartList({ auth, title}) {
             <Head title={title} />
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
-
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles}
-                    />
-                </div>
+                
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                    filters={[]}
+                    getList={(d) => getParts(d)}
+                />
 
                 <AddBtn onClick={() => router.visit(route('parts.create'))} />
             </Fragment>

@@ -15,8 +15,9 @@ import FloatingInput from "@/Template/CommonElements/FloatingInput";
 import Select from '@/Template/CommonElements/Select';
 import AddAddress from "@/Template/Components/AddAddress";
 import Icon from "@/Template/CommonElements/Icon";
+import FilterTable from "@/Template/Components/FilterTable";
 
-export default function BudgetList({ auth, title, cid}) {
+export default function BudgetList({ auth, title, cid, st}) {
     const [dataList, setDataList] = useState([]);
     const [detailList, setDetailList] = useState([]);
     const [addressList, setAddressList] = useState([]);
@@ -45,8 +46,8 @@ export default function BudgetList({ auth, title, cid}) {
         setData(data => ({...data, [e.target.name]: e.target.value}));
     }
 
-    const getBudgets = async () => {
-        const response = await axios.post(route('budgets.list', cid));
+    const getBudgets = async (d) => {
+        const response = await axios.post(route('budgets.list', cid) + '?st=' + st, d); 
         setDataList(response.data);
     }
 
@@ -139,7 +140,7 @@ export default function BudgetList({ auth, title, cid}) {
             center: false,
         },
         {
-            name: 'Status',
+            name: 'Estado',
             selector: row => {
                 return (
                     <>
@@ -150,13 +151,14 @@ export default function BudgetList({ auth, title, cid}) {
             },
             sortable: true,
             center: false,
+            maxWidth: "140px"
         },
         {
             name: 'Acciones',
             selector: (row) => {
                 return (
                     <>
-                        <a href={route('prs.pdf2', row['id'])} target="_blank">
+                        <a href={route('budgets.pdf', row['id'])} target="_blank">
                             <Icon icon="File" id={'ficha' + row['id']} tooltip="Descargar"/>
                         </a>
                         {row['status'] == 0 &&
@@ -165,13 +167,16 @@ export default function BudgetList({ auth, title, cid}) {
                             <X color="red" size={20} id={'reject-' + row['id']} onClick={() => rejectBudget(row['id'])}/>
                         </>
                         }
+                        {row['is_horeca'] == 0 &&
                         <Edit onClick={() => router.visit(route('budgets.edit', [cid, row['id']]))} id={'edit-' + row['id']}/>
+                        }
                         <Trash onClick={() => handleDelete(route('budgets.destroy', row['id']))} id={'delete-' + row['id']}/>
                     </>
                 )
             },
             sortable: false,
             center: true,
+            maxWidth: "100px"
         },
     ];
 
@@ -181,17 +186,13 @@ export default function BudgetList({ auth, title, cid}) {
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
 
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles}
-                    />
-                </div>
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                    filters={[]}
+                    getList={(d) => getBudgets(d)}
+                /> 
+
                 <Btn attrBtn={{ color: 'secondary cancel-btn ms-1 mt-4', onClick: () => router.visit(route('clients')) }} >Volver</Btn>
 
                 <AddBtn onClick={() => router.visit(route('budgets.create', cid))} />

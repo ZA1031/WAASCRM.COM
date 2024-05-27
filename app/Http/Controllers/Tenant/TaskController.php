@@ -16,9 +16,14 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $clients = Client::get()->map(function($t){
+        $cl = request()->input('cid');
+        $st = request()->input('st');
+        $back = request()->input('back');
+        
+        $clients = Client::get()->map(function($t) use ($cl){
             $t->label = $t->full_name;
             $t->value = $t->id;
+            $t->selected = $t->id == $cl;
             return $t;
         });
         
@@ -26,7 +31,10 @@ class TaskController extends Controller
         $filters[] = ['label' => 'Buscar', 'type' => 'text', 'name' => 'q'];
         $filters[] = [
             'label' => 'Estado', 
-            'options' => [['value' => 0, 'label' => 'Pendiente'], ['value' => 1, 'label' => 'Completada'], ['value' => 2, 'label' => 'Cancelada']],
+            'options' => [
+                ['value' => 0, 'label' => 'Pendiente', 'selected' => $st == 0], 
+                ['value' => 1, 'label' => 'Completada', 'selected' => $st == 1], 
+                ['value' => 2, 'label' => 'Cancelada', 'selected' => $st == 2]],
             'type' => 'select', 
             'name' => 'st'
         ];
@@ -37,7 +45,12 @@ class TaskController extends Controller
 
         return Inertia::render('Tenant/Tasks/Task', [
             'title' => 'Tareas',
-            'filters' => $filters
+            'filters' => $filters,
+            'filtered' => [
+                'cl' => $cl,
+                'st' => $st,
+            ],
+            'back' => $back
         ]);
     }
 
@@ -134,6 +147,14 @@ class TaskController extends Controller
             'date_end' => 'required|after_or_equal:date',
             'title' => 'required|string|max:190',
             'description' => 'nullable|string|max:500',
+        ],
+        [],
+        [
+            'assigned_to' => 'asignado a',
+            'date' => 'fecha',
+            'date_end' => 'fecha de finalización',
+            'title' => 'título',
+            'description' => 'descripción',
         ]);
     }
 }

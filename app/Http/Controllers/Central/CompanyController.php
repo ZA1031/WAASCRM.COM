@@ -104,6 +104,17 @@ class CompanyController extends Controller
             'address' => 'required|max:255',
             'fiscal_address' => 'max:255',
             'price' => 'required|numeric'
+        ],
+        [],
+        [
+            'domain' => 'Dominio',
+            'name' => 'Nombre',
+            'business_name' => 'Razón Social',
+            'cif' => 'CIF',
+            'email' => 'Email',
+            'address' => 'Dirección',
+            'fiscal_address' => 'Dirección Fiscal',
+            'price' => 'Precio',
         ]);
     }
 

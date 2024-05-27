@@ -22,14 +22,31 @@ class TenantProduct extends Product
         'inner_stock',
         'inner_stock_min',
         'inner_stock_max',
-        'inner_active'
+        'inner_active',
+        'inner_model',
     ];
 
     protected $appends = [
         'final_name',
+        'final_model',
+        'prices'
     ];
 
     public function getFinalNameAttribute(){
         return !empty($this->inner_name) ? $this->inner_name : $this->name;
+    }
+
+    public function getFinalModelAttribute(){
+        return !empty($this->inner_model) ? $this->inner_model : $this->model;
+    }
+
+    public function getPricesAttribute()
+    {
+        return json_decode($this->inner_prices, true);
+    }
+
+    public function tenantAttributes()
+    {
+        return $this->hasMany(TenantProductAttribute::class, 'product_id')->where('inner_active', 1);
     }
 }

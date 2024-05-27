@@ -5,6 +5,7 @@ import PrimaryButton from '@/Template/Components/PrimaryButton';
 import TextInput from '@/Template/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
 import InputError from '@/Template/Components/InputError';
+import wass from '../../../assets/images/logo/waas.png';
 
 export default function ConfirmPassword({logo}) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -24,7 +25,7 @@ export default function ConfirmPassword({logo}) {
     };
 
     return (
-        <GuestLayout logo={logo}>
+        <GuestLayout logo={logo == '' ? wass : logo}>
             <Head title="Confirm Password" />
 
             <div className="mb-4 text-sm text-gray-600">

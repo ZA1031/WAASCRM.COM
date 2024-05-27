@@ -29,8 +29,9 @@ class SparePartOther extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                SparePartOther::where('id', $sparePartOther->id)->delete();
+                $tenant->run(function () use ($sparePartOther) {
+                    SparePartOther::where('id', $sparePartOther->id)->delete();
+                });
             }
         });
 
@@ -38,8 +39,9 @@ class SparePartOther extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                SparePartOther::create($sparePartOther->toArray());
+                $tenant->run(function () use ($sparePartOther) {
+                    SparePartOther::create($sparePartOther->toArray());
+                });
             }
         });
 
@@ -47,8 +49,9 @@ class SparePartOther extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                SparePartOther::where('id', $sparePartOther->id)->update($sparePartOther->toArray());
+                $tenant->run(function () use ($sparePartOther) {
+                    SparePartOther::where('id', $sparePartOther->id)->update($sparePartOther->toArray());
+                });
             }
         });
     }

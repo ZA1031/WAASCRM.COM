@@ -5,6 +5,7 @@ import InputLabel from '@/Template/Components/InputLabel';
 import PrimaryButton from '@/Template/Components/PrimaryButton';
 import TextInput from '@/Template/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
+import wass from '../../../assets/images/logo/waas.png';
 
 export default function ResetPassword({ token, email, logo }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -27,7 +28,7 @@ export default function ResetPassword({ token, email, logo }) {
     };
 
     return (
-        <GuestLayout logo={logo}>
+        <GuestLayout logo={logo == '' ? wass : logo}>
             <Head title="Reset Password" />
 
             <form onSubmit={submit}>

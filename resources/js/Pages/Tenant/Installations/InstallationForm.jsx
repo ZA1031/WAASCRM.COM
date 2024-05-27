@@ -23,7 +23,7 @@ export default function InstallationForm({ auth, title, installation, allMateria
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         id : installation.id,
         installation_notes : installation.installation_notes,
-        client_name : installation.client_name,
+        client_name : installation.client_name ? installation.client_name : installation.client.company_name,
         client_dni : installation.client_dni,
         client_sign : installation.client_sign,
         serial_number : installation.serial_number,
@@ -37,6 +37,8 @@ export default function InstallationForm({ auth, title, installation, allMateria
         materials : materials !== null ? materials : [],
         parts : parts !== null ? parts : [],
     });
+
+    console.log(installation);
     
     const menuData = [
         {id: 1, title: 'Instalación', icon: '', hide : false},
@@ -145,6 +147,8 @@ export default function InstallationForm({ auth, title, installation, allMateria
                         </CollapseCard>
                     </Col>
                 </Row>
+
+                {errors.images && <div className="alert alert-danger">{errors.images}</div>}
                 
                 <Card>
                     <Form className='theme-form'>
@@ -200,7 +204,7 @@ export default function InstallationForm({ auth, title, installation, allMateria
                                                 <Col xs='12' md='4'>
                                                     <FloatingInput 
                                                         label={{label : 'Próximo Mantenimiento (meses)'}} 
-                                                        input={{placeholder : '', onChange : handleChange, name : 'next_maintenance', value : data.next_maintenance, type : 'number', readOnly : readOnly}} 
+                                                        input={{placeholder : '', onChange : handleChange, name : 'next_maintenance', value : data.next_maintenance, type : 'number', readOnly : true}} 
                                                         errors = {errors.next_maintenance}
                                                     />
                                                 </Col>

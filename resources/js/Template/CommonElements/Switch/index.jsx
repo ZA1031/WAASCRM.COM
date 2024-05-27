@@ -10,7 +10,11 @@ const Switch = (props) => {
             type="switch"
             {...props.input}
           />
-          <Label check>{...props.label ?? ''}</Label>
+          <Label check>
+            {...props.label ?? ''}
+            {props.helpText && <div><small className="text-muted">{props.helpText}</small></div>}
+          </Label>
+          
         </FormGroup>
         {props.errors && <span className="text-danger m-5">{props.errors}</span>}
     </>

@@ -2,9 +2,7 @@ import React, { Fragment, useState, useEffect, useContext } from "react";
 import { Breadcrumbs, ToolTip } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
-import DataTable from 'react-data-table-component';
 import axios from "axios";
-import { customStyles } from "@/Template/Styles/DataTable";
 import Edit from '@/Template/CommonElements/Edit';
 import Trash from '@/Template/CommonElements/Trash';
 import AddBtn from '@/Template/CommonElements/AddBtn';
@@ -12,6 +10,7 @@ import MainDataContext from '@/Template/_helper/MainData';
 import { Image } from "react-bootstrap";
 import { Check, X }  from 'react-feather';
 import Icon from '@/Template/CommonElements/Icon';
+import FilterTable from "@/Template/Components/FilterTable";
 
 export default function MaterialList({ auth, title}) {
     const [dataList, setDataList] = useState([]);
@@ -19,8 +18,8 @@ export default function MaterialList({ auth, title}) {
     const [tooltip, setTooltip] = useState(false);
     const toggle = () => setTooltip(!tooltip);
 
-    const getMaterials = async () => {
-        const response = await axios.post(route('materials.list'));
+    const getMaterials = async (d) => {
+        const response = await axios.post(route('materials.list'), d);
         setDataList(response.data);
     }
 
@@ -43,16 +42,18 @@ export default function MaterialList({ auth, title}) {
             },
             sortable: true,
             center: false,
+            maxWidth: "100px"
         },
         {
-            name: 'Acttivo',
+            name: 'Activo',
             selector: row => {
                 return (
                     row['active'] == 1 ? <Check color="green" size={15} /> : <X color="red" size={15} />
                 )
             },
             sortable: true,
-            center: false,
+            center: true,
+            maxWidth: "100px"
         },
         {
             name: 'Nombre',
@@ -65,18 +66,21 @@ export default function MaterialList({ auth, title}) {
             selector: row => row['reference'],
             sortable: true,
             center: false,
+            maxWidth: "150px"
         },
         {
             name: 'Stock',
             selector: row => row['stock'],
             sortable: true,
             center: false,
+            maxWidth: "100px"
         },
         {
             name: 'Precio',
             selector: row => row['price'],
             sortable: true,
             center: false,
+            maxWidth: "100px"
         },
         {
             name: 'Acciones',
@@ -96,6 +100,7 @@ export default function MaterialList({ auth, title}) {
             },
             sortable: false,
             center: true,
+            maxWidth: "100px"
         },
     ];
 
@@ -105,17 +110,12 @@ export default function MaterialList({ auth, title}) {
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
 
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles}
-                    />
-                </div>
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                    filters={[]}
+                    getList={(d) => getMaterials(d)}
+                />
 
                 <AddBtn onClick={() => router.visit(route('materials.create'))} />
             </Fragment>

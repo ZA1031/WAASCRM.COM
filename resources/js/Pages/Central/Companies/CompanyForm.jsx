@@ -35,7 +35,7 @@ export default function CompanyForm({ auth, title, company, products, statuses})
         {id: 3, title: 'Directores Tecnicos'},
         {id: 4, title: 'Comerciales'},
         {id: 5, title: 'Técnicos'},
-        {id: 6, title: 'Telemarketers'}
+        {id: 6, title: 'Telemarketing'}
     ];
 
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({

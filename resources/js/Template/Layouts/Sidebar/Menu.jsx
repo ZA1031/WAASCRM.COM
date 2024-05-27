@@ -436,22 +436,26 @@ export const MENUITEMS = [
 	{
 		menutitle: 'General',
 		menucontent: 'Dashboards,Widgets',
+    according : false,
+    rols : [0],
 		Items: [
-			{ path: `/central-dashboard`, icon: 'home', type: 'link', active: false, title: 'Dashboard' },
-			{ path: `/products`, icon: 'widget', type: 'link', active: false, title: 'Productos' },
-			{ path: `/spare-parts`, icon: 'task', type: 'link', active: false, title: 'Recambios' },
-			{ path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Empresas' },
+			{ path: `/central-dashboard`, icon: 'home', type: 'link', active: false, title: 'Dashboard', rols : [0] },
+			{ path: `/products`, icon: 'widget', type: 'link', active: false, title: 'Productos', rols : [0] },
+			{ path: `/spare-parts`, icon: 'task', type: 'link', active: false, title: 'Recambios', rols : [0] },
+			{ path: `/companies`, icon: 'user', type: 'link', active: false, title: 'Empresas', rols : [0] },
 			{
 				title: 'Catalogo',
 				icon: 'others',
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
+        rols : [0],
 				children: [
-					{ path: `/catalog/3`, title: 'Atributos', type: 'link' },
-					{ path: `/catalog/4`, title: 'Categoria de Productos', type: 'link' },
-          { path: `/catalog/5`, title: 'Tipos de Familia', type: 'link' },
-          { path: `/catalog/2`, title: 'Canales', type: 'link' },
+					{ path: `/catalog/3`, title: 'Atributos', type: 'link', rols : [0] },
+					{ path: `/catalog/4`, title: 'Categoria de Productos', type: 'link', rols : [0] },
+          { path: `/catalog/5`, title: 'Tipos de Familia', type: 'link', rols : [0] },
+          { path: `/catalog/2`, title: 'Canales', type: 'link', rols : [0] },
+          { path: `/catalog/6`, title: 'Tipos de Recambio', type: 'link', rols : [0] },
 				],
 			},
 		]
@@ -462,17 +466,20 @@ export const MENUITEMS_TENANT = [
   {
 		menutitle: 'General',
 		menucontent: 'Dashboards,Widgets',
+    rols : [0,1,2,3,4,5,6],
+    according : false,
 		Items: [
-			{ path: `/dashboard`, icon: 'landing-page', type: 'link', active: false, title: 'Dashboard' },
+			{ path: `/dashboard`, icon: 'landing-page', type: 'link', active: false, title: 'Dashboard', rols : [0,1,2,3,4,5,6] },
       {
 				title: 'Tareas',
 				icon: 'calendar',
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
+        rols : [0,1,2,3,4,5,6],
 				children: [
-					{ path: `/tasks`, title: 'Tareas', type: 'link' },
-					{ path: `/calendar`, title: 'Agenda', type: 'link' },
+					{ path: `/tasks`, title: 'Tareas', type: 'link', rols : [0,1,2,3,4,5,6] },
+					{ path: `/calendar`, title: 'Agenda', type: 'link', rols : [0,1,2,3,4,5,6] },
 				],
 			},
       {
@@ -481,9 +488,10 @@ export const MENUITEMS_TENANT = [
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
+        rols : [0,1,2,4,6],
 				children: [
-					{ path: `/contacts`, title: 'Listado', type: 'link' },
-					{ path: `/contacts/opportunities`, title: 'Board', type: 'link' },
+					{ path: `/contacts`, title: 'Listado', type: 'link', rols : [0,1,2,4,6], },
+					{ path: `/contacts/opportunities`, title: 'Board', type: 'link', rols : [0,1,2,4,6] },
 				],
 			},
       {
@@ -492,9 +500,10 @@ export const MENUITEMS_TENANT = [
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
+        rols : [0,1,2,4,6],
 				children: [
-					{ path: `/clients`, title: 'Listado', type: 'link' },
-					{ path: `/clients/opportunities`, title: 'Board', type: 'link' },
+					{ path: `/clients`, title: 'Listado', type: 'link', rols : [0,1,2,4,6] },
+					{ path: `/clients/opportunities`, title: 'Board', type: 'link', rols : [0,1,2,4,6] },
 				],
 			},
       {
@@ -503,10 +512,11 @@ export const MENUITEMS_TENANT = [
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
+        rols : [0,1,3,5],
 				children: [
-					{ path: `/installations`, title: 'Pendientes', type: 'link' },
-					{ path: `/installations/pending`, title: 'Pendientes de Asignar', type: 'link' },
-          { path: `/installations/all`, title: 'Todas', type: 'link' },
+					{ path: `/installations`, title: 'Pendientes', type: 'link', rols : [0,1,3,5] },
+					{ path: `/installations/pending`, title: 'Pendientes de Asignar', type: 'link', rols : [0,1,3,5] },
+          { path: `/installations/all`, title: 'Todas', type: 'link', rols : [0,1,3,5] },
 				],
 			},
       {
@@ -515,10 +525,11 @@ export const MENUITEMS_TENANT = [
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
+        rols : [0,1,3,5],
 				children: [
-					{ path: `/maintenances`, title: 'Pendientes', type: 'link' },
-					{ path: `/maintenances/pending`, title: 'Pendientes de Asignar', type: 'link' },
-          { path: `/maintenances/all`, title: 'Todas', type: 'link' },
+					{ path: `/maintenances`, title: 'Pendientes', type: 'link', rols : [0,1,3,5] },
+					{ path: `/maintenances/pending`, title: 'Pendientes de Asignar', type: 'link', rols : [0,1,3,5] },
+          { path: `/maintenances/all`, title: 'Todas', type: 'link', rols : [0,1,3,5] },
 				],
 			},
 		]
@@ -526,27 +537,31 @@ export const MENUITEMS_TENANT = [
   {
 		menutitle: 'Configuración',
 		menucontent: 'Dashboards,Widgets',
+    rols : [0,1],
+    according : true,
 		Items: [
-			{ path: `/company`, icon: 'file', type: 'link', active: false, title: 'Datos' },
-      { path: `/users`, icon: 'user', type: 'link', active: false, title: 'Usuarios' },
-      { path: `/prs`, icon: 'widget', type: 'link', active: false, title: 'Productos' },
-      { path: `/materials`, icon: 'board', type: 'link', active: false, title: 'Materiales' },
+			{ path: `/company`, icon: 'file', type: 'link', active: false, title: 'Datos', rols : [0,1] },
+      { path: `/users`, icon: 'user', type: 'link', active: false, title: 'Usuarios', rols : [0,1] },
+      { path: `/prs`, icon: 'widget', type: 'link', active: false, title: 'Productos', rols : [0,1] },
+      { path: `/materials`, icon: 'board', type: 'link', active: false, title: 'Materiales', rols : [0,1] },
 			{
 				title: 'Fichas',
 				icon: 'others',
 				type: 'sub',
 				badge: 'badge badge-light-primary',
 				active: false,
+        rols : [0,1],
 				children: [
-					{ path: `/catalogs/1`, title: 'Origen de los Leads', type: 'link' },
-					{ path: `/catalogs/2`, title: 'Estado de los Clientes', type: 'link' },
-          { path: `/catalogs/3`, title: 'Estado de los Contactos', type: 'link' },
-          { path: `/catalogs/4`, title: 'Extras', type: 'link' },
-          { path: `/catalogs/5`, title: 'Actividades', type: 'link' },
-          { path: `/catalogs/6`, title: 'Tipo de Tarea', type: 'link' },
-          { path: `/catalogs/7`, title: 'Apreciaciones', type: 'link' },
+					{ path: `/catalogs/1`, title: 'Origen de los Leads', type: 'link', rols : [0,1] },
+					{ path: `/catalogs/2`, title: 'Estado de los Clientes', type: 'link', rols : [0,1] },
+          { path: `/catalogs/3`, title: 'Estado de los Contactos', type: 'link', rols : [0,1] },
+          { path: `/catalogs/4`, title: 'Extras', type: 'link', rols : [0,1] },
+          { path: `/catalogs/5`, title: 'Actividades', type: 'link', rols : [0,1] },
+          { path: `/catalogs/6`, title: 'Tipo de Tarea', type: 'link', rols : [0,1] },
+          { path: `/catalogs/7`, title: 'Apreciaciones', type: 'link', rols : [0,1] },
 				],
 			},
+      { path: `/variables`, icon: 'board', type: 'link', active: false, title: 'Sistema', rols : [0,1] },
 		]
   },
 ];

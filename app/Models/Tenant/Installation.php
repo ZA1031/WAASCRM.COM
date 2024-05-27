@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -118,5 +119,11 @@ class Installation extends Model
             ];
         }
         return $data;
+    }
+
+    public function isEnabled(){
+        return in_array($this->status, [0,3]) && Carbon::parse($this->installation_date)->format('Y-m-d') == Carbon::now()->format('Y-m-d') 
+            //&& $this->assigned_to == auth()->user()->id
+            ;
     }
 }

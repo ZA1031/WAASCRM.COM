@@ -21,6 +21,7 @@ export default function ProductForm({ auth, title, product, familyName, dues, at
         inner_stock_min : product.inner_stock_min,
         inner_stock_max : product.inner_stock_max,
         inner_active : product.inner_active,
+        inner_model : product.inner_model,
         attributes : [],
     });
 
@@ -101,24 +102,31 @@ export default function ProductForm({ auth, title, product, familyName, dues, at
                     <Card>
                         <CardBody>
                             <Row>
-                                <Col xs='12' md='2'>
+                                <Col xs='12' md='3'>
                                     <FloatingInput 
                                         label={{label : 'Referencia Proveedor'}} 
                                         input={{placeholder : 'Referencia Proveedor', value : product.model, readOnly : true, className : 'input-disabled'}} 
                                         errors = {errors.model}
                                     />
                                 </Col>
-                                <Col xs='12' md='4'>
+                                <Col xs='12' md='3'>
                                     <FloatingInput 
-                                        label={{label : 'Nombre'}} 
+                                        label={{label : 'Nombre Proveedor'}} 
                                         input={{placeholder : 'Nombre', value : product.name, readOnly : true, className : 'input-disabled'}} 
                                         errors = {errors.name}
                                     />
                                 </Col>
-                                <Col xs='12' md='4'>
+                                <Col xs='12' md='3'>
                                     <FloatingInput 
                                         label={{label : 'Familia'}} 
                                         input={{placeholder : 'Familia', value : familyName, readOnly : true, className : 'input-disabled'}} 
+                                        errors = {errors.name}
+                                    />
+                                </Col>
+                                <Col xs='12' md='3'>
+                                    <FloatingInput 
+                                        label={{label : 'Capacidad'}} 
+                                        input={{placeholder : 'Capacidad', value : 'Hasta ' + product.lts + ' lts', readOnly : true, className : 'input-disabled'}} 
                                         errors = {errors.name}
                                     />
                                 </Col>
@@ -134,6 +142,13 @@ export default function ProductForm({ auth, title, product, familyName, dues, at
                                         label={{label : 'Nombre'}} 
                                         input={{placeholder : 'Nombre', onChange : handleChange, name : 'inner_name', value : data.inner_name}} 
                                         errors = {errors.name}
+                                    />
+                                </Col>
+                                <Col xs='12' md='2'>
+                                    <FloatingInput 
+                                        label={{label : 'Rerefencia'}} 
+                                        input={{placeholder : 'Rerefencia', onChange : handleChange, name : 'inner_model', value : data.inner_model}} 
+                                        errors = {errors.inner_model}
                                     />
                                 </Col>
                                 <Col xs='12' md='2'>

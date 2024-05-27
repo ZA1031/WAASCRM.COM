@@ -15,6 +15,7 @@ const FilterTable = (props) => {
     const [modal, setModal] = useState(false);
     const toggleModal = () => setModal(!modal);
     const [data, setData] = useState({});
+    const [isSet, setIsSet] = useState(false);
 
     const filerData = (item) => {
         for (let key of keys) {
@@ -30,8 +31,16 @@ const FilterTable = (props) => {
     
     useEffect(() => {
         setKeys(Object.keys(dataList[0] ? dataList[0] : {}));
-
-    } , [dataList]);
+        filters && filters.forEach(element => {
+            if (element.options){
+                element.options.forEach(option => {
+                    if (option.selected){
+                        setData(data => ({...data, [element.name]: option.value}));
+                    }
+                });
+            }
+        });
+    } , [dataList]);    
 
     const subHeaderComponentMemo = React.useMemo(() => {
 		const handleClear = () => {
@@ -41,7 +50,7 @@ const FilterTable = (props) => {
 			}
 		};
 		return (
-			<FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} onMoreFilters={() => toggleModal()} />
+			<FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} onMoreFilters={() => toggleModal()} hasFilters={filters && filters.length != 0}/>
 		);
 	}, [filterText, resetPaginationToggle]);
 
@@ -60,9 +69,18 @@ const FilterTable = (props) => {
         props.getList({});
     }
 
+    const paginationComponentOptions = {
+        rowsPerPageText: 'Filas por página',
+        rangeSeparatorText: 'de',
+        selectAllRowsItem: true,
+        selectAllRowsItemText: 'Todos',
+    };
+
+    const noDataComponent = <div className='mb-4'>No hay datos para mostrar</div>;
+
     return (
         <>
-            <div className="shadow-sm">
+            <div className="shadow-sm" key={'filter-table-shadow'}>
                 <DataTable
                     data={filteredItems}
                     columns={tableColumns}
@@ -74,6 +92,9 @@ const FilterTable = (props) => {
                     customStyles={customStyles}
                     subHeader
                     subHeaderComponent={subHeaderComponentMemo}
+                    paginationComponentOptions={paginationComponentOptions}
+                    noDataComponent={noDataComponent}
+                    keyField="id"
                 />
             </div>
 

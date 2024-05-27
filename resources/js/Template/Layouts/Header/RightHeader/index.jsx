@@ -1,17 +1,15 @@
-import React, { Fragment } from 'react';
-
-import Searchbar from './Searchbar';
-import Notificationbar from './Notificationbar';
+import React, { Fragment, useState } from 'react';
 import UserHeader from './UserHeader';
 import { UL } from '../../../AbstractElements';
 import { Col } from 'reactstrap';
+import HorecaCalc from '@/Template/Components/HorecaCalc';
 import SvgIcon from '@/Template/Components/Common/Component/SvgIcon';
-import Icon from '@/Template/CommonElements/Icon';
-import OrecaCalc from '@/Template/Components/OrecaCalc';
+import { useSelector } from 'react-redux'
 
 const RightHeader = () => {
-  const [modalOreca, setModalOreca] = React.useState(false);
-  const togglemodalOreca = () => setModalOreca(!modalOreca);
+  const actualUser = useSelector((state) => state.auth.value);
+  const [modalHoreca, setModalHoreca] = useState(false);
+  const toggleModalHoreca = () => setModalHoreca(!modalHoreca);
 
   return (
     <Fragment>
@@ -22,16 +20,19 @@ const RightHeader = () => {
           <Searchbar />
           <Notificationbar />
           */}
-
-          <li className='profile-nav'>
-            <Icon icon="Cpu" id={'header-calc'} tooltip="Calculadora HORECA" onClick={togglemodalOreca} className="text-light me-1"/>
+          {actualUser && actualUser.is_tenant &&
+          <li className='profile-nav white'>
+            <SvgIcon iconId='calculator' style={{ stroke : 'none', width : '25px', height : '25px' }} tooltip="Calculadora HORECA" onClick={toggleModalHoreca} />
           </li>
+          }
           <UserHeader />
         </UL>
         {/* </Col> */}
       </Col>
 
-      <OrecaCalc modal={modalOreca} onClose={togglemodalOreca} />
+      {actualUser && actualUser.is_tenant &&
+      <HorecaCalc modal={modalHoreca} onClose={toggleModalHoreca} />
+      }
 
     </Fragment>
   );

@@ -18,6 +18,11 @@ class AddressController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'full_address' => ['required', 'string', 'max:255'],
+        ],
+        [],
+        [
+            'name' => 'nombre',
+            'full_address' => 'dirección',
         ]);
         return redirect()->back()->with('message', 'Dirección guardada correctamente.');
     }

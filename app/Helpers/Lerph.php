@@ -2,7 +2,9 @@
   
 
 namespace App\Helpers;
+use App\Models\Central\SparePart;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class Lerph {
     public static function test()
@@ -27,6 +29,17 @@ class Lerph {
     public static function showDateTime($d){
         return !empty($d) && $d != '0000-00-00 00:00:00' ? Carbon::parse($d)->format('d/m/Y H:i') : '';
     }
+
+    public static function showElapsedDays($d){
+        if (!empty($d) && $d != '0000-00-00') {
+            $now = Carbon::now();
+            $date = Carbon::parse($d);
+            $diff = $date->diffInDays($now);
+            return $diff . ' días';
+        }
+        return '';
+    }
+
 
     public static function showPrice($p){
         return number_format($p).'Є';
@@ -98,5 +111,41 @@ class Lerph {
         $items = [];
         foreach ($dues as $d) $items[] = ['label' => $d, 'value' => $d];
         return $items;
+    }
+
+    public static function getTechPdf($product){
+        // PARTES
+        $pids = explode(',', $product->parts);
+        $parts = new Collection();
+        foreach ($pids as $pid){
+            if (!empty($pid)){
+                $part = SparePart::find($pid);
+                $parts->push($part);
+            }
+        }
+
+        $files = $product->getFilesData(1);
+        $mainImage = '';
+        $techImage = '';
+        foreach ($files as $file){
+            if ($file['image_type'] == 1) $mainImage = $file['img'];
+            if ($file['image_type'] == 2) $techImage = $file['img'];
+        }
+
+        if (class_basename($product) == 'TenantProduct'){
+            ///Seteo el tenant data
+            $product->attributes = $product->tenantAttributes;
+            $product->name = $product->final_name;
+            $product->name_en = $product->final_name;
+            $product->model = $product->final_model;
+        }
+
+        return [
+            'product' => $product,
+            'parts' => $parts,
+            'attrs' => $product->attributes,
+            'mainImage' => $mainImage,
+            'techImage' => $techImage
+        ];
     }
 }

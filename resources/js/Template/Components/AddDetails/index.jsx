@@ -172,8 +172,8 @@ const AddDetails = (props) => {
                     {data.installation == 0 &&
                     <Col xs='12' sm='12' md='4'>
                         <FloatingInput 
-                            label={{label : 'Costo de instalacion'}} 
-                            input={{placeholder : 'Costo de instalacion', name : 'installation_cost', value : data.installation_cost, onChange : handleChange}} 
+                            label={{label : 'Coste de instalacion'}} 
+                            input={{placeholder : 'Coste de instalacion', name : 'installation_cost', value : data.installation_cost, onChange : handleChange}} 
                             errors = {errors.installation_cost}
                         />
                     </Col>
@@ -224,15 +224,15 @@ const AddDetails = (props) => {
                     </Col>
                     <Col xs='12' sm='12' md='4'>
                         <FloatingInput 
-                            label={{label : 'Costo Inicial'}} 
-                            input={{placeholder : 'Costo Inicial', name : 'init_amount', value : data.init_amount, onChange : handleChange}} 
+                            label={{label : 'Coste Inicial'}} 
+                            input={{placeholder : 'Coste Inicial', name : 'init_amount', value : data.init_amount, onChange : handleChange}} 
                             errors = {errors.init_amount}
                         />
                     </Col>
                     <Col xs='12' sm='12' md='4'>
                         <FloatingInput 
-                            label={{label : 'Costo Final'}} 
-                            input={{placeholder : 'Costo Final', name : 'last_amount', value : data.last_amount, onChange : handleChange}} 
+                            label={{label : 'Coste Final'}} 
+                            input={{placeholder : 'Coste Final', name : 'last_amount', value : data.last_amount, onChange : handleChange}} 
                             errors = {errors.last_amount}
                         />
                     </Col>

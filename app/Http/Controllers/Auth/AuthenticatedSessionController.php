@@ -25,7 +25,7 @@ class AuthenticatedSessionController extends Controller
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
             'prefix' => empty(tenant('id')) ? 'central.' : '',
-            'logo' => $company ? $company->logo_url : '',
+            'logo' => !empty(tenant('id')) && $company ? $company->logo_url : '',
         ]);
     }
 

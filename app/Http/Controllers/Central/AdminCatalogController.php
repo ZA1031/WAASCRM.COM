@@ -26,7 +26,7 @@ class AdminCatalogController extends Controller
 
     public function list(Request $request, $type)
     {
-        $data = AdminCatalog::where('type', $type)->get()->map(function($catalog){
+        $data = AdminCatalog::where('type', $type)->orderBy('order')->get()->map(function($catalog){
             $catalog->extra_array = $catalog->getExtraData();
             return $catalog;
         });
@@ -73,6 +73,8 @@ class AdminCatalogController extends Controller
                 return 'Categoria de Productos';
             case 5:
                 return 'Tipos de Familia';
+            case 6:
+                return 'Tipos de Recambio';
         }
     }
 
@@ -86,6 +88,11 @@ class AdminCatalogController extends Controller
         return $request->validate([
             'name' => 'required|max:100',
             'type' => 'required'
+        ],
+        [],
+        [
+            'name' => 'Nombre',
+            'type' => 'Tipo'
         ]);
     }
 
@@ -94,5 +101,16 @@ class AdminCatalogController extends Controller
         $catalog = AdminCatalog::findOrFail($cid);
 
         return $catalog ? $catalog->getExtraData() : [];
+    }
+
+    public function updateOrder(Request $request, $type)
+    {
+        $ids = $request->input('ids');
+        foreach ($ids as $key => $id) {
+            $cc = AdminCatalog::find($id);
+            $cc->order = $key;
+            $cc->save();
+        }
+        return response()->json(['message' => 'Datos guardados correctamente.']);
     }
 }

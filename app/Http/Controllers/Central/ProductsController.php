@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Central;
 
+use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
 use App\Models\Central\AdminCatalog;
 use App\Models\Central\Product;
@@ -14,7 +15,6 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Database\Eloquent\Collection;
 
 class ProductsController extends Controller
 {
@@ -115,12 +115,28 @@ class ProductsController extends Controller
             'name' => 'required|max:200',
             'description' => 'max:500',
             //'code' => 'required|max:100|unique:products,code,'.$id
+        ],
+        [],
+        [
+            'model' => 'Modelo',
+            'name' => 'Nombre',
+            'description' => 'Descripción',
+            'code' => 'Código'
         ]);
     }
 
     private function upsertAttributes($request, $product)
     {
         $product->attributes()->delete();
+
+        $tenants = Tenant::all();
+
+        foreach ($tenants as $tenant){
+            $tenant->run(function ($tenant) use ($product, $request){
+                ProductAttr::where('product_id', $product->id)->delete();
+            });
+        }
+
         if ($request->input('attributes')) {
             foreach ($request->input('attributes') as $attr) {
                 $id = $text = $textEn = null;
@@ -184,47 +200,10 @@ class ProductsController extends Controller
         if ($product) $products[] = $product;
         else $products = Product::all();
 
-        foreach ($products as $product){
-            // PARTES
-            $pids = explode(',', $product->parts);
-            $parts = new Collection();
-            foreach ($pids as $pid){
-                if (!empty($pid)){
-                    $part = SparePart::find($pid);
-                    $parts->push($part);
-                }
-            }
+        foreach ($products as $product) $data[] = Lerph::getTechPdf($product);
 
-            $files = $product->getFilesData(1);
-            $mainImage = '';
-            $techImage = '';
-            foreach ($files as $file){
-                if ($file['image_type'] == 1) $mainImage = $file['img'];
-                if ($file['image_type'] == 2) $techImage = $file['img'];
-            }
-
-            $data[] = [
-                'product' => $product,
-                'parts' => $parts,
-                'attrs' => $product->attributes,
-                'mainImage' => $mainImage,
-                'techImage' => $techImage
-            ];
-        }
-
-        $pdf = Pdf::loadView('pdfs.pdf1', [
-            'data' => $data
-        ]);
+        $pdf = Pdf::loadView('pdfs.pdf1', ['data' => $data]);
 
         return $pdf->stream('pdf1.pdf');
-
-        // return view('pdfs.pdf1', [
-        //     'product' => $product,
-        //     // 'logo' => $logo,
-        //     'parts' => $parts,
-        //     'attrs' => $attrs,
-        //     'mainImage' => $mainImage,
-        //     'techImage' => $techImage
-        // ]);
     }
 }

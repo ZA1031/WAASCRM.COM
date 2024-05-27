@@ -85,6 +85,11 @@ class CatalogController extends Controller
         return $request->validate([
             'name' => 'required|max:100',
             'type' => 'required'
+        ],
+        [],
+        [
+            'name' => 'Nombre',
+            'type' => 'Tipo'
         ]);
     }
 

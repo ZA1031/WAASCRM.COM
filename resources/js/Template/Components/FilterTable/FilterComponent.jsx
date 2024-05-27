@@ -2,9 +2,10 @@ import Icon from '@/Template/CommonElements/Icon';
 import React, { useState, useEffect } from 'react';
 
 
-export const FilterComponent = ({ filterText, onFilter, onMoreFilters }) => (
+export const FilterComponent = ({ filterText, onFilter, onMoreFilters, hasFilters }) => (
 	<>
 		<div className="d-flex flex-row-reverse">
+			{hasFilters &&
 			<Icon icon="Filter" 
 				id={'filter-table'} 
 				tooltip="Filtrar" 
@@ -12,6 +13,7 @@ export const FilterComponent = ({ filterText, onFilter, onMoreFilters }) => (
 				size={30}
 				onClick={onMoreFilters}
 			/>
+			}
 			<input
 				id="search"
 				type="text"

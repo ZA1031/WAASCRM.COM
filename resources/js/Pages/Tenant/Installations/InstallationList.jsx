@@ -15,7 +15,7 @@ import Phone from "@/Template/CommonElements/Phone";
 import Email from "@/Template/CommonElements/Email";
 import FilterTable from "@/Template/Components/FilterTable";
 
-export default function InstallationList({ auth, title, pending, tecnics, clients, products, isInstallation, filters}) {
+export default function InstallationList({ auth, title, pending, tecnics, clients, products, isInstallation, filters, filtered}) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
     const [selectedOptionTc, setSelectedOptionTc] = useState(null);
@@ -103,7 +103,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
     }
 
     useEffect(() => {
-        getInstallations();
+        getInstallations(filtered);
         if (modalHistory) getHistory(data.id);
     }, [deleteCounter]);
 
@@ -114,7 +114,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                 return (
                     <>
                         <div>{row['client_data']?.company_name}</div>
-                        <div class="small text-muted">
+                        <div className="small text-muted">
                             <Phone client={row['client_data']} /><br />
                             <Email client={row['client_data']} />
                         </div>
@@ -152,12 +152,14 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             },
             sortable: true,
             center: false,
+            maxWidth: "250px"
         },
         {
             name: 'Fecha',
             selector: row => row['installation_date'],
             sortable: true,
             center: false,
+            maxWidth: "150px"
         },
         {
             name: 'Estado',
@@ -173,6 +175,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             },
             sortable: true,
             center: false,
+            maxWidth: "120px"
         },
         {
             name: 'Acciones',
@@ -204,6 +207,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                                 icon="MessageSquare" 
                                 id={'message-' + row['id']} 
                                 tooltip="Mensajes" 
+                                className="me-1"
                                 onClick={() => {
                                     toggleModalHistory();
                                     clearErrors();
@@ -238,12 +242,14 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                                         setModalActionTitle('Rechazar');
                                     }}
                                 />
+                                {row['enabled'] && 
                                 <Icon icon="Tool" 
                                     id={'accept-' + row['id']} 
                                     tooltip="Instalar"
                                     className="text-success"
                                     onClick={() => router.visit(route(isInstallation ? 'installations.edit' : 'maintenances.edit', [row['id']]))}
                                 />
+                                }
                             </>
                             }
                             {row['status'] == 1 &&
@@ -262,6 +268,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             },
             sortable: false,
             center: true,
+            maxWidth: "140px"
         },
     ];
 

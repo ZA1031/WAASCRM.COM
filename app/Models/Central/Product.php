@@ -26,6 +26,7 @@ class Product extends Model
         'model_en',
         'name_en',
         'description_en',
+        'lts'
     ];
 
     protected static function boot()
@@ -36,8 +37,9 @@ class Product extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                Product::where('id', $product->id)->delete();
+                $tenant->run(function () use ($product) {
+                    Product::where('id', $product->id)->delete();
+                });
             }
         });
 
@@ -45,12 +47,14 @@ class Product extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                $data = $product->toArray();
-                unset($data['deleted_at']);
-                unset($data['created_at']);
-                unset($data['updated_at']);
-                Product::create($data);
+                $tenant->run(function () use ($product) {
+                    $data = $product->toArray();
+                    unset($data['deleted_at']);
+                    unset($data['created_at']);
+                    unset($data['updated_at']);
+                    Product::create($data);
+                });
+                
             }
         });
 
@@ -58,12 +62,14 @@ class Product extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                $data = $product->toArray();
-                unset($data['deleted_at']);
-                unset($data['created_at']);
-                unset($data['updated_at']);
-                Product::where('id', $product->id)->update($data);
+                $tenant->run(function () use ($product) {
+                    $data = $product->toArray();
+                    unset($data['deleted_at']);
+                    unset($data['created_at']);
+                    unset($data['updated_at']);
+                    Product::where('id', $product->id)->update($data);
+                });
+                
             }
         });
     }
@@ -85,7 +91,7 @@ class Product extends Model
 
     public function attributes()
     {
-        return $this->hasMany(ProductAttr::class, 'product_id');
+        return $this->hasMany(ProductAttr::class, 'product_id')->join('admin_catalogs', 'product_attrs.attribute_id', '=', 'admin_catalogs.id')->select('product_attrs.*', 'admin_catalogs.name as attribute_name', 'admin_catalogs.type as attribute_type')->orderBy('admin_catalogs.order');
     }
 
     public function images()
@@ -105,8 +111,8 @@ class Product extends Model
 
     public function getMainImage()
     {
-        $img = $this->images->first();
-        return $img ? $img->getUrlAttribute() : 'https://ui-avatars.com/api/?name=Aqua&color=7F9CF5&background=EBF4FF';
+        $img = ProductFile::where('product_id', $this->id)->where('type', 1)->where('image_type', 1)->orderBy('order')->first();
+        return $img ? $img->getUrlAttribute() : 'https://ui-avatars.com/api/?name=BB&color=7F9CF5&background=EBF4FF';
     }
 
     public function getFilesData($t)

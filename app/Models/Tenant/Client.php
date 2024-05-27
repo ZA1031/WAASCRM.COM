@@ -28,7 +28,9 @@ class Client extends Model
         'is_client',
         'activity_id',
         'business_name',
-        'assigned_to'
+        'assigned_to',
+        'family_id',
+        'product_id'
     ];
 
     protected $appends = [
@@ -123,6 +125,10 @@ class Client extends Model
         return $this->hasMany(ClientHistory::class)->orderBy('created_at', 'asc');
     }
 
+    public function isExpired(){
+        return $this->created_at->diffInDays() <= 30 ? 0 : ($this->created_at->diffInDays() <= 60 ? 1 : 2);
+    }
+
     public function budgetsLigths()
     {
         $p = $this->budgets->where('status', 0)->count();
@@ -147,5 +153,12 @@ class Client extends Model
             'rejected' => $r,
             'total' => $p + $a + $r
         ];
+    }
+
+    public function getLastChangeStatusAttribute()
+    {
+        $x = $this->histories->where('type', 2)->last();
+        if (!$x) $x = $this->histories->where('type', 1)->last();
+        return $x;
     }
 }

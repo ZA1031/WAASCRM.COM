@@ -68,8 +68,11 @@ const AddAddress = (props) => {
         setMainData(props.address);
 
         setTimeout(function() {
+            let options = {
+                componentRestrictions: {country: "es"}
+            };
             let addressInput = document.getElementById('full_address');
-            let autocomplete = new google.maps.places.Autocomplete(addressInput);
+            let autocomplete = new google.maps.places.Autocomplete(addressInput, options);
 
             autocomplete.addListener('place_changed', function() {
                 let place = autocomplete.getPlace();

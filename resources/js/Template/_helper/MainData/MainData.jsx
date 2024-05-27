@@ -13,8 +13,8 @@ const MainDataProvider = (props) => {
             title: title,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Ok',
-            cancelButtonText: 'cancel',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'Cancelar',
             reverseButtons: true
         }).then(async (result) => {
             if (result.value) {
@@ -33,6 +33,16 @@ const MainDataProvider = (props) => {
         return price ? price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '€' : 0;
     }
 
+    const generateRandomString = (length) => {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
     return (
         <Context.Provider
         value={{
@@ -40,7 +50,8 @@ const MainDataProvider = (props) => {
             handleDelete,
             deleteCounter,
             setDeleteCounter,
-            formatPrice
+            formatPrice,
+            generateRandomString
         }}
         >
         {props.children}

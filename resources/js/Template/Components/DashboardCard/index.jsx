@@ -1,6 +1,6 @@
 import Icon from '@/Template/CommonElements/Icon';
 import React, { useState, useEffect } from 'react';
-
+import { router } from '@inertiajs/react';
 
 const DashboardCard = (props) => {
     let cl = 'xl-50 box-col-3 col-sm-6 col-lg-6 col-xl-3';
@@ -20,7 +20,7 @@ const DashboardCard = (props) => {
                     <h5 className="b-b-light">{props.title ?? ''}</h5>
                     <div className="row">
                         {props.items && props.items.map((item, index) => (
-                            <div className="text-center b-r-light col" key={index}>
+                            <div className="text-center b-r-light col pointer" onClick={() => router.visit(item.link)} key={index}>
                                 <span>{item.label}</span>
                                 <h4 className="counter mb-0"><span>{item.value}</span></h4>
                             </div>

@@ -1,8 +1,8 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import { Badge } from 'reactstrap';
-import { Breadcrumbs } from "../../../Template/AbstractElements";
+import { Breadcrumbs, Btn } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
-import { Head} from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import axios from "axios";
 import Edit from '@/Template/CommonElements/Edit';
 import Trash from '@/Template/CommonElements/Trash';
@@ -13,14 +13,14 @@ import Icon from "@/Template/CommonElements/Icon";
 import NotesModal from "@/Template/Components/NotesModal";
 import FilterTable from "@/Template/Components/FilterTable";
 
-export default function Task({ auth, title, filters}) {
+export default function Task({ auth, title, filters, filtered, back}) {
     const [action, setAction] = useState(-1); ///0: Add; 1: Edit; 2: View; -1: None
     const [taskId, setTaskId] = useState(0);
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
 
     const [notesModal, setNotesModal] = useState(false);
-    const toggleNotesModal = () => setNotesModal(!notesModal);
+    const toggleNotesModal = () => setNotesModal(!notesModal);  
 
     const getTasks = async (filters) => {
         const response = await axios.post(route('tasks.list', filters));
@@ -28,7 +28,7 @@ export default function Task({ auth, title, filters}) {
     }
 
     useEffect(() => {
-        getTasks();
+        getTasks(filtered);
     }, [deleteCounter]);
 
     const tableColumns = [
@@ -68,7 +68,8 @@ export default function Task({ auth, title, filters}) {
                 )
             },
             sortable: true,
-            center: false
+            center: false,
+            maxWidth: "120px"
         },
         {
             name: 'Tipo',
@@ -80,7 +81,8 @@ export default function Task({ auth, title, filters}) {
                 )
             },
             sortable: true,
-            center: false
+            center: false,
+            maxWidth: "100px"
         },
         {
             name: 'Acciones',
@@ -96,6 +98,7 @@ export default function Task({ auth, title, filters}) {
             },
             sortable: false,
             center: true,
+            maxWidth: "130px"
         },
     ];
 
@@ -116,6 +119,9 @@ export default function Task({ auth, title, filters}) {
                     filters={filters}
                     getList={(d) => getTasks(d)}
                 /> 
+                {back &&
+                <Btn attrBtn={{ color: 'secondary cancel-btn ms-1 mt-4', onClick: () => router.visit(route(back)) }} >Volver</Btn>
+                }
 
                 <AddBtn onClick={() => setAction(0)} />
 

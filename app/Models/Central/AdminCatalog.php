@@ -19,19 +19,25 @@ class AdminCatalog extends Model
         'name',
         'description',
         'extra_1',
-        'name_en'
+        'name_en',
+        'order',
     ];
 
     protected static function boot()
     {
         parent::boot();
+
+        static::creating(function ($adminCatalog) {
+            $adminCatalog->order = AdminCatalog::where('type', $adminCatalog->type)->max('order') + 1;
+        });
         
         static::deleted(function ($adminCatalog) {
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                AdminCatalog::where('id', $adminCatalog->id)->delete();
+                $tenant->run(function () use ($adminCatalog) {
+                    AdminCatalog::where('id', $adminCatalog->id)->delete();
+                });
             }
         });
 
@@ -39,8 +45,9 @@ class AdminCatalog extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                AdminCatalog::create($adminCatalog->toArray());
+                $tenant->run(function () use ($adminCatalog) {
+                    AdminCatalog::create($adminCatalog->toArray());
+                });
             }
         });
 
@@ -48,8 +55,9 @@ class AdminCatalog extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                AdminCatalog::where('id', $adminCatalog->id)->update($adminCatalog->toArray());
+                $tenant->run(function () use ($adminCatalog) {
+                    AdminCatalog::where('id', $adminCatalog->id)->update($adminCatalog->toArray());
+                });
             }
         });
     }
@@ -64,6 +72,11 @@ class AdminCatalog extends Model
                 if ($x) $data[] = $x;
             }
         }
+
+        usort($data, function($x1, $x2){
+            return $x1->order - $x2->order;
+        });
+
         return $data;
     }
 }

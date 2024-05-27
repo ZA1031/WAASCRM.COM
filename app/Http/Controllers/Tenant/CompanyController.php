@@ -54,6 +54,15 @@ class CompanyController extends Controller
             'email' => 'required|email|max:100|unique:companies,email,'.$id,
             'address' => 'required|max:255',
             'fiscal_address' => 'max:255'
+        ],
+        [],
+        [
+            'name' => 'nombre',
+            'business_name' => 'razón social',
+            'cif' => 'CIF',
+            'email' => 'correo electrónico',
+            'address' => 'dirección',
+            'fiscal_address' => 'dirección fiscal'
         ]);
     }
 }

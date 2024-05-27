@@ -11,13 +11,14 @@ import AddBtn from '@/Template/CommonElements/AddBtn';
 import MainDataContext from '@/Template/_helper/MainData';
 import { Check, X }  from 'react-feather';
 import Icon from "@/Template/CommonElements/Icon";
+import FilterTable from "@/Template/Components/FilterTable";
 
 export default function ProductList({ auth, title}) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);  
 
-    const getProducts = async () => {
-        const response = await axios.post(route('products.list'));
+    const getProducts = async (d) => {
+        const response = await axios.post(route('products.list'), d);
         setDataList(response.data);
     }
 
@@ -38,24 +39,27 @@ export default function ProductList({ auth, title}) {
             },
             sortable: true,
             center: false,
+            maxWidth: "150px"
         },
         {
             name: 'Nombre',
             selector: row => row['name'],
             sortable: true,
             center: false,
+            maxWidth: "200px"
         },
         {
             name: 'Familia',
             selector: row => row['family_name'],
             sortable: true,
             center: false,
+            maxWidth: "200px"
         },
         {
             name: 'Descripción',
             selector: row => row['description'],
             sortable: true,
-            center: false,
+            center: true,
         },
         {
             name: 'Acciones',
@@ -72,6 +76,7 @@ export default function ProductList({ auth, title}) {
             },
             sortable: false,
             center: true,
+            maxWidth: "100px"
         },
     ];
 
@@ -87,17 +92,12 @@ export default function ProductList({ auth, title}) {
                     </a>
                 </div>
 
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles}
-                    />
-                </div>
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                    filters={[]}
+                    getList={(d) => getProducts(d)}
+                />
 
                 <AddBtn onClick={() => router.visit(route('products.create'))} />
             </Fragment>

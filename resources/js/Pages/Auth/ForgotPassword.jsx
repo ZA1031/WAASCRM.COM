@@ -3,6 +3,7 @@ import InputError from '@/Template/Components/InputError';
 import PrimaryButton from '@/Template/Components/PrimaryButton';
 import TextInput from '@/Template/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
+import wass from '../../../assets/images/logo/waas.png';
 
 export default function ForgotPassword({ status, logo }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -16,7 +17,7 @@ export default function ForgotPassword({ status, logo }) {
     };
 
     return (
-        <GuestLayout logo={logo}>
+        <GuestLayout logo={logo == '' ? wass : logo}>
             <Head title="Forgot Password" />
 
             <div className="mb-4 text-sm text-gray-600">

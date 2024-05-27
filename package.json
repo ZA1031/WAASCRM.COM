@@ -18,6 +18,8 @@
     },
     "dependencies": {
         "@auth0/auth0-react": "^1.9.0",
+        "@fortawesome/fontawesome-svg-core": "^6.5.2",
+        "@fortawesome/react-fontawesome": "^0.2.1",
         "@fullcalendar/core": "^4.0.2",
         "@fullcalendar/daygrid": "^5.11.5",
         "@fullcalendar/interaction": "^5.11.0",

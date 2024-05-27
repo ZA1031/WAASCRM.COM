@@ -3,15 +3,14 @@ import { Modal, ModalBody, ModalFooter, ModalHeader, Form, Badge } from 'reactst
 import { Breadcrumbs, Btn } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import DataTable from 'react-data-table-component';
 import axios from "axios";
-import { customStyles } from "@/Template/Styles/DataTable";
 import Edit from '@/Template/CommonElements/Edit';
 import Trash from '@/Template/CommonElements/Trash';
 import AddBtn from '@/Template/CommonElements/AddBtn';
 import FloatingInput from '@/Template/CommonElements/FloatingInput';
 import MainDataContext from '@/Template/_helper/MainData';
 import Switch from "@/Template/CommonElements/Switch";
+import FilterTable from "@/Template/Components/FilterTable";
 
 export default function Catalog({ auth, title, type, related }) {
     const [modal, setModal] = useState(false);
@@ -32,8 +31,8 @@ export default function Catalog({ auth, title, type, related }) {
         setData(key, !data[key]);
     }
 
-    const getCatalog = async () => {
-        const response = await axios.post(route('catalogs.list', type));
+    const getCatalog = async (d) => {
+        const response = await axios.post(route('catalogs.list', type), d);
         setDataList(response.data);
     }
 
@@ -47,6 +46,7 @@ export default function Catalog({ auth, title, type, related }) {
             selector: row => row['name'],
             sortable: true,
             center: false,
+            maxWidth: "300px"
         },
         {
             name: 'Descripción',
@@ -77,6 +77,7 @@ export default function Catalog({ auth, title, type, related }) {
             },
             sortable: false,
             center: true,
+            maxWidth: "100px"
         },
     ];
 
@@ -133,17 +134,12 @@ export default function Catalog({ auth, title, type, related }) {
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
 
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles} 
-                    />
-                </div>
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                    filters={[]}
+                    getList={(d) => getCatalog(d)}
+                />
 
                 <AddBtn onClick={() => handleAdd()} />
 

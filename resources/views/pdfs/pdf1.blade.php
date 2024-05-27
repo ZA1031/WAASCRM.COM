@@ -9,7 +9,8 @@
 <style>
 
 html{margin:0;
-    padding:0}
+    padding:0
+}
 
 body {
     font-family:system-ui, sans-serif;
@@ -119,7 +120,7 @@ body {
 }
 
 .table-active {
-    background-color: rgba(0, 0, 255, 0.26) !important;
+    background-color: #26c6da !important;
     
 }
 
@@ -165,94 +166,88 @@ body {
             <div class="col-2" style="margin-bottom: 0;">
                 <h4 style="font-size:20px; margin-bottom: 0;"><span style="color: rgb(3,68,107);"><strong>FICHA TÉCNICA </strong></span>/ TECHNICAL DATA</h4>
             </div>
-            <div class="col-2" style="position: relative; text-align: right; top:20px; display:none">
-                <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 40%; height: auto;" alt="">
+            <div class="col-2" style="position: relative; text-align: right; top:10px;">
+                @if (defined('COMPANY'))<img src="{{ COMPANY->logo_url }}" style="height: 40px; margin-right: 80px" alt="">@endif
             </div>
         </div>
     </div>
     
     <!-- NOMBRE Y CATEGORÍA -->
     <div class="row">
-        <div class="col-md-8" style="display: inline-block;">
-            <div class="row clearfix">
-                <div class="col-md-8" style="float: left;">
-                    <h4 style="font-size: 18px; margin-bottom:0; font-weight: lighter;"><span style="color: rgb(3,68,107);">{{ $product->family->name ?? '' }} </span>/ {{$product->family->name_en ?? '' }}</h4>
-                    <h3 style="font-size: 20px; margin-top:0;"><span style="color: rgb(3,68,107);">{{ $product->name ?? '' }}</span> / {{ $product->name_en ?? '' }}</h3>
-                </div>
-                <div class="col-md-4" style="float:right;  display:none">
-                    <div>
-                        <img src="https://i2.wp.com/www.citoparagon.es/wp-content/uploads/2019/10/smopyc-2020-logo-350x80.png?ssl=1" style="width: 80%; height: auto;" alt="">
-                    </div>
-                </div>
-            </div>
             <div class="col-md-12">
-                <table class="table table-striped table-sm" style="width:100%">
-                    <thead>
-                        <tr class="table-active">
-                            <th>Ref</th>
-                            <th>Descripción / Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="padding-left: 4px;">{{ $product->model }}</td>
-                            <td style="padding-left: 4px;">{{ $product->description }}<br><span class="text-muted">{{ $product->description_en }}</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="row clearfix">
-                    <div class="col-md-6" style="display: inline-block;">
-                        <h4 class="text-start" style="color: rgb(3,68,107);">Datos técnicos:</h4>
-                        <ul style="padding-left: 15px;">
-                        @foreach ($attrs as $attr)
-                            @php $category = AdminCatalog::find($attr->attribute_id); @endphp
-                            <li>{{ $category->name }}{{ !empty($attr->text) ? ': ' . $attr->text : '' }}</li>
-                        @endforeach
-                        </ul>
-                    </div>
-                    <div class="col-md-6" style="float: right;">
-                        <h4 class="text-start text-muted">Features:</h4>
-                        <ul style="padding-left: 15px;">
-                        @foreach ($attrs as $attr)
-                            @php $category = AdminCatalog::find($attr->attribute_id); @endphp
-                            <li>{{ $category->name_en }}{{ !empty($attr->text_en) ? ': ' . $attr->text_en : '' }}</li>
-                        @endforeach
-                        </ul>
+                <h4 style="font-size: 18px; margin-bottom:0; font-weight: lighter;"><span style="color: rgb(3,68,107);">{{ $product->family->name ?? '' }} </span>/ {{$product->family->name_en ?? '' }}</h4>
+                <h3 style="font-size: 20px; margin-top:0;"><span style="color: rgb(3,68,107);">{{ $product->name ?? '' }}</span> / {{ $product->name_en ?? '' }}</h3>
+            </div>
+            <div class="row">
+                <div class="col-md-8" style="display: inline-block;">
+                    <table class="table table-striped table-sm" style="width:100%">
+                        <thead>
+                            <tr class="table-active">
+                                <th width="40px">Ref</th>
+                                <th>Descripción / Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding-left: 4px;" width="40px">{{ $product->model }}</td>
+                                <td style="padding-left: 4px;">{{ $product->description }}<br><span class="text-muted">{{ $product->description_en }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row clearfix">
+                        <div class="col-md-6" style="display: inline-block;">
+                            <h4 class="text-start" style="color: rgb(3,68,107);">Datos técnicos:</h4>
+                            <ul style="padding-left: 15px;">
+                            @foreach ($attrs as $attr)
+                                @php $category = AdminCatalog::find($attr->attribute_id); @endphp
+                                <li>{{ $category->name }}{{ !empty($attr->text) ? ': ' . $attr->text : '' }}</li>
+                            @endforeach
+                            </ul>
+                        </div>
+                        <div class="col-md-6" style="float: right;">
+                            <h4 class="text-start text-muted">Features:</h4>
+                            <ul style="padding-left: 15px;">
+                            @foreach ($attrs as $attr)
+                                @php $category = AdminCatalog::find($attr->attribute_id); @endphp
+                                <li>{{ $category->name_en }}{{ !empty($attr->text_en) ? ': ' . $attr->text_en : '' }}</li>
+                            @endforeach
+                            </ul>
+                        </div>
+                        <div style="clear:both;"></div>
+                        <div class="clearfix"></div>
                     </div>
                     <div style="clear:both;"></div>
-                    <div class="clearfix"></div>
-                </div>
-                <div style="clear:both;"></div>
-                <div class="row clearfix">
-                    <div class="col-md-12">
-                        <h4 style="color: rgb(3,68,107); font-size: 18px; margin-bottom:0; font-weight:bold;"><strong>{{ $product->model }}</strong></h4>
-                        <h3 style=" font-size: 18px; margin-top:0;"><span style="color: rgb(3,68,107);">MEMBRANA Y FILTROS </span>/ MEMBRANE AND FILTER</h3>
-                        <table class="table table-striped table-sm" style="width:100%">
-                            <thead>
-                                <tr class="table-active">
-                                    <th>Ref</th>
-                                    <th>Descripción / Description</th>
-                                    <th>Unidades</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($parts as $part)
-                                <tr>
-                                    <td style="padding-left: 4px;">{{ $part->reference }}</td>
-                                    <td style="padding-left: 4px;">{{ $part->name }}<br><span class="text-muted">{{ $part->name_en }}</span></td>
-                                    <td style="padding-left: 4px;">1 unidad</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="row clearfix">
+                        <div class="col-md-12">
+                            <h4 style="color: rgb(3,68,107); font-size: 18px; margin-bottom:0; font-weight:bold;"><strong>{{ $product->model }}</strong></h4>
+                            <h3 style=" font-size: 18px; margin-top:0;"><span style="color: rgb(3,68,107);">MEMBRANA Y FILTROS </span>/ MEMBRANE AND FILTER</h3>
+                            <table class="table table-striped table-sm" style="width:100%">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th>Ref</th>
+                                        <th>Descripción / Description</th>
+                                        <th>U.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($parts as $part)
+                                    <tr>
+                                        <td style="padding-left: 4px;">{{ $part->reference }}</td>
+                                        <td style="padding-left: 4px;">{{ $part->name }}<br><span class="text-muted">{{ $part->name_en }}</span></td>
+                                        <td style="padding-left: 4px; text-align: center">1</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4" style="float: right">
-            <div class="" style="position: relative; top: 50px; text-align: center;">
-                @if (!empty($mainImage)) <img src="{{ $mainImage }}" style="width: 200px; height: auto;" alt="">@endif
-                @if (!empty($techImage)) <img src="{{ $techImage }}" style="width: 200px; height: auto;" alt="">@endif
+                <div class="col-md-4" style="float: right">
+                    <div class="" style="text-align: center;">
+                        @if (!empty($mainImage)) <div><img src="{{ $mainImage }}" style="max-width: 200px; height: auto; max-height: 400px" alt=""></div>@endif
+                        @if (!empty($techImage)) <div><img src="{{ $techImage }}" style="width: 200px; height: auto;" alt=""></div>@endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>

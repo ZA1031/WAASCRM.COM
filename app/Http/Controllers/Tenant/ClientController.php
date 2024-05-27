@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
+use App\Models\Central\AdminCatalog;
 use App\Models\Tenant\Address;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
+use App\Models\Tenant\TenantProduct;
 use App\Models\Tenant\TenantUser;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -17,6 +19,7 @@ class ClientController extends Controller
     public function index()
     {
         $isClient = $this->isClientPage();
+        $st = request()->input('st');
         
         $filters = [];
         $filters[] = ['label' => 'Buscar', 'type' => 'text', 'name' => 'q'];
@@ -30,7 +33,10 @@ class ClientController extends Controller
         return Inertia::render('Tenant/Clients/ClientList', [
             'title' => $isClient ? 'Clientes' : 'Contactos', 
             'isClient' => $isClient,
-            'filters' => $filters
+            'filters' => $filters,
+            'filtered' => [
+                'st' => $st,
+            ]
         ]);
     }
 
@@ -59,6 +65,8 @@ class ClientController extends Controller
             $cl->address_complete = $addr;
             $cl->budgetsLigths = $cl->budgetsLigths();
             $cl->tasksLights = $cl->tasksLights();
+            $cl->expired = $cl->isExpired();
+            $cl->last_change = LerpH::showElapsedDays($cl->created_at);
             return $cl;
         });
         
@@ -68,6 +76,17 @@ class ClientController extends Controller
     public function create()
     {
         $isClient = $this->isClientPage();
+        $famlies = AdminCatalog::where('type', 5)->get()->map(function($fm){
+            $fm->products = TenantProduct::where('family_id', $fm->id)->get()->map(function($pr){
+                $pr->label = $pr->final_name;
+                $pr->value = $pr->id;
+                return $pr;
+            });
+            $fm->label = $fm->name;
+            $fm->value = $fm->id;
+            return $fm;
+        });
+
         return Inertia::render('Tenant/Clients/ClientForm', [
             'title' => 'Agregar '. ($isClient ? 'Cliente' : 'Contacto'),
             'isClient' => $isClient,
@@ -76,7 +95,8 @@ class ClientController extends Controller
             'origins' => Catalog::select('name as label', 'id as value')->where('type', 1)->get(),
             'activities' => Catalog::select('name as label', 'id as value')->where('type', 5)->get(),
             'users' => TenantUser::select('name as label', 'id as value')->get(),
-            'addresses' => []
+            'addresses' => [],
+            'families' => $famlies
         ]);
     }
 
@@ -84,6 +104,18 @@ class ClientController extends Controller
     {
         $client = Client::find($uid);
         $isClient = $this->isClientPage();
+
+        $famlies = AdminCatalog::where('type', 5)->get()->map(function($fm){
+            $fm->products = TenantProduct::where('family_id', $fm->id)->get()->map(function($pr){
+                $pr->label = $pr->final_name;
+                $pr->value = $pr->id;
+                return $pr;
+            });
+            $fm->label = $fm->name;
+            $fm->value = $fm->id;
+            return $fm;
+        });
+
         return Inertia::render('Tenant/Clients/ClientForm', [
             'title' => 'Editar '.($isClient ? 'Cliente' : 'Contacto'),
             'isClient' => $isClient,
@@ -92,7 +124,8 @@ class ClientController extends Controller
             'origins' => Catalog::select('name as label', 'id as value')->where('type', 1)->get(),
             'activities' => Catalog::select('name as label', 'id as value')->where('type', 5)->get(),
             'users' => TenantUser::select('name as label', 'id as value')->get(),
-            'addresses' => $client->addresses
+            'addresses' => $client->addresses,
+            'families' => $famlies
         ]);
     }
 
@@ -185,7 +218,7 @@ class ClientController extends Controller
         return redirect()->back()->with('message', 'Cliente borrado correctamente.');
     }
 
-    private function upsertAddresses($request, $client)
+    public function upsertAddresses($request, $client)
     {
         $savedAddresses = $client->addresses;
         $uploaded = $request->input('addresses', []);
@@ -250,7 +283,14 @@ class ClientController extends Controller
             'company_name' => 'required|max:191',
             'status_id' => 'required',
             'external_id' => 'max:191|unique:clients,external_id,'.$id,
-        ]);
+        ], 
+        [],
+        [
+            'company_name' => 'Nombre de la empresa',
+            'status_id' => 'Estado',
+            'external_id' => 'Referencia',
+        ]
+        );
     }
 
     private function isClientPage()

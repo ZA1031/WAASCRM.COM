@@ -15,7 +15,7 @@ import TrafficLights from "@/Template/Components/TrafficLights";
 import FilterTable from "@/Template/Components/FilterTable";
 import Address from "@/Template/Components/Address";
 
-export default function ClientList({ auth, title, isClient, filters}) {
+export default function ClientList({ auth, title, isClient, filters, filtered}) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
     const [tooltip, setTooltip] = useState(false);
@@ -31,7 +31,7 @@ export default function ClientList({ auth, title, isClient, filters}) {
     }
 
     useEffect(() => {
-        getClients();
+        getClients(filtered);
     }, [deleteCounter]);
 
     const tableColumns = [
@@ -39,16 +39,16 @@ export default function ClientList({ auth, title, isClient, filters}) {
             name: 'Referencia',
             selector: row => row['external_id'],
             sortable: true,
-            center: false,
+            center: false
         },
         {
             name: 'Nombre',
             selector: (row) => {
                 return (
-                    <>
+                    <div className={row['expired'] == 1 ? 'text-warning' : (row['expired'] == 2 ? 'text-danger' : '')}>
                         <div>{row['company_name']}</div>
                         <div><small>{row['business_name']}</small></div>
-                    </>
+                    </div>
                 )
             },
             sortable: true,
@@ -64,14 +64,11 @@ export default function ClientList({ auth, title, isClient, filters}) {
             name: 'Dirección',
             selector: (row) => <Address address={row['address_complete'] ?? {}} />,
             sortable: true,
-            center: false,
+            center: false
         },
         {
             name: 'Email / Teléfono',
             selector: row => {
-                let parts = [];
-                if (row['email']) parts.push(row['email']);
-                if (row['phone']) parts.push(row['phone']);
                 return (
                     <>
                         {row['email'] && <div><Email email={row['email']} /></div>}
@@ -88,29 +85,32 @@ export default function ClientList({ auth, title, isClient, filters}) {
             selector: (row) => {
                 return (
                     <>
-                        <div className={`badge bg-success`}>{row['status']?.name}</div>
+                        <div><div className={`badge bg-success`}>{row['status']?.name}</div></div>
+                        <div className={`badge badge-primary`}>Hace {row['last_change']}</div> 
                     </>
                 )
             },
             sortable: true,
             center: false,
-        },
-        {
-            name: 'Pr.',
-            selector: (row) => <TrafficLights data={row['tasksLights']} />,
-            sortable: false,
-            center: false,
+            maxWidth: "130px"
         },
         {
             name: 'A.',
-            selector: (row) => <TrafficLights data={row['budgetsLigths']} />,
+            selector: (row) => <TrafficLights data={row['tasksLights']} url={route('tasks', {'cid' : row['id'], 'back' : isClient ? 'clients' : 'contacts'})} />,
             sortable: false,
             center: false,
+            maxWidth: "100px"
+        },
+        {
+            name: 'Pr.',
+            selector: (row) => <TrafficLights data={row['budgetsLigths']} url={route('budgets.index', row['id']) + '?'}/>,
+            sortable: false,
+            center: false,
+            maxWidth: "100px"
         },
         {
             name: 'Acciones',
             selector: (row) => {
-                console.log(row)
                 return (
                     <>
                         <Icon icon="Eye" id={'Eye-' + row['id']} tooltip="Ver" onClick={() => router.visit(route(isClient ? 'clients.show' : 'contacts.show', row['id']))}  className="me-1"/>
@@ -131,7 +131,7 @@ export default function ClientList({ auth, title, isClient, filters}) {
                         />
                         }
                         <Icon icon="MessageSquare" id={'msg-' + row['id']} tooltip="Comentarios" onClick={() => {toggleNotesModal(); setClientId(row['id'])}} className="me-1"/>
-                        <Icon icon="FileText" id={'ft-' + row['id']} tooltip="Presupuestos" onClick={() => router.visit(route('budgets.index', row['id']))}  className="me-1"/>
+                        <Icon icon="FileText" id={'ft-' + row['id']} tooltip="Propuestas" onClick={() => router.visit(route('budgets.index', row['id']))}  className="me-1"/>
                         <Edit onClick={() => router.visit(route(isClient ? 'clients.edit' : 'contacts.edit', row['id']))} id={'edit-' + row['id']}/>
                         <Trash onClick={() => handleDelete(route(isClient ? 'clients.destroy' : 'contacts.destroy', row['id']))} id={'delete-' + row['id']}/>
                     </>
@@ -139,6 +139,7 @@ export default function ClientList({ auth, title, isClient, filters}) {
             },
             sortable: false,
             center: true,
+            maxWidth: "150px"
         },
     ];
 

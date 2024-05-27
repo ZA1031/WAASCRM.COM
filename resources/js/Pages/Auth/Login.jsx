@@ -5,6 +5,7 @@ import InputError from '@/Template/Components/InputError';
 import React, { Fragment, useState, useEffect } from 'react';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
 import { Btn, H4, P } from '../../Template/AbstractElements';
+import wass from '../../../assets/images/logo/waas.png';
 
 export default function Login({ status, canResetPassword, prefix, logo }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -28,10 +29,10 @@ export default function Login({ status, canResetPassword, prefix, logo }) {
     };
 
     return (
-        <GuestLayout logo={logo}>
+        <GuestLayout logo={logo == '' ? wass : logo}>
             <Fragment>
                 <Form className='theme-form'>
-                    <H4>Ingreso al sistema</H4>
+                    <H4>Entrar a WaaS</H4>
                     <P>Ingresa tu email y contraseña para continuar</P>
                     <FormGroup>
                         <Label className='col-form-label'>Email</Label>

@@ -26,7 +26,7 @@ class DashboardController extends Controller
         ///Clientes
         $items = [];
         Catalog::where('type', 2)->get()->each(function($item) use (&$items){
-            $items[] = ['label' => $item->name, 'value' => Client::where('status_id', $item->id)->where('is_client', 1)->count()];
+            $items[] = ['label' => $item->name, 'value' => Client::where('status_id', $item->id)->where('is_client', 1)->count(), 'link' => route('clients', ['st' => $item->id])];
         });
         $stats[] = [
             'title' => 'Clientes',
@@ -37,7 +37,7 @@ class DashboardController extends Controller
         ///Contactos
         $items = [];
         Catalog::where('type', 3)->get()->each(function($item) use (&$items){
-            $items[] = ['label' => $item->name, 'value' => Client::where('status_id', $item->id)->where('is_client', 0)->count()];
+            $items[] = ['label' => $item->name, 'value' => Client::where('status_id', $item->id)->where('is_client', 0)->count(), 'link' => route('contacts', ['st' => $item->id])];
         });
         $stats[] = [
             'title' => 'Contactos',
@@ -50,9 +50,9 @@ class DashboardController extends Controller
             'title' => 'Tareas',
             'icon' => 'Database',
             'items' => [
-                ['label' => 'Pendientes', 'value' => Task::where('status', 0)->count()],
-                ['label' => 'Completadas', 'value' =>  Task::where('status', 1)->count()],
-                ['label' => 'Canceladas', 'value' =>  Task::where('status', 2)->count()]
+                ['label' => 'Pendientes', 'value' => Task::where('status', 0)->count(), 'link' => route('tasks', ['st' => 0])],
+                ['label' => 'Completadas', 'value' =>  Task::where('status', 1)->count(), 'link' => route('tasks', ['st' => 1])],
+                ['label' => 'Canceladas', 'value' =>  Task::where('status', 2)->count(), 'link' => route('tasks', ['st' => 2])],
             ]
         ];
 
@@ -61,11 +61,11 @@ class DashboardController extends Controller
             'title' => 'Instalaciones',
             'icon' => 'Tool',
             'items' => [
-                ['label' => 'P. Asignar', 'value' => Installation::where('is_maintenance', 0)->whereNotNull('assigned_to')->whereIn('status', [0,3])->count()],
-                ['label' => 'Pendientes', 'value' => Installation::where('is_maintenance', 0)->where('status', 0)->count()],
-                ['label' => 'Finalizadas', 'value' =>  Installation::where('is_maintenance', 0)->where('status', 1)->count()],
-                ['label' => 'Rechazadas', 'value' =>  Installation::where('is_maintenance', 0)->where('status', 2)->count()],
-                ['label' => 'Pospuestas', 'value' =>  Installation::where('is_maintenance', 0)->where('status', 3)->count()]
+                ['label' => 'P. Asignar', 'value' => Installation::where('is_maintenance', 0)->whereNotNull('assigned_to')->whereIn('status', [0,3])->count(), 'link' => route('installations.pendings')],
+                ['label' => 'Pendientes', 'value' => Installation::where('is_maintenance', 0)->where('status', 0)->count(), 'link' => route('installations')],
+                ['label' => 'Finalizadas', 'value' =>  Installation::where('is_maintenance', 0)->where('status', 1)->count(), 'link' => route('installations.all', ['st' => 1])],
+                ['label' => 'Rechazadas', 'value' =>  Installation::where('is_maintenance', 0)->where('status', 2)->count(), 'link' => route('installations.all', ['st' => 2])],
+                ['label' => 'Pospuestas', 'value' =>  Installation::where('is_maintenance', 0)->where('status', 3)->count(), 'link' => route('installations.all', ['st' => 3])],
             ]
         ];
 
@@ -74,17 +74,17 @@ class DashboardController extends Controller
             'title' => 'Mantenimientos',
             'icon' => 'Layers',
             'items' => [
-                ['label' => 'P. Asignar', 'value' => Installation::where('is_maintenance', 1)->whereNotNull('assigned_to')->whereIn('status', [0,3])->count()],
-                ['label' => 'Pendientes', 'value' => Installation::where('is_maintenance', 1)->where('status', 0)->count()],
-                ['label' => 'Finalizadas', 'value' =>  Installation::where('is_maintenance', 1)->where('status', 1)->count()],
-                ['label' => 'Rechazadas', 'value' =>  Installation::where('is_maintenance', 1)->where('status', 2)->count()],
-                ['label' => 'Pospuestas', 'value' =>  Installation::where('is_maintenance', 1)->where('status', 3)->count()]
+                ['label' => 'P. Asignar', 'value' => Installation::where('is_maintenance', 1)->whereNotNull('assigned_to')->whereIn('status', [0,3])->count(), 'link' => route('maintenances.pendings')],
+                ['label' => 'Pendientes', 'value' => Installation::where('is_maintenance', 1)->where('status', 0)->count(), 'link' => route('maintenances')],
+                ['label' => 'Finalizadas', 'value' =>  Installation::where('is_maintenance', 1)->where('status', 1)->count(), 'link' => route('maintenances.all', ['st' => 1])],
+                ['label' => 'Rechazadas', 'value' =>  Installation::where('is_maintenance', 1)->where('status', 2)->count(), 'link' => route('maintenances.all', ['st' => 2])],
+                ['label' => 'Pospuestas', 'value' =>  Installation::where('is_maintenance', 1)->where('status', 3)->count(), 'link' => route('maintenances.all', ['st' => 3])],
             ]
         ];
 
-        ///Presupuestos
+        ///Propuestas
         $stats[] = [
-            'title' => 'Presupuestos',
+            'title' => 'Propuestas',
             'icon' => 'FileText',
             'items' => [
                 ['label' => 'Pendientes', 'value' => Budget::where('status', 0)->count()],

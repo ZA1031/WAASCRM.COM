@@ -60,7 +60,7 @@ class ClientHistory extends Model
                 return empty($this->extra) ? 'Se creo la tarea '. $task->title : 'Se cambio al estado '. ($this->extra == 1 ? 'Completado' : 'Cancelado');
             case 4: 
                 $budget = Budget::where('id', $this->type_id)->first();
-                return empty($this->extra) ? 'Se creo el presupuesto #'. $budget->id : 'Se cambio al estado '. ($this->extra == 1 ? 'Aprobado' : 'Rechazado');
+                return empty($this->extra) ? 'Se creo el presupuesto #'. ($budget->id ?? '') : 'Se cambio al estado '. ($this->extra == 1 ? 'Aprobado' : 'Rechazado');
             case 5: return CommonNote::where('id', $this->type_id)->first()->notes ?? '';
             case 6: return 'Paso de Contacto a Cliente';
         }

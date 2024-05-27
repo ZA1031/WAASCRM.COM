@@ -8,6 +8,7 @@ use App\Models\Central\AdminCatalog;
 use App\Models\Central\ProductAttr;
 use App\Models\Central\SparePart;
 use App\Models\Tenant\TenantProduct;
+use App\Models\Tenant\TenantProductAttribute;
 use Attribute;
 use Hash;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ class ProductController extends Controller
     {
         $data = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->get()->map(function($pr){
             $pr->main_image = $pr->getMainImage();
+            $pr->family_name = $pr->family->name ?? '';
             return $pr;
         });
         
@@ -62,6 +64,12 @@ class ProductController extends Controller
         $product->inner_active = $request->input('inner_active') ? 1 : 0;
         $product->save();
 
+        TenantProductAttribute::where('product_id', $product->id)->update(['inner_active' => 0]);
+        $attributes = $request->input('attributes');
+        foreach ($attributes as $attr){
+            TenantProductAttribute::where('product_id', $product->id)->where('attribute_id', $attr)->update(['inner_active' => 1]);
+        }
+
         return redirect()->route('prs')->with('message', 'Datos guardados correctamente.');
     }
 
@@ -79,65 +87,14 @@ class ProductController extends Controller
 
     public function pdf($id){
         set_time_limit(300);
-        $products = [];
         $product = TenantProduct::find($id);
-        if ($product) $products[] = $product;
 
-        // PARTES
-        $pids = explode(',', $product->parts);
-        $parts = new Collection();
-        foreach ($pids as $pid){
-            if (!empty($pid)){
-                $part = SparePart::find($pid);
-                $parts->push($part);
-            }
-        }
-        
-        //ATRIBUTOS
-        $attrs = ProductAttr::where('product_id', $id)->get();
+        $data[] = Lerph::getTechPdf($product);
 
-        $files = $product->getFilesData(1);
-        $mainImage = '';
-        $techImage = '';
-        foreach ($files as $file){
-            if ($file['image_type'] == 1) $mainImage = $file['img'];
-            if ($file['image_type'] == 2) $techImage = $file['img'];
-        }
-
-        $data[] = [
-            'product' => $product,
-            'parts' => $parts,
-            'attrs' => $product->attributes,
-            'mainImage' => $mainImage,
-            'techImage' => $techImage
-        ];
-
-        // dd($mainImage, $techImage);
-        // $logo = public_path('pdf/logo_producto.png'); 
         $pdf = Pdf::loadView('pdfs.pdf1', [
             'data' => $data
         ]);
 
         return $pdf->stream('pdf1.pdf');
-
-        // return view('pdfs.pdf1', [
-        //     'product' => $product,
-        //     // 'logo' => $logo,
-        //     'parts' => $parts,
-        //     'attrs' => $attrs,
-        //     'mainImage' => $mainImage,
-        //     'techImage' => $techImage
-        // ]);
-    }
-
-    public function pdf2($id)
-    {
-        $pdf = Pdf::loadView('pdfs.pdf2', [
-        ]);
-
-        return $pdf->stream('pdf2.pdf');
-
-        return view('pdfs.pdf2', [
-        ]);
     }
 }

@@ -194,7 +194,7 @@ export default function ClientView({ auth, title, isClient, client, addresses}) 
                                     <Btn attrBtn={{ color: 'primary save-btn btn-sm', onClick: toggleNotesModal}} >Agregar Nota</Btn>
                                 </div>
                             </CollapseCard>
-                            <CollapseCard title="Presupuestos">
+                            <CollapseCard title="Propuestas">
                                 {client.budgets.map((item, index) => {
                                     return (
                                         <Media className="mt-2">

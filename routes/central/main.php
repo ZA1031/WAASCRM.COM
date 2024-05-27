@@ -26,6 +26,7 @@ Route::post('/catalog/{type}/list', [AdminCatalogController::class, 'list'])->na
 Route::post('/catalog/{type}/store', [AdminCatalogController::class, 'store'])->name('catalog.store');
 Route::delete('/catalog/{adminCatalog}', [AdminCatalogController::class, 'destroy'])->name('catalog.destroy');
 Route::get('/catalog/{type}/{id}', [AdminCatalogController::class, 'get'])->name('catalog.get');
+Route::post('/catalog/{type}/updateOrder', [AdminCatalogController::class, 'updateOrder'])->name('catalog.updateOrder');
 
 ///Products
 Route::resource('/products', ProductsController::class, ['names' => ['index' => 'products']]);

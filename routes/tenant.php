@@ -20,3 +20,5 @@ Route::middleware([
         Lerph::requireFolder(__DIR__.'/tenant');
     });
 });
+
+require 'tenant-api.php';

@@ -63,8 +63,8 @@ export default function ClientList({ auth, title, isClient, statuses}) {
                                                     <div className="kanban-item" key={item.id} data-id={item.id}>
                                                         <div className="kanban-box">
                                                             <span className="date">{item.external_id}</span>
-                                                            <span className={`badge badge-primary f-right`}>{item.origin?.name ?? ''}</span> 
-                                                            <H6>{item.company_name}</H6>
+                                                            <span className={`badge badge-primary f-right`}>{item.last_change}</span> 
+                                                            <H6 attrH6={{ className: 'pointer', onClick : () => router.visit(route(isClient ? 'clients.show' : 'contacts.show', item.id)) }}>{item.company_name}</H6>
                                                             <Media>
                                                                 <Image attrImage={{
                                                                     className: 'img-50 me-2 mt-1 rounded-circle', src:

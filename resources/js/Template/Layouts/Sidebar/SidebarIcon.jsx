@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import cubaimg from "../../../../assets/images/logo/logo-icon.png"
+import waas from "../../../../assets/images/logo/waas.png"
 import CustomizerContext from '../../_helper/Customizer';
 
 const SidebarIcon = () => {
@@ -10,7 +10,7 @@ const SidebarIcon = () => {
       <Link to={`/dashboard/default/${layoutURL}`}>
         <img
           className="img-fluid"
-          src={cubaimg}
+          src={waas}
           alt=""
         />
       </Link>

@@ -31,6 +31,9 @@ class CheckPermission
         } 
 
         $company = Company::first();
+        if (!$company || $company->status != 1) {
+            abort(403, 'Access denied');
+        }
         define('COMPANY', $company);
         define('ALLOWED_PRODUCTS', explode(',', $company->products));
 

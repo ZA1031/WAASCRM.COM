@@ -3,6 +3,9 @@
 namespace App\Models\Central;
 
 use App\Models\Main\Tenant;
+use App\Models\Tenant\TenantUser;
+use App\Models\User;
+use Hash;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -47,10 +50,53 @@ class Company extends Model
         });
 
         static::created(function ($company) {
-            if (!empty(tenant('id'))) return;
-            $tenant = Tenant::find($company->tenant_id);
-            if (!$tenant) return;
-            Company::create($company->toArray());
+            if (!empty($company->tenant_id)) return;
+
+            ////Create Tenant
+            $tenant = Tenant::create();
+            $company->tenant_id = $tenant->id;
+            $company->save();
+
+            ///Add Domain
+            $tenant->createDomain(['domain' => $company->domain.'.'.env('APP_DOMAIN')]);
+
+            ///Create Company, User and Products
+            $products = Product::all();
+            $parts = SparePart::all();
+            $catalogs = AdminCatalog::all();
+            $tenant->run(function () use ($company, $products, $parts, $catalogs) {
+                Company::create($company->toArray());
+                TenantUser::create([
+                    'name' => 'Admin',
+                    'email' => $company->email,
+                    'password' => Hash::make('password'),
+                    'rol_id' => 0
+                ]);
+
+                foreach($catalogs as $catalog){
+                    $pr = AdminCatalog::create($catalog->toArray());
+                }
+
+                foreach($parts as $part){
+                    $pr = SparePart::create($part->toArray());
+                }
+
+                foreach($products as $product){
+                    $data = $product->toArray();
+                    unset($data['deleted_at']);
+                    unset($data['created_at']);
+                    unset($data['updated_at']);
+                    $pr = Product::create($data);
+
+                    $product->attributes()->each(function ($attribute) use ($pr){
+                        $pr->attributes()->create($attribute->toArray());
+                    });
+
+                    $product->files()->each(function ($image) use ($pr){
+                        $pr->images()->create($image->toArray());
+                    });
+                }
+            });
         });
 
         static::updated(function ($company) {
@@ -61,10 +107,27 @@ class Company extends Model
             }else {
                 $tenant = Tenant::find($company->tenant_id);
                 if (!$tenant) return;
-                tenancy()->initialize($tenant);
-                Company::first()->update($company->toArray());
+
+                $tenant->domains()->each(function ($domain) use ($company){
+                    $domain->update(['domain' => $company->domain.'.'.env('APP_DOMAIN')]);
+                });
+
+                $tenant->run(function () use ($company) {
+                    $cc = Company::first();
+                    if ($cc) {
+                        $cc->update($company->toArray());
+                    }
+                });
             }
            
+        });
+
+        static::deleted(function ($company) {
+            if (!empty(tenant('id'))) return;
+            $tenant = Tenant::find($company->tenant_id);
+            if (!$tenant) return;
+            $tenant->domains()->delete();
+            $tenant->delete();
         });
     }
 

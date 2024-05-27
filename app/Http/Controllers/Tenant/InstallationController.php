@@ -43,8 +43,9 @@ class InstallationController extends Controller
     private function showIndex($title, $pending)
     {
         $isInst = $this->isInstallationPage();
+        $st = request()->input('st');
 
-        $tecnics = TenantUser::select('name as label', 'last_name', 'id as value')->where('rol_id', 5)->get()->map(function($t){
+        $tecnics = TenantUser::select('name as label', 'last_name', 'id as value')->whereIn('rol_id', [3, 5])->get()->map(function($t){
             $t->label = $t->label . ' ' . $t->last_name;
             return $t;
         });
@@ -63,7 +64,10 @@ class InstallationController extends Controller
         $filters = [];
         $filters[] = [
             'label' => 'Estado', 
-            'options' => [['value' => 0, 'label' => 'Pendiente'], ['value' => 1, 'label' => 'Finalizado'], ['value' => 2, 'label' => 'Rechazado']],
+            'options' => [
+                ['value' => 0, 'label' => 'Pendiente', 'selected' => $st == 0], 
+                ['value' => 1, 'label' => 'Finalizado', 'selected' => $st == 1], 
+                ['value' => 2, 'label' => 'Rechazado', 'selected' => $st == 2]],
             'type' => 'select', 
             'name' => 'st'
         ];
@@ -83,7 +87,10 @@ class InstallationController extends Controller
             'clients' => $clients,
             'isInstallation' => $isInst,
             'products' => TenantProduct::select('name as label', 'id as value', 'inner_prices as prices')->whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get(),
-            'filters' => $filters
+            'filters' => $filters,
+            'filtered' => [
+                'st' => $st,
+            ]
         ]);
     }
 
@@ -111,7 +118,9 @@ class InstallationController extends Controller
             $inst->client_data = $inst->client;
             $inst->address;
             $inst->product;
+            $inst->enabled = $inst->isEnabled();
             $inst->installation_date = Lerph::showDateTime($inst->installation_date);
+            
             return $inst;
         });
         
@@ -120,12 +129,17 @@ class InstallationController extends Controller
 
     public function edit($id)
     {
+        
         $installation = Installation::find($id);
         $installation->client;
         $installation->address;
         $installation->product;
         $installation->assigned;
         $installation->installation_date = Lerph::showDateTime($installation->installation_date);
+        $installation->next_maintenance = $installation->budgetDetail->maintenance ? $installation->budgetDetail->maintenance : 12;
+
+        //if (!$installation->isEnabled()) return redirect()->route('installations')->with('error', 'No puedes editar esta instalación.');
+
         return Inertia::render('Tenant/Installations/InstallationForm', [
             'title' => 'Realizar Instalación',
             'installation' => $installation,
@@ -212,6 +226,7 @@ class InstallationController extends Controller
 
         ////Creo el mantenimiento
         if ($installation->status == 1){
+            if (empty($installation->next_maintenance)) $installation->next_maintenance = 12;
             $maintence = new Installation([
                 'client_id' => $installation->client_id,
                 'address_id' => $installation->address_id,
@@ -245,12 +260,28 @@ class InstallationController extends Controller
     }
 
     private function validateForm(Request $request, $id){
-        return $request->validate([
-            'client_name' => 'required|string:max:100',
-            'client_dni' => 'required|string:max:100',
-            'serial_number' => 'required|string:max:100',
-            'next_maintenance' => 'required',
-        ]);
+        if ($request->input('finished') != 1){
+            $files = ['files0', 'files1', 'files2', 'files3'];
+            foreach ($files as $f){
+                if (!$request->has($f) || count($request->input($f)) == 0){
+                    throw ValidationException::withMessages(['images' => 'Por favor suba todos los archivos para poder cerrar la instalación.']);
+                }
+            }
+
+            return $request->validate([
+                'client_name' => 'required|string:max:100',
+                'client_dni' => 'required|string:max:100',
+                'serial_number' => 'required|string:max:100',
+                'next_maintenance' => 'required',
+            ],
+            [],
+            [
+                'client_name' => 'Nombre del Cliente',
+                'client_dni' => 'DNI del Cliente',
+                'serial_number' => 'Número de Serie',
+                'next_maintenance' => 'Próximo Mantenimiento',
+            ]);
+        }
     }
 
     private function validateFormCreate(Request $request){
@@ -261,6 +292,15 @@ class InstallationController extends Controller
             'installation_date' => 'required|date_format:Y-m-d\TH:i|after_or_equal:now',
             'hours' => 'required',
             'assigned_to' => 'required',
+        ],
+        [],
+        [
+            'client_id' => 'Cliente',
+            'product_id' => 'Producto',
+            'address_id' => 'Dirección',
+            'installation_date' => 'Fecha de Instalación',
+            'hours' => 'Horas',
+            'assigned_to' => 'Técnico',
         ]);
     }
 

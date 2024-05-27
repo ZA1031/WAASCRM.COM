@@ -6,6 +6,7 @@ import CubaIconDark from '../../../../assets/images/logo/logo_dark.png';
 import CustomizerContext from '../../_helper/Customizer';
 import { useSelector } from 'react-redux'
 import { Link } from '@inertiajs/react';
+import waas from '../../../../assets/images/logo/waas.png';
 
 const SidebarLogo = () => {
   const actualUser = useSelector((state) => state.auth.value);
@@ -22,12 +23,12 @@ const SidebarLogo = () => {
   return (
     <div className='logo-wrapper'>
       {layout1 !== 'compact-wrapper dark-sidebar' && layout1 !== 'compact-wrapper color-sidebar' && mixLayout ? (
-        <Link href={`/`}>
-          <Image attrImage={{ className: 'img-fluid d-inline', src: `${actualUser.company_logo}`, alt: ''}} />
+        <Link href={actualUser.is_tenant ? `/` : `/central-dashboard`}>
+          <Image attrImage={{ className: 'img-fluid d-inline', src: `${actualUser.is_tenant ? actualUser.company_logo : waas}`, alt: ''}} />
         </Link>
       ) : (
-        <Link href={`/`}>
-          <Image attrImage={{ className: 'img-fluid d-inline', src: `${actualUser.company_logo}`, alt: '' }} />
+        <Link href={actualUser.is_tenant ? `/` : `/central-dashboard`}>
+          <Image attrImage={{ className: 'img-fluid d-inline', src: `${actualUser.is_tenant ? actualUser.company_logo : waas}`, alt: '' }} />
         </Link>
       )}
       <div className='back-btn' onClick={() => openCloseSidebar()}>

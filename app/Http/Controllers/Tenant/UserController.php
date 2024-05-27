@@ -114,6 +114,15 @@ class UserController extends Controller
             'phone' => 'max:100',
             'full_address' => 'max:500',
             'rol_id' => !$profile ? 'required' : '',
+        ],
+        [],
+        [
+            'name' => 'Nombre',
+            'last_name' => 'Apellidos',
+            'email' => 'Correo',
+            'phone' => 'Teléfono',
+            'full_address' => 'Dirección',
+            'rol_id' => 'Rol'
         ]);
     }
 

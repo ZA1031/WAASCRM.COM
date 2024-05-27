@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Illuminate\Database\Eloquent\Collection;
 
 class BudgetController extends Controller
 {
@@ -25,14 +26,18 @@ class BudgetController extends Controller
     {
         $client = Client::findOrFail($cid);
         return Inertia::render('Tenant/Budgets/BudgetList', [
-            'title' => 'Presupuestos de '.$client->company_name,
+            'title' => 'Propuestas de '.$client->company_name,
             'cid' => $cid,
+            'st'=> request()->input('st'),
         ]);
     }
 
     public function list(Request $request, $cid)
     {
-        $data = Budget::where('client_id', $cid)->get()->map(function($pr){
+        $budgets = Budget::where('client_id', $cid);
+        $st = $request->input('st');
+        if ($st !== null && $st !== 'null') $budgets = $budgets->where('status', $request->st);
+        $data = $budgets->get()->map(function($pr){
             $pr->status_name = $pr->getStatus();
             return $pr;
         });
@@ -164,6 +169,10 @@ class BudgetController extends Controller
 
         return $request->validate([
             'products' => 'required',
+        ],
+        [],
+        [
+            'products' => 'Productos',
         ]);
     }
 
@@ -175,7 +184,17 @@ class BudgetController extends Controller
             'maintenance' => ['required'],
             'dues' => ['required'],
             'iva' => ['required']
-        ]);
+        ], 
+        [],
+        [
+            'price' => 'Precio',
+            'installation' => 'Instalación',
+            'type' => 'Tipo',
+            'maintenance' => 'Mantenimiento',
+            'dues' => 'Plazos',
+            'iva' => 'IVA'
+        ]
+        );
         return redirect()->back()->with('message', 'Detalles guardados correctamente.');
     }
 
@@ -201,8 +220,10 @@ class BudgetController extends Controller
             $budget->save();
 
             $detail = BudgetDetail::find($request->detail_id);
-            $detail->status = 1;
-            $detail->save();
+            if ($detail){
+                $detail->status = 1;
+                $detail->save();
+            }
 
             ///Generate Installations
             $quantities = explode(',', $budget->quantities);
@@ -230,6 +251,10 @@ class BudgetController extends Controller
     private function validateAcceptForm(Request $request){
         return $request->validate([
             'detail_id' => ['required']
+        ],
+        [],
+        [
+            'detail_id' => 'Detalle'
         ]);
     }
 
@@ -250,28 +275,58 @@ class BudgetController extends Controller
         $date = (new Carbon($budget->created_at))->format('Y-m-d');
 
         $signature = Storage::disk('public')->url('pdf/firma.jpg');
+
+        $data = [];
+        foreach ($products as $product) $data[] = Lerph::getTechPdf($product);
         
         $pdf = Pdf::loadView('pdfs.pdf2', [
-            'products' => $products,
+            'data' => $data,
             'budgets' => $budgets,
             'date' => $date,
             'signature' => $signature,
-            // 'mainImage' => $mainImage,
-            // 'techImage' => $techImage
-
+            'budget' => $budget,
         ]);
 
         return $pdf->stream('pdf2.pdf');
 
-        // return view('pdfs.pdf2', [
-        //     'products' => $products,
-        //     'budgets' => $budgets,
-        //     'date' => $date,
-        //     'signature' => $signature,
-                // 'mainImage' => $mainImage,
-                // 'techImage' => $techImage
+    }
 
-        // ]);
+    public function horecaStore(Request $request)
+    {
+        $request->validate([
+            'client_id' => 'required',
+            'product_id' => 'required',
+        ],
+        [],
+        [
+            'client_id' => 'Cliente',
+            'product_id' => 'Producto',
+        ]);
 
+        
+        $budget = new Budget($request->except(['id']));
+        $budget->products = $request->input('product_id');
+        $budget->quantities = 1;
+        $budget->is_horeca = 1;
+        $budget->save();
+
+        $budget->details()->create([
+            'installation' => 0,
+            'installation_cost' => 0,
+            'init_amount' => 0,
+            'last_amount' => 0,
+            'type' => 0,
+            'maintenance' => 0,
+            'extra_id' => 0,
+            'dues' => 0,
+            'price' => 0,
+            'discount' => 0,
+            'notes' => '',
+            'iva' => 0,
+            'status' => 1,
+            'horeca_data' => json_encode($request->except(['id', 'product_id', 'client_id']))
+        ]);
+
+        return redirect()->back()->with('message', 'Propuesta genedara correctamente.');
     }
 }

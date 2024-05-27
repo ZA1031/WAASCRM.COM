@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from '@inertiajs/react'
 import SvgIcon from '../../Components/Common/Component/SvgIcon';
@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 
 const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClass }) => {
   const { layout } = useContext(CustomizerContext);
+  const [isHidden, setIsHidden] = useState(false);
   const layout1 = localStorage.getItem('sidebar_layout') || layout;
 
   const id = window.location.pathname.split('/').pop();
@@ -15,6 +16,9 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
   const CurrentPath = window.location.pathname;
   const actualUser = useSelector((state) => state.auth.value);
   const ITEMS = actualUser.is_tenant ? MENUITEMS_TENANT : MENUITEMS;
+  
+
+  useEffect(() => {}, [layoutId, ITEMS, setNavActive]);
 
   const { t } = useTranslation();
   const toggletNavActive = (item) => {
@@ -56,14 +60,24 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
     <>
       {ITEMS.map((Item, i) => (
         <Fragment key={i}>
+          {Item.rols.indexOf(actualUser.rol_id) !== -1 &&
           <li className='sidebar-main-title'>
             <div>
+              
+              {Item.according ? 
+              <>
+                <h6 className='lan-1' onClick={() => setIsHidden(!isHidden)}>{t(Item.menutitle)}</h6>
+                <div className='according-menu'>{isHidden ? <i className='fa fa-angle-down mt-2 pt-1'></i> : <i className='fa fa-angle-right mt-2 pt-1'></i>}</div>
+              </>
+              :
               <h6 className='lan-1'>{t(Item.menutitle)}</h6>
+              }
             </div>
           </li>
+          }
           {Item.Items.map((menuItem, i) => (
-            <li className='sidebar-list' key={i}>
-              {menuItem.type === 'sub' ? (
+              <li className={`sidebar-list ${Item.according && !isHidden ? 'd-none' : ''}`} key={i}>
+              {menuItem.type === 'sub' && menuItem.rols.indexOf(actualUser.rol_id) !== -1 ? (
                 <a
                   href='javascript'
                   className={`sidebar-link sidebar-title ${CurrentPath.includes(menuItem.title.toLowerCase()) ? 'active' : ''} ${menuItem.active && 'active'}`}
@@ -82,7 +96,7 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
                 ''
               )}
 
-              {menuItem.type === 'link' ? (
+              {menuItem.type === 'link' && menuItem.rols.indexOf(actualUser.rol_id) !== -1 ? (
                 <Link href={menuItem.path} className={`sidebar-link sidebar-title link-nav  ${CurrentPath.includes(menuItem.title.toLowerCase()) ? 'active' : ''}`} onClick={() => toggletNavActive(menuItem)}>
                   <SvgIcon className='stroke-icon' iconId={`stroke-${menuItem.icon}`} />
                   <SvgIcon className='fill-icon' iconId={`fill-${menuItem.icon}`} />
@@ -98,7 +112,7 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
                   {menuItem.children.map((childrenItem, index) => {
                     return (
                       <li key={index}>
-                        {childrenItem.type === 'sub' ? (
+                        {childrenItem.type === 'sub' && childrenItem.rols.indexOf(actualUser.rol_id) !== -1 ? (
                           <a
                             href='javascript'
                             className={`${CurrentPath.includes(childrenItem?.title?.toLowerCase()) ? 'active' : ''}`}
@@ -117,7 +131,7 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
                           ''
                         )}
 
-                        {childrenItem.type === 'link' ? (
+                        {childrenItem.type === 'link' && childrenItem.rols.indexOf(actualUser.rol_id) !== -1 ? (
                           <Link
                             href={childrenItem.path}
                             className={`${CurrentPath.includes(childrenItem?.title?.toLowerCase()) ? 'active' : ''}`}
@@ -133,7 +147,7 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
                           <ul className='nav-sub-childmenu submenu-content' style={CurrentPath.includes(childrenItem?.title?.toLowerCase()) || childrenItem.active ? { display: 'block' } : { display: 'none' }}>
                             {childrenItem.children.map((childrenSubItem, key) => (
                               <li key={key}>
-                                {childrenSubItem.type === 'link' ? (
+                                {childrenSubItem.type === 'link' && childrenSubItem.rols.indexOf(actualUser.rol_id) !== -1 ? (
                                   <Link
                                     href={childrenSubItem.path}
                                     className={`${CurrentPath.includes(childrenSubItem?.title?.toLowerCase()) ? 'active' : ''}`}

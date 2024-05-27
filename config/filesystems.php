@@ -68,6 +68,14 @@ return [
             'throw' => false,
         ],
 
+        'parts' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/parts'),
+            'url' => env('APP_URL').'/storage/parts',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         'installations' => [
             'driver' => 'local',
             'root' => storage_path('app/public/installations'),

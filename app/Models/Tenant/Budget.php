@@ -18,7 +18,8 @@ class Budget extends Model
         'products',
         'quantities',
         'status',               /// 0: Pendiente, 1: Aprobado, 2: Rechazado
-        'rejection_reason'
+        'rejection_reason',
+        'is_horeca'
     ];
 
     protected $appends = [
@@ -74,7 +75,7 @@ class Budget extends Model
             if (empty($product)) continue;
             $pr = TenantProduct::find($product);
             if (!$pr) continue;
-            $txt[] = $pr->name . ' x' . $quantities[$key];
+            $txt[] = $pr->final_name . ' x' . $quantities[$key];
         }
         return implode(', ', $txt);
     }

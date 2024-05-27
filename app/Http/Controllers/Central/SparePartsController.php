@@ -34,17 +34,20 @@ class SparePartsController extends Controller
             'part' => new SparePart(),
             'products' => Product::select('name as label', 'id as value')->get(),
             'others' => [],
+            'types' => AdminCatalog::where('type', 6)->select('name as label', 'id as value')->get(),
         ]);
     }
 
     public function edit($part)
     {
         $part = SparePart::find($part);
+        $part->used_in = $part->getUsedIn();
         return Inertia::render('Central/SpareParts/SparePartForm', [
             'title' => 'Editar Recambio',
             'part' => $part,
             'products' => Product::select('name as label', 'id as value')->get(),
             'others' => $part->others,
+            'types' => AdminCatalog::where('type', 6)->select('name as label', 'id as value')->get(),
         ]);
     }
 
@@ -68,6 +71,15 @@ class SparePartsController extends Controller
 
         $this->updateOthers($request, $part);
 
+        ///Update image
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $name = $file->hashName();
+            $file->storeAs('', $name, 'parts');
+            $part->image = $name;
+            $part->save();
+        }
+
         return redirect()->route('parts')->with('message', 'Datos guardados correctamente.');
     }
 
@@ -84,6 +96,13 @@ class SparePartsController extends Controller
             'description' => 'max:500',
             'stock' => 'required|numeric',
             'reference' => 'max:100',
+        ],
+        [],
+        [
+            'name' => 'nombre',
+            'description' => 'descripción',
+            'stock' => 'stock',
+            'reference' => 'referencia',
         ]);
     }
 

@@ -12,6 +12,7 @@ import MainDataContext from '@/Template/_helper/MainData';
 import { Check, X }  from 'react-feather';
 import { Badge } from 'reactstrap';
 import { Image } from "react-bootstrap";
+import FilterTable from "@/Template/Components/FilterTable";
 
 export default function CompanyList({ auth, title}) {
     const [dataList, setDataList] = useState([]);
@@ -19,8 +20,8 @@ export default function CompanyList({ auth, title}) {
     const [tooltip, setTooltip] = useState(false);
     const toggle = () => setTooltip(!tooltip);
 
-    const getCompanies = async () => {
-        const response = await axios.post(route('companies.list'));
+    const getCompanies = async (d) => {
+        const response = await axios.post(route('companies.list'), d);
         setDataList(response.data);
     }
 
@@ -43,6 +44,7 @@ export default function CompanyList({ auth, title}) {
             },
             sortable: true,
             center: false,
+            maxWidth: "100px"
         },
         {
             name: 'Dominio',
@@ -56,6 +58,7 @@ export default function CompanyList({ auth, title}) {
             },
             sortable: true,
             center: false,
+            maxWidth: "150px"
         },
         {
             name: 'Nombre',
@@ -104,6 +107,7 @@ export default function CompanyList({ auth, title}) {
             },
             sortable: false,
             center: true,
+            maxWidth: "100px"
         },
     ];
 
@@ -113,19 +117,14 @@ export default function CompanyList({ auth, title}) {
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
 
-                <div className="shadow-sm">
-                    <DataTable
-                        data={dataList}
-                        columns={tableColumns}
-                        center={true}
-                        pagination
-                        highlightOnHover
-                        pointerOnHover
-                        customStyles={customStyles}
-                    />
-                </div>
+                <FilterTable
+                    dataList={dataList}
+                    tableColumns={tableColumns}
+                    filters={[]}
+                    getList={(d) => getCompanies(d)}
+                />
 
-                <AddBtn className='d-none' onClick={() => router.visit(route('companies.create'))} />
+                <AddBtn onClick={() => router.visit(route('companies.create'))} />
             </Fragment>
         </AuthenticatedLayout>
     )

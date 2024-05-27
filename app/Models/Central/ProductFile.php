@@ -32,8 +32,9 @@ class ProductFile extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                ProductFile::where('id', $file->id)->delete();
+                $tenant->run(function () use ($file) {
+                    ProductFile::where('id', $file->id)->delete();
+                });
             }
         });
 
@@ -41,8 +42,9 @@ class ProductFile extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                ProductFile::create($file->toArray());
+                $tenant->run(function () use ($file) {
+                    ProductFile::create($file->toArray());
+                });
             }
         });
 
@@ -50,8 +52,9 @@ class ProductFile extends Model
             if (!empty(tenant('id'))) return;
             $tenants = Tenant::all();
             foreach ($tenants as $tenant){
-                tenancy()->initialize($tenant);
-                ProductFile::where('id', $file->id)->update($file->toArray());
+                $tenant->run(function () use ($file) {
+                    ProductFile::where('id', $file->id)->update($file->toArray());
+                });
             }
         });
     }
@@ -63,6 +66,6 @@ class ProductFile extends Model
 
     public function getUrlAttribute()
     {
-        return !empty($this->file) ? Storage::disk('products')->url($this->product->id.'/'.$this->file) : 'https://ui-avatars.com/api/?name=Aqua&color=7F9CF5&background=EBF4FF';
+        return !empty($this->file) ? Storage::disk('products')->url($this->product_id.'/'.$this->file) : 'https://ui-avatars.com/api/?name=Aqua&color=7F9CF5&background=EBF4FF';
     }
 }

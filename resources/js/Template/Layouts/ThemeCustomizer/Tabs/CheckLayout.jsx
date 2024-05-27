@@ -15,6 +15,7 @@ import romo from '../../../../../assets/images/layouts/romo.jpg';
 import seoul from '../../../../../assets/images/layouts/seoul.jpg';
 import singapore from '../../../../../assets/images/layouts/singapore.jpg';
 import tokyo from '../../../../../assets/images/layouts/tokyo.jpg';
+import wass from '../../../../../assets/images/logo/waas.png';
 import { classes } from '../../../Data/Layouts';
 import { useNavigate } from 'react-router';
 
@@ -121,7 +122,7 @@ const CheckLayout = () => {
           //
         >
           <div className='layout-img'>
-            <Media src={london} className='img-fluid' alt='' />
+            <Media src={wass} className='img-fluid' alt='' />
             <H6>London</H6>
           </div>
         </LI>
