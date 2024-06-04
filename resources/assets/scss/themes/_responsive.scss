@@ -4423,7 +4423,7 @@
 
               .profile-media {
                 img {
-                  width: 25px;
+                  width: 100%;
                 }
               }
             }
@@ -4456,12 +4456,13 @@
       .page-body-wrapper {
         .page-body {
           margin-top: 53px;
+          min-height: calc(100dvh - 107px);
         }
 
         &.sidebar-wrapper {
           .sidebar-main {
             .sidebar-links {
-              height: calc(100vh - 79px);
+              height: calc(100dvh - 79px);
             }
           }
         }

@@ -123,7 +123,7 @@ export default function CompanyList({ auth, title}) {
                     filters={[]}
                     getList={(d) => getCompanies(d)}
                 />
-
+                
                 <AddBtn onClick={() => router.visit(route('companies.create'))} />
             </Fragment>
         </AuthenticatedLayout>

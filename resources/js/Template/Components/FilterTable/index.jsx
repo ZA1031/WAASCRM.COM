@@ -80,7 +80,7 @@ const FilterTable = (props) => {
 
     return (
         <>
-            <div className="shadow-sm" key={'filter-table-shadow'}>
+            <div className="shadow-sm filter-table" key={'filter-table-shadow'}>
                 <DataTable
                     data={filteredItems}
                     columns={tableColumns}

@@ -6,12 +6,7 @@ export default function Dashboard({ auth }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
-
-            <div className="mt-5">
-                <div className="row mt-2">
-                    <DashboardCard title="Facebook" icon="fa fa-facebook" />
-                </div>
-            </div>
+            
 
         </AuthenticatedLayout>
     );

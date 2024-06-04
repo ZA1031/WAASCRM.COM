@@ -16,27 +16,18 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Mail;
 use Storage;
 
 class DashboardController extends Controller
 {
     public function index(){
 
-        $stats = [];
-        ///Clientes
-        $items = [];
-        
-        $stats[] = [
-            'title' => 'Empresas',
-            'icon' => 'UserCheck',
-            'items' => [
-                ['label' => 'Activas', 'value' => Company::where('status', 1)->count()],
-                ['label' => 'Inactivas', 'value' =>  Company::where('status', 0)->count()]
-            ]
-        ];
+        return Inertia::render('Dashboard');
+    }
 
-        return Inertia::render('Tenant/Dashboard', [
-            'stats' => $stats
-        ]);
+    public function testMail(){
+        Mail::raw('Hello World!', function($msg) {$msg->to('test@test.com')->subject('Test Email'); });
+        echo 'OK';
     }
 }

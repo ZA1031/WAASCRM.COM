@@ -80,7 +80,7 @@ const AddDetails = (props) => {
         let total = 0;
         let k = (iva == 1 ? 'h-' : 'b-') + due;
         props.products.forEach((product, index) => {
-            let json = JSON.parse(product.prices) ?? [];
+            let json = product.prices;
             let p = 0;
             json.forEach((item, index2) => {
                 if (item.id == k) p = item.price;

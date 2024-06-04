@@ -91,7 +91,7 @@ class ProposalController extends Controller
         if (!empty($v)) return $v;
 
         $budget = Budget::find($pid);
-        if (!$budget) return $this->returnNotFound('Presupuesto no encontrado');
+        if (!$budget) return $this->returnNotFound('Propuesta no encontrado');
 
         $detail = BudgetDetail::find($did);
         if ($detail && $detail->budget_id == $pid && $detail->status == 0){
@@ -122,9 +122,9 @@ class ProposalController extends Controller
                 }
             }
 
-            return $this->returnSuccess(null, 'Presupuesto aceptado');
+            return $this->returnSuccess(null, 'Propuesta aceptado');
 
-        }else return $this->returnError('El presupuesto ya ha sido aceptado');
+        }else return $this->returnError('El Propuesta ya ha sido aceptado');
     }
 
     private function validateForm(Request $request){

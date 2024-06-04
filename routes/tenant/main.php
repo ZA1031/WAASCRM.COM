@@ -24,6 +24,7 @@ Route::middleware('check-permission:0,1,2,3,4,5,6')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::post('/dashboard/stats', [DashboardController::class, 'stats'])->name('dashboard.stats');
 
     ///Oreca
     Route::post('/horeca/calculate', [HorecaController::class, 'calculate'])->name('horeca.calculate');

@@ -30,6 +30,10 @@ class Lerph {
         return !empty($d) && $d != '0000-00-00 00:00:00' ? Carbon::parse($d)->format('d/m/Y H:i') : '';
     }
 
+    public static function parseDate($d, $format = 'd/m/Y'){
+        return !empty($d) && $d != '0000-00-00 00:00:00' && $d != '0000-00-00'  ? Carbon::parse($d)->format($format) : '';
+    }
+
     public static function showElapsedDays($d){
         if (!empty($d) && $d != '0000-00-00') {
             $now = Carbon::now();
@@ -45,12 +49,24 @@ class Lerph {
         return number_format($p).'Є';
     }
 
-    public static function diffDays($from, $to){
+    public static function diffDays($from, $to, $format = 'Y-m-d H:i:s'){
         if (empty($to) || empty($from)) return 9999;
-        $to = Carbon::createFromFormat('Y-m-d H:i:s', $to);
-        $from = Carbon::createFromFormat('Y-m-d H:i:s', $from);
+        $to = Carbon::createFromFormat($format, $to);
+        $from = Carbon::createFromFormat($format, $from);
         return $to->diffInDays($from);
     }
+
+    public static function getDatesFromRange($start, $end, $format = 'Y-m-d'){
+        $array = [];
+        $interval = new \DateInterval('P1D');
+        $realEnd = new \DateTime($end);
+        $realEnd->add($interval);
+        $period = new \DatePeriod(new \DateTime($start), $interval, $realEnd);
+        foreach($period as $date) { 
+            $array[] = $date->format($format); 
+        }
+        return $array;
+      }
 
     public static function getMonthName($m){
         $months = ['January' => "Enero", 'February' =>"Febrero" ,'March' => "Marzo", 'April' => "Abril", 'May' => "Mayo", 'June' => "Junio", 'July' => "julio",

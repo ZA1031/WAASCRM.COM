@@ -12,6 +12,7 @@ import CountUp from 'react-countup';
 const HorecaCalc = (props) => {
     const { formatPrice } = useContext(MainDataContext);
     const [calcData, setCalcData] = useState({}); 
+    const [hideCons2, setHideCons2] = useState(true);
     const [openedTab, setOpenedTab] = useState(1); ////0: Configuración
     const [dues, setDues] = useState([]);
     const [extras, setExtras] = useState([]);
@@ -317,7 +318,16 @@ const HorecaCalc = (props) => {
                                     return (
                                         <Col sm="6" className="mt-4">
                                             <Row>
-                                                <Col sm="12"><h6 className="ms-1">Consumo {item}</h6></Col>
+                                                <Col xs="8">
+                                                    <h6 className="ms-1">Consumo {item}</h6>
+                                                </Col>
+                                                {item == 2 &&
+                                                <Col xs="4" className="d-md-none text-end" onClick={() => setHideCons2(!hideCons2)}>
+                                                    <i className={hideCons2 ? 'fa fa-angle-right' : 'fa fa-angle-down'}></i>
+                                                </Col>
+                                                }
+                                            </Row>
+                                            <Row className={ item == 2 && hideCons2 ? 'd-none d-sm-block' : '' }>
                                                 <Col sm="12">
                                                     <Select 
                                                         label={{label : 'Frequencia'}} 

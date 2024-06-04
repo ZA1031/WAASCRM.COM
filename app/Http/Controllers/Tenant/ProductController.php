@@ -87,9 +87,12 @@ class ProductController extends Controller
 
     public function pdf($id){
         set_time_limit(300);
+        $data = [];
         $product = TenantProduct::find($id);
-
-        $data[] = Lerph::getTechPdf($product);
+        if ($product) $products[] = $product;
+        else $products = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->get();
+        
+        foreach ($products as $product) $data[] = Lerph::getTechPdf($product);
 
         $pdf = Pdf::loadView('pdfs.pdf1', [
             'data' => $data

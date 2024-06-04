@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
-import { Breadcrumbs, ToolTip } from "../../../Template/AbstractElements";
+import { Breadcrumbs, Btn } from "../../../Template/AbstractElements";
 import AuthenticatedLayout from '@/Template/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import axios from "axios";
@@ -99,6 +99,12 @@ export default function ProductList({ auth, title}) {
             <Head title={title} />
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
+
+                <div className="d-flex flex-row-reverse mb-2">
+                    <a href={route('prs.pdf', 0)} target="_blank" className="me-1">
+                        <Btn attrBtn={{ color: 'primary', className : 'btn-sm'}}>Descargar Catalogo</Btn>
+                    </a>
+                </div>
 
                 <FilterTable
                     dataList={dataList}

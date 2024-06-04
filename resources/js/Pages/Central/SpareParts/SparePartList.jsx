@@ -31,7 +31,7 @@ export default function SparePartList({ auth, title}) {
             selector: row => row['name'],
             sortable: true,
             center: false,
-            maxWidth: "150px"
+            maxWidth: "350px"
         },
         {
             name: 'Stock',

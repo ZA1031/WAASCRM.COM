@@ -94,7 +94,7 @@ class SparePartsController extends Controller
         return $request->validate([
             'name' => 'required|max:100|unique:spare_parts,name,'.$id,
             'description' => 'max:500',
-            'stock' => 'required|numeric',
+            //'stock' => 'required|numeric',
             'reference' => 'max:100',
         ],
         [],

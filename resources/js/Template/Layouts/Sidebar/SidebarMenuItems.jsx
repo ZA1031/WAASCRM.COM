@@ -78,8 +78,8 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
           {Item.Items.map((menuItem, i) => (
               <li className={`sidebar-list ${Item.according && !isHidden ? 'd-none' : ''}`} key={i}>
               {menuItem.type === 'sub' && menuItem.rols.indexOf(actualUser.rol_id) !== -1 ? (
-                <a
-                  href='javascript'
+                <Link 
+                  href={menuItem.path} 
                   className={`sidebar-link sidebar-title ${CurrentPath.includes(menuItem.title.toLowerCase()) ? 'active' : ''} ${menuItem.active && 'active'}`}
                   onClick={(event) => {
                     event.preventDefault();
@@ -91,7 +91,7 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
                   <span>{t(menuItem.title)}</span>
                   {menuItem.badge ? <label className={menuItem.badge}>{menuItem.badgetxt}</label> : ''}
                   <div className='according-menu'>{menuItem.active ? <i className='fa fa-angle-down'></i> : <i className='fa fa-angle-right'></i>}</div>
-                </a>
+                </Link>
               ) : (
                 ''
               )}
@@ -113,8 +113,8 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
                     return (
                       <li key={index}>
                         {childrenItem.type === 'sub' && childrenItem.rols.indexOf(actualUser.rol_id) !== -1 ? (
-                          <a
-                            href='javascript'
+                          <Link 
+                            href={menuItem.path} 
                             className={`${CurrentPath.includes(childrenItem?.title?.toLowerCase()) ? 'active' : ''}`}
                             // className={`${childrenItem.active ? 'active' : ''}`}
                             onClick={(event) => {
@@ -126,7 +126,7 @@ const SidebarMenuItems = ({ setMainMenu, sidebartoogle, setNavActive, activeClas
                               <i className='fa fa-chevron-right'></i>
                             </span>
                             <div className='according-menu'>{childrenItem.active ? <i className='fa fa-angle-down'></i> : <i className='fa fa-angle-right'></i>}</div>
-                          </a>
+                          </Link>
                         ) : (
                           ''
                         )}

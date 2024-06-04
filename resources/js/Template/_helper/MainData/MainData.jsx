@@ -30,6 +30,7 @@ const MainDataProvider = (props) => {
     };
 
     const formatPrice = (price) => {
+        price = parseFloat(price) || 0;
         return price ? price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '€' : 0;
     }
 

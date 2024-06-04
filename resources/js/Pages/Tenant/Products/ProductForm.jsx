@@ -123,6 +123,7 @@ export default function ProductForm({ auth, title, product, familyName, dues, at
                                         errors = {errors.name}
                                     />
                                 </Col>
+                                {product.lts &&
                                 <Col xs='12' md='3'>
                                     <FloatingInput 
                                         label={{label : 'Capacidad'}} 
@@ -130,6 +131,7 @@ export default function ProductForm({ auth, title, product, familyName, dues, at
                                         errors = {errors.name}
                                     />
                                 </Col>
+                                }
                             </Row>
                         </CardBody>
                         

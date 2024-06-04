@@ -61,9 +61,9 @@ class Company extends Model
             $tenant->createDomain(['domain' => $company->domain.'.'.env('APP_DOMAIN')]);
 
             ///Create Company, User and Products
-            $products = Product::all();
-            $parts = SparePart::all();
-            $catalogs = AdminCatalog::all();
+            $products = Product::withTrashed()->get();
+            $parts = SparePart::withTrashed()->get();
+            $catalogs = AdminCatalog::withTrashed()->get();
             $tenant->run(function () use ($company, $products, $parts, $catalogs) {
                 Company::create($company->toArray());
                 TenantUser::create([
@@ -102,7 +102,8 @@ class Company extends Model
         static::updated(function ($company) {
             if (!empty(tenant('id'))){
                 tenancy()->central(function ($tenant) use ($company){
-                    Company::where('id', $company->id)->update($company->toArray());
+
+                    Company::where('tenant_id', $company->tenant_id)->update($company->toArray());
                 });
             }else {
                 $tenant = Tenant::find($company->tenant_id);

@@ -284,3 +284,66 @@ body {
   overflow: hidden;
   white-space: nowrap;
 }
+
+
+.page-body {
+  overflow-x: hidden;
+}
+
+@media only screen and (max-width: 575.98px) {
+  .filter-table {
+    margin-top: -20px;
+  }
+}
+
+.static-top-widget svg {
+  color: #fff;
+}
+
+.static-top-widget .media-body {
+  align-self: center !important;
+  padding-left: 30px;
+}
+
+.static-top-widget .media-body .icon-bg {
+  height: 100px;
+  opacity: .2;
+  position: absolute;
+  right: -14px;
+  top: 6px;
+  transition: all .3s ease;
+  width: 100px;
+}
+
+.static-top-widget:hover .icon-bg {
+  -webkit-transform: rotate(-5deg) scale(1.1);
+  transform: rotate(-5deg) scale(1.1);
+  transition: all .3s ease;
+}
+
+.earning-card.card .card-body .earning-content {
+  border-right: 1px solid #ecf3fa;
+}
+
+.earning-card.card .card-body .chart-left {
+  padding: 40px 0 40px 40px;
+}
+
+.earning-card.card .card-body .left_side_earning {
+  margin-bottom: 30px;
+}
+
+.earning-card.card .card-body .left_side_earning .h5, .earning-card.card .card-body .left_side_earning h5 {
+  font-weight: 500;
+  line-height: 25px;
+  margin: 0;
+}
+
+.earning-card.card .card-body .left_side_earning p {
+  color: rgba(43, 43, 43, .7);
+  font-size: 14px;
+}
+
+.earning-card.card .card-body .chart-right {
+  padding: 0 40px;
+}

@@ -70,12 +70,19 @@ class BudgetController extends Controller
 
     public function create($cid)
     {
+        $products = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get()->map(function($pr){
+            $pr->label = $pr->final_name;
+            $pr->value = $pr->id;
+            $pr->prices = $pr->inner_prices;
+            return $pr;
+        });
+        
         return Inertia::render('Tenant/Budgets/BudgetForm', [
-            'title' => 'Agregar Presupuesto',
+            'title' => 'Agregar Propuesta',
             'budget' => new Budget(),
             'cid' => $cid,
             'allDetails' => [],
-            'products' => TenantProduct::select('name as label', 'id as value', 'inner_prices as prices')->whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get(),
+            'products' => $products,
             'extras' => Catalog::select('name as label', 'id as value')->where('type', 4)->get(),
             'dues' => Lerph::getDuesSelect(),
         ]);
@@ -84,12 +91,20 @@ class BudgetController extends Controller
     public function edit($cid, $bid)
     {
         $budget = Budget::find($bid);
+
+        $products = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get()->map(function($pr){
+            $pr->label = $pr->final_name;
+            $pr->value = $pr->id;
+            $pr->prices = $pr->inner_prices;
+            return $pr;
+        });
+
         return Inertia::render('Tenant/Budgets/BudgetForm', [
             'title' => 'Editar Presupuesto',
             'budget' => $budget,
             'cid' => $cid,
             'allDetails' => $budget->details,
-            'products' => TenantProduct::select('name as label', 'id as value', 'inner_prices as prices')->whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get(),
+            'products' => $products,
             'extras' => Catalog::select('name as label', 'id as value')->where('type', 4)->get(),
             'dues' => Lerph::getDuesSelect(),
         ]);

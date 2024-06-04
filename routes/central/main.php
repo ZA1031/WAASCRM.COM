@@ -9,15 +9,10 @@ use App\Http\Controllers\Central\SparePartsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
- 
-///Midleware para roles
-Route::middleware(['check-permission:1,2'])->group(function () {
-    Route::get('/admin', function () {
-        return Inertia::render('Test2');
-    });
-});
 
 Route::get('/central-dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('/testMail', [DashboardController::class, 'testMail'])->name('testMail');
 
 ///Catalogs
 Route::get('/catalog/attributes/{id}', [AdminCatalogController::class, 'getAttributes'])->name('catalog.attributes');

@@ -19,16 +19,16 @@ class TenantSeeder extends Seeder
         Catalog::create(['name' => 'Llamada', 'type' => 1]);
         Catalog::create(['name' => 'Web', 'type' => 1]);
 
-        Catalog::create(['name' => 'Activo', 'type' => 2]);
+        Catalog::create(['name' => 'Activo', 'type' => 2, 'extra_1' => 0]);
         Catalog::create(['name' => 'Inactivo', 'type' => 2, 'extra_1' => 1]);
-        Catalog::create(['name' => 'En Gestion', 'type' => 2]);
-        Catalog::create(['name' => 'Esperando Respuesta', 'type' => 2]);
+        Catalog::create(['name' => 'En Gestion', 'type' => 2, 'extra_1' => 0]);
+        Catalog::create(['name' => 'Esperando Respuesta', 'type' => 2, 'extra_1' => 0]);
         Catalog::create(['name' => 'Venta Perdida', 'type' => 2, 'extra_1' => 1]);
 
-        Catalog::create(['name' => 'Activo', 'type' => 3]);
+        Catalog::create(['name' => 'Activo', 'type' => 3, 'extra_1' => 0]);
         Catalog::create(['name' => 'Inactivo', 'type' => 3, 'extra_1' => 1]);
-        Catalog::create(['name' => 'En Gestion', 'type' => 3]);
-        Catalog::create(['name' => 'Esperando Respuesta', 'type' => 3]);
+        Catalog::create(['name' => 'En Gestion', 'type' => 3, 'extra_1' => 0]);
+        Catalog::create(['name' => 'Esperando Respuesta', 'type' => 3, 'extra_1' => 0]);
         Catalog::create(['name' => 'Venta Perdida', 'type' => 3, 'extra_1' => 1]);
     }
 }

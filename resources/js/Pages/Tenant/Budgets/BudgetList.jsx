@@ -198,7 +198,7 @@ export default function BudgetList({ auth, title, cid, st}) {
                 <AddBtn onClick={() => router.visit(route('budgets.create', cid))} />
 
                 <Modal isOpen={modal} toggle={toggleModal} className="mainModal" centered>
-                    <ModalHeader toggle={toggleModal}>Rechazar Presupuesto</ModalHeader>
+                    <ModalHeader toggle={toggleModal}>Rechazar Propuesta</ModalHeader>
                     <ModalBody>
                         <Form className='theme-form'>
                             <FloatingInput 

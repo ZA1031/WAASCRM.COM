@@ -1,30 +1,21 @@
-import Icon from '@/Template/CommonElements/Icon';
 import React, { useState, useEffect } from 'react';
-import { router } from '@inertiajs/react';
+import SvgIcon from '../Common/Component/SvgIcon';
+import CountUp from 'react-countup';
 
 const DashboardCard = (props) => {
-    let cl = 'xl-50 box-col-3 col-sm-6 col-lg-6 col-xl-3';
-    if (props.items){
-        if (props.items.length >= 3 && props.items.length <= 5) cl = 'xl-50 box-col-3 col-sm-6 col-lg-6 col-xl-4';
-        if (props.items.length >= 5 && props.items.length <= 7) cl = 'xl-50 box-col-3 col-sm-6 col-lg-6 col-xl-6';
-    }
     return (
-        <div className={cl}>
-            <div className="social-widget-card card">
-                <div className="card-body">
-                    {props.icon && 
-                    <div className="redial-social-widget" data-label="50%">
-                        <Icon icon={props.icon} size={40} className='text-success' />
-                    </div>
-                    }
-                    <h5 className="b-b-light">{props.title ?? ''}</h5>
-                    <div className="row">
-                        {props.items && props.items.map((item, index) => (
-                            <div className="text-center b-r-light col pointer" onClick={() => router.visit(item.link)} key={index}>
-                                <span>{item.label}</span>
-                                <h4 className="counter mb-0"><span>{item.value}</span></h4>
-                            </div>
-                        ))}
+        <div className="col-sm-6 col-lg-6 col-xl-3">
+            <div className="o-hidden card">
+                <div className="bg-primary b-r-4 card-body">
+                    <div className="media static-top-widget">
+                        <div className="align-self-center text-center">
+                            <SvgIcon style={{ width: '24px', height: '24px' }}iconId={props.svg} />    
+                        </div>
+                        <div className="media-body">
+                            <span className="m-0">{props.title}</span>
+                            <h4 className='mb-0'><span className="counter"><CountUp end={props.number ?? 0} /></span></h4>
+                            <SvgIcon className="icon-bg" iconId={props.svg} />
+                        </div>
                     </div>
                 </div>
             </div>
