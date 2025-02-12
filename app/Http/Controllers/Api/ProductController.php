@@ -61,12 +61,15 @@ class ProductController extends ApiController
             });
 
             $home = $business = [];
-            foreach ($pr->prices as $pd) {
-                $d = str_ireplace(['h-', 'b-'], '', $pd['id']);
-                $pp = ['id' => $pd['id'], 'price' => $pd['price'], 'duties' => $d];
-                if (strpos($pd['id'], 'h-') !== false) $home[] = $pp;
-                else $business[] = $pp;
+            if ($pr->prices){
+                foreach ($pr->prices as $pd) {
+                    $d = str_ireplace(['h-', 'b-'], '', $pd['id']);
+                    $pp = ['id' => $pd['id'], 'price' => $pd['price'], 'duties' => $d];
+                    if (strpos($pd['id'], 'h-') !== false) $home[] = $pp;
+                    else $business[] = $pp;
+                }
             }
+            
 
             $pr->home_prices = $home;
             $pr->business_prices = $business;

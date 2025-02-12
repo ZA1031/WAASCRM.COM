@@ -54,6 +54,20 @@ export default function ProductForm({ auth, title, product, families, categories
         return selected;
     });
     const [catAttributes, setCatAttributes] = useState([]);
+
+    const worktopData = [
+        {value: 0, label: 'Bajo Encimera'},
+        {value: 1, label: 'Sobre Encimera'},
+    ]
+
+    const predosingData = [
+        {value: 0, label: 'Volumétrica'},
+        {value: 1, label: 'Cronometrica'},
+        {value: 2, label: 'Mecánica'},
+    ]
+
+    const [selectedOptionWorktop, setSelectedOptionWorktop] = useState(() => worktopData.find(wk => wk.value == product.worktop));
+    const [selectedOptionPredosing, setSelectedOptionPredosing] = useState(() => predosingData.find(pd => pd.value == product.predosing));
     
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         id : product.id,
@@ -75,6 +89,9 @@ export default function ProductForm({ auth, title, product, families, categories
         others : [],
         dismantling : dismantling !== null ? dismantling : [{reference : '', description : ''}],
         lts : product.lts,
+        gas : product.gas,
+        worktop : product.worktop,
+        predosing : product.predosing
     });
 
     const menuData = [
@@ -85,6 +102,8 @@ export default function ProductForm({ auth, title, product, families, categories
         {id: 3, title: 'Videos', icon: ''},
         {id: 4, title: 'Documentos', icon: ''}
     ]
+
+    
 
     useEffect(() => {
         if (attrs.length > 0) setCatAttributes(attrs);
@@ -107,7 +126,9 @@ export default function ProductForm({ auth, title, product, families, categories
     }, [selectedOptionOthers, selectedOptionParts]);
 
     const setSelected = (selected, evt) => {
-        if (evt.name != 'category_id') setSelectedOption(selected);
+        if (evt.name == 'family_id') setSelectedOption(selected);
+        else if (evt.name == 'worktop') setSelectedOptionWorktop(selected);
+        else if (evt.name == 'predosing') setSelectedOptionPredosing(selected);
         else setSelectedOptionCat(selected);
         setData(data => ({
             ...data,
@@ -253,7 +274,7 @@ export default function ProductForm({ auth, title, product, families, categories
                                                 errors = {errors.name_en}
                                             />
                                         </Col>
-                                        <Col xs='12' md='4'>
+                                        <Col xs='12' md='2'>
                                             <Select
                                                 label={{label : 'Familia'}} 
                                                 input={{ 
@@ -267,13 +288,52 @@ export default function ProductForm({ auth, title, product, families, categories
                                                 zIndex={1100}
                                             />
                                         </Col>
-                                        <Col xs='12' md='4'>
-                                            <FloatingInput 
-                                                label={{label : 'Capacidad en Lts'}} 
-                                                input={{placeholder : 'LTs', onChange : handleChange, name : 'lts', value : data.lts, required : true, type : 'number'}} 
-                                                errors = {errors.lts}
-                                            />
-                                        </Col>
+                                        {data.family_id == 7 &&
+                                        <>
+                                            <Col xs='12' md='2'>
+                                                <FloatingInput 
+                                                    label={{label : 'Capacidad en L'}} 
+                                                    input={{placeholder : '', onChange : handleChange, name : 'lts', value : data.lts, required : true, type : 'number'}} 
+                                                    errors = {errors.lts}
+                                                />
+                                            </Col>
+                                            <Col xs='12' md='2'>
+                                                <Switch 
+                                                    label={'Con Gas'} 
+                                                    input={{onChange : () => handleChangeSwitch('gas'), name : 'gas', checked : data.gas}} 
+                                                    errors = {errors.gas}
+                                                />
+                                            </Col>
+                                            <Col xs='12' md='2'>
+                                                <Select
+                                                    label={{label : 'Encimera'}} 
+                                                    input={{ 
+                                                        placeholder : 'Encimera', 
+                                                        onChange : setSelected,
+                                                        name : 'worktop',
+                                                        options : worktopData,
+                                                        defaultValue : selectedOptionWorktop,
+                                                    }}
+                                                    errors = {errors.worktop}
+                                                    zIndex={1100}
+                                                />
+                                            </Col>
+                                            <Col xs='12' md='2'>
+                                                <Select
+                                                    label={{label : 'Predosificación'}} 
+                                                    input={{ 
+                                                        placeholder : 'Predosificación', 
+                                                        onChange : setSelected,
+                                                        name : 'predosing',
+                                                        options : predosingData,
+                                                        defaultValue : selectedOptionPredosing,
+                                                    }}
+                                                    errors = {errors.predosing}
+                                                    zIndex={1100}
+                                                />
+                                            </Col>
+                                        </>
+                                        }
                                         <Col xs='12' md='2'>
                                             <Switch 
                                                 label={'Activo'} 

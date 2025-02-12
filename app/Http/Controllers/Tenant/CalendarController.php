@@ -6,6 +6,7 @@ use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
+use App\Models\Tenant\Installation;
 use App\Models\Tenant\Task;
 use App\Models\Tenant\TenantUser;
 use Illuminate\Http\Request;
@@ -33,6 +34,17 @@ class CalendarController extends Controller
                 'start' => $task->date,
                 'end' => $task->date_end,
                 'type' => $task->type,
+            ];
+        }
+
+        $installations = Installation::where('assigned_to', $request->input('uid'))->get();
+        foreach ($installations as $installation) {
+            $data[] = [
+                'id' => 0,
+                'title' => $installation->product->name,
+                'start' => $installation->installation_date,
+                'end' => $installation->installation_date,
+                'type' => 2,
             ];
         }
 

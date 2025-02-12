@@ -175,8 +175,8 @@ body {
     <!-- NOMBRE Y CATEGORÍA -->
     <div class="row">
             <div class="col-md-12">
-                <h4 style="font-size: 18px; margin-bottom:0; font-weight: lighter;"><span style="color: rgb(3,68,107);">{{ $product->family->name ?? '' }} </span>/ {{$product->family->name_en ?? '' }}</h4>
-                <h3 style="font-size: 20px; margin-top:0;"><span style="color: rgb(3,68,107);">{{ $product->name ?? '' }}</span> / {{ $product->name_en ?? '' }}</h3>
+                <h4 style="font-size: 18px; margin-bottom:0; font-weight: lighter;"><span style="color: rgb(3,68,107);">{{ $product->family->name ?? '' }} </span>{{ (!empty($product->family->name_en ?? ''))  ? ' / '.$product->family->name_en : ''  }}</h4>
+                <h3 style="font-size: 20px; margin-top:0; padding-right: 20px;"><span style="color: rgb(3,68,107);">{{ $product->name ?? '' }}</span> {{ (!empty($product->name_en ?? ''))  ? ' / '.$product->name_en : ''  }}</h3>
             </div>
             <div class="row">
                 <div class="col-md-8" style="display: inline-block;">
@@ -216,6 +216,7 @@ body {
                         <div style="clear:both;"></div>
                         <div class="clearfix"></div>
                     </div>
+                    @if (count($parts) > 0)
                     <div style="clear:both;"></div>
                     <div class="row clearfix">
                         <div class="col-md-12">
@@ -241,6 +242,7 @@ body {
                             </table>
                         </div>
                     </div>
+                    @endif
                 </div>
                 <div class="col-md-4" style="float: right">
                     <div class="" style="text-align: center;">

@@ -22,12 +22,24 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Tenant/Products/ProductList', ['title' => 'Productos', 'allowed' => ALLOWED_PRODUCTS]);
+        $filters = [];
+        $filters[] = ['label' => 'Buscar', 'type' => 'text', 'name' => 'q'];
+        $filters[] = ['label' => 'Familia', 'options' => AdminCatalog::select('name as label', 'id as value')->where('type', 5)->get(), 'type' => 'select', 'name' => 'family'];
+        
+        return Inertia::render('Tenant/Products/ProductList', [
+            'title' => 'Productos', 
+            'allowed' => ALLOWED_PRODUCTS,
+            'filters' => $filters
+        ]);
     }
 
     public function list(Request $request)
     {
-        $data = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->get()->map(function($pr){
+        $query = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1);
+        if ($request->has('q')) $query->where('name', 'like', '%'.$request->input('q').'%');
+        if ($request->has('family')) $query->where('family_id', $request->input('family'));
+
+        $data = $query->get()->map(function($pr){
             $pr->main_image = $pr->getMainImage();
             $pr->family_name = $pr->family->name ?? '';
             return $pr;
@@ -90,7 +102,12 @@ class ProductController extends Controller
         $data = [];
         $product = TenantProduct::find($id);
         if ($product) $products[] = $product;
-        else $products = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->get();
+        else {
+            $query = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1);
+            if (request()->has('q')) $query->where('name', 'like', '%'.request()->input('q').'%');
+            if (request()->has('family')) $query->where('family_id', request()->input('family'));
+            $products = $query->get();
+        }
         
         foreach ($products as $product) $data[] = Lerph::getTechPdf($product);
 

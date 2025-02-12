@@ -90,7 +90,7 @@ class SparePart extends Model
 
     public function type()
     {
-        return $this->belongsTo(Catalog::class);
+        return $this->belongsTo(AdminCatalog::class);
     }
 
     public function getImageUrlAttribute()

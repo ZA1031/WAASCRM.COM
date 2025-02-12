@@ -194,6 +194,7 @@ class ClientController extends Controller
             if ($client) $client->fill($request->except(['id', 'logo']));
             else $client = new Client($request->except(['id']));
         }
+        if (empty($client->company_name)) $client->company_name = '';
         $client->is_client = $this->isClientPage() ? 1 : 0;
         $client->save();
 
@@ -280,7 +281,7 @@ class ClientController extends Controller
         if (empty($request->input('phone')) && empty($request->input('email'))) throw ValidationException::withMessages(['phone' => 'Por favor ingrese el email o teléfono.']);
 
         return $request->validate([
-            'company_name' => 'required|max:191',
+            'company_name' => 'max:191',
             'status_id' => 'required',
             'external_id' => 'max:191|unique:clients,external_id,'.$id,
         ], 

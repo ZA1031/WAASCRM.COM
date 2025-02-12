@@ -30,6 +30,12 @@ const HorecaCalc = (props) => {
         setModalCreate(!modalCreate);
     }
 
+    const predosingData = [
+        {value: 0, label: 'Volumétrica'},
+        {value: 1, label: 'Cronometrica'},
+        {value: 2, label: 'Mecánica'},
+    ]
+
     const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
         services : 1,
         extra : [],
@@ -174,7 +180,7 @@ const HorecaCalc = (props) => {
         let pr = null, productCost = 0, cost1 = 0, cost2 = 0, gasCost1 = 0, gasCost2 = 0, saving = 0, amortization = 1;
         if (products) {
             products.forEach((item, index) => {
-                if (!pr && ((actualData.gas == item.gas) || (actualData.predo == item.pred))){
+                if (!pr && ((actualData.gas == item.gas) && (actualData.predo == item.predosing))){
                     pr = item;
                     setData(data => ({...data, ['product_id']: item.id}));
                     if (actualData.due) productCost = item.prices.filter((item2, index2) => {
@@ -210,9 +216,12 @@ const HorecaCalc = (props) => {
                 gasCost1 = parseFloat(cost1) + (0.03 * (data.capacity1 ?? 0));
                 gasCost2 = parseFloat(cost2) + (0.03 * (data.capacity2 ?? 0));
             }
-            
+            if (isNaN(costMonth1)) costMonth1 = 0;
+            if (isNaN(costMonth2)) costMonth2 = 0;
+
             saving = (calcData.monthCost ?? 0) - (calcData.productCost ?? 0) + costMonth1 + costMonth2;
             amortization = Math.ceil((calcData.productCost ?? 0) / (calcData.monthCost ?? 0));
+            console.log(calcData, costMonth1, costMonth2, saving, amortization);
         }
         let allData = {...calcData, productCost, cost1, cost2, gasCost1, gasCost2, saving, amortization};
         delete allData['product'];
@@ -428,7 +437,7 @@ const HorecaCalc = (props) => {
                                             placeholder : 'Si / No', 
                                             onChange : setSelected,
                                             name : 'predo',
-                                            options : yesNo,
+                                            options : predosingData,
                                             defaultValue : selectedPredo
                                         }}
                                         errors = {errors.freq_1}

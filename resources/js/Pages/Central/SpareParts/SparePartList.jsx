@@ -12,9 +12,9 @@ import MainDataContext from '@/Template/_helper/MainData';
 import { Badge } from 'reactstrap';
 import FilterTable from "@/Template/Components/FilterTable";
 
-export default function SparePartList({ auth, title}) {
+export default function SparePartList({ auth, title }) {
     const [dataList, setDataList] = useState([]);
-    const { handleDelete, deleteCounter } = useContext(MainDataContext);  
+    const { handleDelete, deleteCounter } = useContext(MainDataContext);
 
     const getParts = async (d) => {
         const response = await axios.post(route('parts.list'), d);
@@ -34,13 +34,6 @@ export default function SparePartList({ auth, title}) {
             maxWidth: "350px"
         },
         {
-            name: 'Stock',
-            selector: row => row['stock'],
-            sortable: true,
-            center: false,
-            maxWidth: "100px"
-        },
-        {
             name: 'Referencia',
             selector: row => row['reference'],
             sortable: true,
@@ -58,8 +51,8 @@ export default function SparePartList({ auth, title}) {
             selector: (row) => {
                 return (
                     <div className="text-right">
-                        <Edit onClick={() => router.visit(route('parts.edit', row['id']))} id={'edit-' + row['id']}/>
-                        <Trash onClick={() => handleDelete(route('parts.destroy', row['id']))} id={'delete-' + row['id']}/>
+                        <Edit onClick={() => router.visit(route('parts.edit', row['id']))} id={'edit-' + row['id']} />
+                        <Trash onClick={() => handleDelete(route('parts.destroy', row['id']))} id={'delete-' + row['id']} />
                     </div>
                 )
             },
@@ -74,7 +67,7 @@ export default function SparePartList({ auth, title}) {
             <Head title={title} />
             <Fragment>
                 <Breadcrumbs mainTitle={title} title={title} />
-                
+
                 <FilterTable
                     dataList={dataList}
                     tableColumns={tableColumns}

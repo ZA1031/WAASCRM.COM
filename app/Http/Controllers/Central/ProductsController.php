@@ -35,12 +35,18 @@ class ProductsController extends Controller
 
     public function create()
     {
+        $parts = SparePart::select('name as label', 'id as value', 'type_id', 'reference')->orderBy('type_id')->get()->map(function($part){
+            $t = $part->type->name ?? '';
+            if (!empty($t)) $part->label = $part->reference.' - '.$t .' > '.$part->label;
+            return $part;
+        });
+        
         return Inertia::render('Central/Products/ProductForm', [
             'title' => 'Agregar Producto',
             'product' => new Product(),
             'families' => AdminCatalog::select('name as label', 'id as value')->where('type', 5)->get(),
             'categories' => AdminCatalog::select('name as label', 'id as value')->where('type', 4)->get(),
-            'allParts' => SparePart::select('name as label', 'id as value')->get(),
+            'allParts' => $parts,
             'attributes' => [],
             'images' => [],
             'videos' => [],
@@ -55,12 +61,18 @@ class ProductsController extends Controller
     public function edit(Product $product)
     {
         $catalog = AdminCatalog::find($product->category_id);
+        $parts = SparePart::select('name as label', 'id as value', 'type_id', 'reference')->orderBy('type_id')->get()->map(function($part){
+            $t = $part->type->name ?? '';
+            if (!empty($t)) $part->label = $part->reference.' - '.$t .' > '.$part->label;
+            return $part;
+        });
+
         return Inertia::render('Central/Products/ProductForm', [
             'title' => 'Editar Producto',
             'product' => $product,
             'families' => AdminCatalog::select('name as label', 'id as value')->where('type', 5)->get(),
             'categories' => AdminCatalog::select('name as label', 'id as value')->where('type', 4)->get(),
-            'allParts' => SparePart::select('name as label', 'id as value')->get(), 
+            'allParts' => $parts,
             'attributes' => $product->attributes,
             'images' => $product->getFilesData(1),
             'videos' => $product->getFilesData(2),
@@ -110,8 +122,9 @@ class ProductsController extends Controller
     }
 
     private function validateForm(Request $request, $id){
+        //if (empty($id)) $id = 'NULL';
         return $request->validate([
-            'model' => 'required|max:100|unique:products,model,'.$id,
+            'model' => 'required|max:100|unique:products,model,'.$id.',id,deleted_at,NULL',
             'name' => 'required|max:200',
             'description' => 'max:500',
             //'code' => 'required|max:100|unique:products,code,'.$id

@@ -39,8 +39,6 @@ class HorecaController extends Controller
         $lts = $request->input('totalLts', 0);
         
         $products = TenantProduct::where('lts', '>=', $lts)->where('inner_active', 1)->orderBy('lts', 'desc')->get()->map(function($pr){
-            $pr->gas = $pr->attributes->where('attribute_id', $this->GAS_ID)->first() ? 1 : 0;
-            $pr->pred = $pr->attributes->where('attribute_id', $this->PRED_ID)->first() ? 1 : 0;
             $pr->prices = $pr->inner_prices;
             return $pr;
         });

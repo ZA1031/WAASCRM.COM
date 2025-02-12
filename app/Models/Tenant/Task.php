@@ -41,7 +41,7 @@ class Task extends Model
         });
 
         static::updated(function ($model) {
-            if ($model->isDirty('status')){
+            if ($model->isDirty('status') && !empty($model->client)){
                 $model->client->histories()->create([
                     'type' => 3,
                     'type_id' => $model->id,

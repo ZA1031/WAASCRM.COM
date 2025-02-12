@@ -9,6 +9,7 @@ use Hash;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Storage;
 
 class Company extends Model
@@ -61,17 +62,11 @@ class Company extends Model
             $tenant->createDomain(['domain' => $company->domain.'.'.env('APP_DOMAIN')]);
 
             ///Create Company, User and Products
-            $products = Product::withTrashed()->get();
+            $products = Product::withTrashed()->orderBy('id')->get();
             $parts = SparePart::withTrashed()->get();
             $catalogs = AdminCatalog::withTrashed()->get();
             $tenant->run(function () use ($company, $products, $parts, $catalogs) {
                 Company::create($company->toArray());
-                TenantUser::create([
-                    'name' => 'Admin',
-                    'email' => $company->email,
-                    'password' => Hash::make('password'),
-                    'rol_id' => 0
-                ]);
 
                 foreach($catalogs as $catalog){
                     $pr = AdminCatalog::create($catalog->toArray());
@@ -79,6 +74,12 @@ class Company extends Model
 
                 foreach($parts as $part){
                     $pr = SparePart::create($part->toArray());
+                }
+
+                $first = $products->first();
+                if ($first){
+                    $id = $first->id;
+                    DB::statement("ALTER SEQUENCE products_id_seq RESTART WITH $id");
                 }
 
                 foreach($products as $product){
@@ -95,6 +96,7 @@ class Company extends Model
                     $product->files()->each(function ($image) use ($pr){
                         $pr->images()->create($image->toArray());
                     });
+
                 }
             });
         });
@@ -102,8 +104,9 @@ class Company extends Model
         static::updated(function ($company) {
             if (!empty(tenant('id'))){
                 tenancy()->central(function ($tenant) use ($company){
-
-                    Company::where('tenant_id', $company->tenant_id)->update($company->toArray());
+                    $data = $company->toArray();
+                    unset($data['id']);
+                    Company::where('tenant_id', $company->tenant_id)->update($data);
                 });
             }else {
                 $tenant = Tenant::find($company->tenant_id);

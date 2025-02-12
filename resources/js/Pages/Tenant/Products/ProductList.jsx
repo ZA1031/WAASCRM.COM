@@ -9,10 +9,17 @@ import { Image } from "react-bootstrap";
 import Icon from '@/Template/CommonElements/Icon';
 import FilterTable from "@/Template/Components/FilterTable";
 
-export default function ProductList({ auth, title}) {
+export default function ProductList({ auth, title, filters}) {
     const [dataList, setDataList] = useState([]);
+    const [extraCatalogData, setExtraCatalogData] = useState([]);
 
     const getProducts = async (d) => {
+        let extraData = [];
+        if (d) {
+            for (const [key, value] of Object.entries(d)) extraData.push(key + '=' + value);
+            setExtraCatalogData(extraData);
+        }
+
         const response = await axios.post(route('prs.list'), d);
         setDataList(response.data);
     }
@@ -101,7 +108,7 @@ export default function ProductList({ auth, title}) {
                 <Breadcrumbs mainTitle={title} title={title} />
 
                 <div className="d-flex flex-row-reverse mb-2">
-                    <a href={route('prs.pdf', 0)} target="_blank" className="me-1">
+                    <a href={route('prs.pdf', 0) + '?' + extraCatalogData.join('&')} target="_blank" className="me-1">
                         <Btn attrBtn={{ color: 'primary', className : 'btn-sm'}}>Descargar Catalogo</Btn>
                     </a>
                 </div>
@@ -109,7 +116,7 @@ export default function ProductList({ auth, title}) {
                 <FilterTable
                     dataList={dataList}
                     tableColumns={tableColumns}
-                    filters={[]}
+                    filters={filters}
                     getList={(d) => getProducts(d)}
                 />
             </Fragment>

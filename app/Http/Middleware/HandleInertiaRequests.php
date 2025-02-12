@@ -34,10 +34,15 @@ class HandleInertiaRequests extends Middleware
         $user = $request->user();
         $company = Company::first();
         if ($user) {
-            $user->rol_name = $request->user()->rol_name ?? '';
-            $user->is_tenant = !empty(tenant('id'));
-            $user->avatar_url = $user->getImageUrl() ?? '';
-            $user->company_logo = $company ? $company->logo_url : '';
+            try {
+                $user->rol_name = $user->rol_name ?? '';
+                $user->is_tenant = !empty(tenant('id'));
+                $user->avatar_url = $user->getImageUrl() ?? '';
+                $user->company_logo = $company ? $company->logo_url : '';
+            } catch (\Exception $e) {
+                
+            }
+            
         }
         return [
             ...parent::share($request),

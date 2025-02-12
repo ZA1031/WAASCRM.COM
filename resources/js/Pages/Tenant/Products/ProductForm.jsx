@@ -124,13 +124,38 @@ export default function ProductForm({ auth, title, product, familyName, dues, at
                                     />
                                 </Col>
                                 {product.lts &&
-                                <Col xs='12' md='3'>
+                                <Col xs='12' md='2'>
                                     <FloatingInput 
                                         label={{label : 'Capacidad'}} 
                                         input={{placeholder : 'Capacidad', value : 'Hasta ' + product.lts + ' lts', readOnly : true, className : 'input-disabled'}} 
                                         errors = {errors.name}
                                     />
                                 </Col>
+                                }
+                                {product.family_id == 7 &&
+                                <>
+                                    <Col xs='12' md='2'>
+                                        <FloatingInput 
+                                            label={{label : 'Con Gas'}} 
+                                            input={{placeholder : 'Con Gas', value : product.gas ? 'Si' : 'No', readOnly : true, className : 'input-disabled'}} 
+                                            errors = {errors.name}
+                                        />
+                                    </Col>
+                                    <Col xs='12' md='2'>
+                                        <FloatingInput 
+                                            label={{label : 'Encimera'}} 
+                                            input={{placeholder : 'Encimera', value : (product.worktop ? 'Bajo' : 'Sobre') + ' Encimera', readOnly : true, className : 'input-disabled'}} 
+                                            errors = {errors.name}
+                                        />
+                                    </Col>
+                                    <Col xs='12' md='2'>
+                                        <FloatingInput 
+                                            label={{label : 'Predosificación'}} 
+                                            input={{placeholder : 'Predosificación', value : product.predosing == 0 ? 'Volumétrica' : (product.predosing == 1 ? 'Cronometrica' : 'Mecánica'), readOnly : true, className : 'input-disabled'}} 
+                                            errors = {errors.name}
+                                        />
+                                    </Col>
+                                </>
                                 }
                             </Row>
                         </CardBody>

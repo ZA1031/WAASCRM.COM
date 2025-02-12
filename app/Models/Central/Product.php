@@ -26,7 +26,10 @@ class Product extends Model
         'model_en',
         'name_en',
         'description_en',
-        'lts'
+        'lts',
+        'gas',
+        'worktop',
+        'predosing',
     ];
 
     protected static function boot()

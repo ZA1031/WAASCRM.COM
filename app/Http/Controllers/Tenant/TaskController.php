@@ -143,7 +143,7 @@ class TaskController extends Controller
 
         return $request->validate([
             'assigned_to' => 'required',
-            'date' => 'required|after_or_equal:now',
+            //'date' => 'required|after_or_equal:now',
             'date_end' => 'required|after_or_equal:date',
             'title' => 'required|string|max:190',
             'description' => 'nullable|string|max:500',
@@ -151,7 +151,7 @@ class TaskController extends Controller
         [],
         [
             'assigned_to' => 'asignado a',
-            'date' => 'fecha',
+            //'date' => 'fecha',
             'date_end' => 'fecha de finalización',
             'title' => 'título',
             'description' => 'descripción',
