@@ -32,7 +32,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
-        $company = Company::first();
+        $company = Company::where('tenant_id', tenant('id'))->first();
         if ($user) {
             try {
                 $user->rol_name = $user->rol_name ?? '';

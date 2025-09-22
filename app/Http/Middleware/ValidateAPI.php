@@ -25,7 +25,7 @@ class ValidateAPI
             return response()->json(['error' => true, 'message' => 'Unauthorized'], 401);
         }
 
-        $company = Company::first();
+        $company = Company::where('tenant_id', tenant('id'))->first();
         if (!$company || $company->status != 1) {
             return response()->json(['error' => true, 'message' => 'Unauthorized'], 401);
         }

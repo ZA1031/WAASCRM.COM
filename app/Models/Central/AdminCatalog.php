@@ -6,10 +6,11 @@ use App\Models\Main\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
 class AdminCatalog extends Model
 {
-    use HasFactory;
+    use HasFactory, CentralConnection;
     use SoftDeletes;
 
     public $timestamps = false;
@@ -22,45 +23,6 @@ class AdminCatalog extends Model
         'name_en',
         'order',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($adminCatalog) {
-            $adminCatalog->order = AdminCatalog::where('type', $adminCatalog->type)->max('order') + 1;
-        });
-        
-        static::deleted(function ($adminCatalog) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($adminCatalog) {
-                    AdminCatalog::where('id', $adminCatalog->id)->delete();
-                });
-            }
-        });
-
-        static::created(function ($adminCatalog) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($adminCatalog) {
-                    AdminCatalog::create($adminCatalog->toArray());
-                });
-            }
-        });
-
-        static::updated(function ($adminCatalog) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($adminCatalog) {
-                    AdminCatalog::where('id', $adminCatalog->id)->update($adminCatalog->toArray());
-                });
-            }
-        });
-    }
 
     public function getExtraData()
     {

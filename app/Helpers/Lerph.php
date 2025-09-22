@@ -148,9 +148,9 @@ class Lerph {
             if ($file['image_type'] == 2) $techImage = $file['img'];
         }
 
-        if (class_basename($product) == 'TenantProduct'){
+        if (isset($product->final_name)){
             ///Seteo el tenant data
-            $product->attributes = $product->tenantAttributes;
+            $product->attributes = $product->attributesActive();
             $product->name = $product->final_name;
             $product->name_en = $product->final_name;
             $product->model = $product->final_model;

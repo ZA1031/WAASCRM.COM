@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProposalController;
@@ -27,9 +28,11 @@ Route::name('api.')->prefix('api/v1')->middleware([
 
     //Products
     Route::get('product', [ProductController::class, 'list']);
+    Route::get('brands', [BrandController::class, 'list']);
 
     //Clients
     Route::resource('client', ClientController::class)->only(['index', 'show', 'store', 'update']);
+    Route::post('client/webhook', [ClientController::class, 'webhook']);
 
     //Contacts
     Route::resource('contact', ClientController::class)->only(['index', 'show', 'store', 'update']);

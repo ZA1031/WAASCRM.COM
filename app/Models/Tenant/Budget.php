@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use App\Models\Central\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -73,8 +74,9 @@ class Budget extends Model
         $quantities = explode(',', $this->quantities);
         foreach (explode(',', $this->products) as $key => $product) {
             if (empty($product)) continue;
-            $pr = TenantProduct::find($product);
+            $pr = Product::find($product);
             if (!$pr) continue;
+            $pr->getTenantProduct();
             $txt[] = $pr->final_name . ' x' . $quantities[$key];
         }
         return implode(', ', $txt);

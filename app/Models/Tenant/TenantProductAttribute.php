@@ -4,16 +4,19 @@ namespace App\Models\Tenant;
 
 use App\Models\Central\ProductAttr;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class TenantProductAttribute extends ProductAttr
+class TenantProductAttribute extends Model
 {
     use HasFactory;
 
-    protected $table = 'product_attrs';
+    public $timestamps = false;
+    public $incrementing = false;
+
+    protected $table = 'tenant_product_attrs';
     
     protected $fillable = [
-        'inner_active',
+        'product_id',
+        'attribute_id',
     ];
-
-
 }

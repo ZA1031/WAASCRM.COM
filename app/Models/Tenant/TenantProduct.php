@@ -6,17 +6,17 @@ use App\Helpers\Lerph;
 use App\Models\Central\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Storage;
 
-class TenantProduct extends Product
+class TenantProduct extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
-    protected $table = 'products';
+    public $timestamps = false;
+    public $incrementing = false;    
     
     protected $fillable = [
+        'id',
         'inner_name',
         'inner_prices',
         'inner_stock',
@@ -47,6 +47,6 @@ class TenantProduct extends Product
 
     public function tenantAttributes()
     {
-        return $this->hasMany(TenantProductAttribute::class, 'product_id')->where('inner_active', 1);
+        return $this->hasMany(TenantProductAttribute::class, 'product_id');
     }
 }

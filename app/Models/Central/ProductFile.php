@@ -6,11 +6,12 @@ use App\Models\Main\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\CentralConnection;
 use Storage;
 
 class ProductFile extends Model
 {
-    use HasFactory;
+    use HasFactory, CentralConnection;
 
     public $timestamps = false;
     
@@ -23,42 +24,7 @@ class ProductFile extends Model
         'size',
         'image_type'
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::deleted(function ($file) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($file) {
-                    ProductFile::where('id', $file->id)->delete();
-                });
-            }
-        });
-
-        static::created(function ($file) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($file) {
-                    ProductFile::create($file->toArray());
-                });
-            }
-        });
-
-        static::updated(function ($file) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($file) {
-                    ProductFile::where('id', $file->id)->update($file->toArray());
-                });
-            }
-        });
-    }
-
+    
     public function product()
     {
         return $this->belongsTo(Product::class);

@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Tenant;
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
 use App\Models\Central\AdminCatalog;
+use App\Models\Central\Product;
 use App\Models\Central\ProductAttr;
 use App\Models\Central\SparePart;
+use App\Models\Main\Tenant;
 use App\Models\Tenant\TenantProduct;
 use App\Models\Tenant\TenantProductAttribute;
 use Attribute;
@@ -35,11 +37,12 @@ class ProductController extends Controller
 
     public function list(Request $request)
     {
-        $query = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1);
+        $query = Product::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1);
         if ($request->has('q')) $query->where('name', 'like', '%'.$request->input('q').'%');
         if ($request->has('family')) $query->where('family_id', $request->input('family'));
 
         $data = $query->get()->map(function($pr){
+            $pr->getTenantProduct();
             $pr->main_image = $pr->getMainImage();
             $pr->family_name = $pr->family->name ?? '';
             return $pr;
@@ -50,13 +53,14 @@ class ProductController extends Controller
 
     public function edit($pid)
     {
-        $prod = TenantProduct::find($pid);
+        $prod = Product::find($pid);
+        $prod->getTenantProduct();
         return Inertia::render('Tenant/Products/ProductForm', [
             'title' => 'Editar Producto',
             'product' => $prod,
             'familyName' => $prod->family->name ?? '',
             'dues' => Lerph::getDues(),
-            'attributes' => $prod->attributes,
+            'attributes' => $prod->attributesActive(),
         ]);
     }
 
@@ -76,10 +80,10 @@ class ProductController extends Controller
         $product->inner_active = $request->input('inner_active') ? 1 : 0;
         $product->save();
 
-        TenantProductAttribute::where('product_id', $product->id)->update(['inner_active' => 0]);
+        TenantProductAttribute::where('product_id', $product->id)->delete();
         $attributes = $request->input('attributes');
         foreach ($attributes as $attr){
-            TenantProductAttribute::where('product_id', $product->id)->where('attribute_id', $attr)->update(['inner_active' => 1]);
+            TenantProductAttribute::create(['product_id' => $product->id, 'attribute_id' => $attr]);
         }
 
         return redirect()->route('prs')->with('message', 'Datos guardados correctamente.');
@@ -100,13 +104,17 @@ class ProductController extends Controller
     public function pdf($id){
         set_time_limit(300);
         $data = [];
-        $product = TenantProduct::find($id);
+        $product = Product::find($id);
+        $product->getTenantProduct();
         if ($product) $products[] = $product;
         else {
             $query = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1);
             if (request()->has('q')) $query->where('name', 'like', '%'.request()->input('q').'%');
             if (request()->has('family')) $query->where('family_id', request()->input('family'));
-            $products = $query->get();
+            $products = $query->get()->map(function($pr){
+                $pr->getTenantProduct();
+                return $pr;
+            });
         }
         
         foreach ($products as $product) $data[] = Lerph::getTechPdf($product);

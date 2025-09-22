@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenant;
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
 use App\Models\Central\AdminCatalog;
+use App\Models\Central\Product;
 use App\Models\Tenant\Address;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
@@ -77,7 +78,8 @@ class ClientController extends Controller
     {
         $isClient = $this->isClientPage();
         $famlies = AdminCatalog::where('type', 5)->get()->map(function($fm){
-            $fm->products = TenantProduct::where('family_id', $fm->id)->get()->map(function($pr){
+            $fm->products = Product::where('family_id', $fm->id)->get()->map(function($pr){
+                $pr->getTenantProduct();
                 $pr->label = $pr->final_name;
                 $pr->value = $pr->id;
                 return $pr;
@@ -106,7 +108,7 @@ class ClientController extends Controller
         $isClient = $this->isClientPage();
 
         $famlies = AdminCatalog::where('type', 5)->get()->map(function($fm){
-            $fm->products = TenantProduct::where('family_id', $fm->id)->get()->map(function($pr){
+            $fm->products = Product::where('family_id', $fm->id)->get()->map(function($pr){
                 $pr->label = $pr->final_name;
                 $pr->value = $pr->id;
                 return $pr;

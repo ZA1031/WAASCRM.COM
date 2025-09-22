@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
+use App\Models\Central\Product;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
 use App\Models\Tenant\ExtraVariable;
@@ -38,15 +39,15 @@ class HorecaController extends Controller
         ]);
         $lts = $request->input('totalLts', 0);
         
-        $products = TenantProduct::where('lts', '>=', $lts)->where('inner_active', 1)->orderBy('lts', 'desc')->get()->map(function($pr){
+        $products = Product::where('lts', '>=', $lts)->orderBy('lts', 'desc')->get()->map(function($pr){
+            $pr->getTenantProduct();
             $pr->prices = $pr->inner_prices;
             return $pr;
         });
 
         return redirect()->back()->with('message', [
             'products' => $products, 
-            'lts' => $lts,
-            
+            'lts' => $lts
         ]);
     }
 

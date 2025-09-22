@@ -3,13 +3,16 @@
 namespace App\Models\Central;
 
 use App\Models\Main\Tenant;
+use App\Models\Tenant\TenantProduct;
+use App\Models\Tenant\TenantProductAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, CentralConnection;
     use SoftDeletes;
     
     protected $fillable = [
@@ -32,49 +35,23 @@ class Product extends Model
         'predosing',
     ];
 
-    protected static function boot()
+    protected $appends = [
+        'final_name',
+        'final_model',
+        'prices'
+    ];
+
+    public function getFinalNameAttribute(){
+        return !empty($this->inner_name) ? $this->inner_name : $this->name;
+    }
+
+    public function getFinalModelAttribute(){
+        return !empty($this->inner_model) ? $this->inner_model : $this->model;
+    }
+
+    public function getPricesAttribute()
     {
-        parent::boot();
-
-        static::deleted(function ($product) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($product) {
-                    Product::where('id', $product->id)->delete();
-                });
-            }
-        });
-
-        static::created(function ($product) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($product) {
-                    $data = $product->toArray();
-                    unset($data['deleted_at']);
-                    unset($data['created_at']);
-                    unset($data['updated_at']);
-                    Product::create($data);
-                });
-                
-            }
-        });
-
-        static::updated(function ($product) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($product) {
-                    $data = $product->toArray();
-                    unset($data['deleted_at']);
-                    unset($data['created_at']);
-                    unset($data['updated_at']);
-                    Product::where('id', $product->id)->update($data);
-                });
-                
-            }
-        });
+        return json_decode($this->inner_prices, true);
     }
     
     public function family()
@@ -97,6 +74,16 @@ class Product extends Model
         return $this->hasMany(ProductAttr::class, 'product_id')->join('admin_catalogs', 'product_attrs.attribute_id', '=', 'admin_catalogs.id')->select('product_attrs.*', 'admin_catalogs.name as attribute_name', 'admin_catalogs.type as attribute_type')->orderBy('admin_catalogs.order');
     }
 
+    public function attributesActive()
+    {
+        $attrs = $this->{'attributes'}()->get()->map(function($attr) {
+            $at = TenantProductAttribute::where('product_id', $attr->product_id)->where('attribute_id', $attr->attribute_id)->first();
+            $attr->inner_active = $at ? 1 : 0;
+            return $attr;
+        });
+        return $attrs;
+    }
+
     public function images()
     {
         return $this->hasMany(ProductFile::class, 'product_id')->where('type', 1)->orderBy('order');
@@ -115,7 +102,7 @@ class Product extends Model
     public function getMainImage()
     {
         $img = ProductFile::where('product_id', $this->id)->where('type', 1)->where('image_type', 1)->orderBy('order')->first();
-        return $img ? $img->getUrlAttribute() : 'https://ui-avatars.com/api/?name=BB&color=7F9CF5&background=EBF4FF';
+        return $img ? $img->getUrlAttribute() : '';
     }
 
     public function getFilesData($t)
@@ -135,5 +122,20 @@ class Product extends Model
             ];
         }
         return $data;
+    }
+
+    public function getTenantProduct()
+    {
+        $pt = TenantProduct::where('id', $this->id)->first();
+        if (!$pt) {
+            $pt = TenantProduct::create([
+                'id' => $this->id,
+                'inner_name' => $this->name,
+                'inner_model' => $this->model,
+                'inner_active' => 1,
+            ]);
+        }
+
+        foreach ($pt->getAttributes() as $key => $value) $this->$key = $value;
     }
 }

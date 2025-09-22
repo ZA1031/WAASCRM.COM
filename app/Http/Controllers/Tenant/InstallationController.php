@@ -78,7 +78,17 @@ class InstallationController extends Controller
         $filters[] = ['label' => 'Provincia', 'options' => Address::select('province as label', 'province as value')->whereNotNull('province')->groupBy('province')->get() ,'type' => 'select', 'name' => 'pid'];
         $filters[] = ['label' => 'Ciudad', 'options' => Address::select('city as label', 'city as value')->whereNotNull('city')->groupBy('city')->get() ,'type' => 'select', 'name' => 'city'];
 
-        
+        $allowed = [];
+        $products = Product::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->get();
+        foreach ($products as $p) {
+            $p->getTenantProduct();
+            if ($p->inner_active == 0) continue;
+            $allowed[] = [
+                'label' => $p->final_name,
+                'value' => $p->id,
+                'prices' => $p->inner_prices,
+            ];
+        }
         
         return Inertia::render('Tenant/Installations/InstallationList', [
             'title' => $title,
@@ -86,7 +96,7 @@ class InstallationController extends Controller
             'tecnics' => $tecnics,
             'clients' => $clients,
             'isInstallation' => $isInst,
-            'products' => TenantProduct::select('name as label', 'id as value', 'inner_prices as prices')->whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get(),
+            'products' => $allowed,
             'filters' => $filters,
             'filtered' => [
                 'st' => $st,
@@ -136,7 +146,7 @@ class InstallationController extends Controller
         $installation->product;
         $installation->assigned;
         $installation->installation_date = Lerph::showDateTime($installation->installation_date);
-        $installation->next_maintenance = $installation->budgetDetail->maintenance ? $installation->budgetDetail->maintenance : 12;
+        $installation->next_maintenance = $installation->budgetDetail && $installation->budgetDetail->maintenance ? $installation->budgetDetail->maintenance : 12;
 
         //if (!$installation->isEnabled()) return redirect()->route('installations')->with('error', 'No puedes editar esta instalación.');
 

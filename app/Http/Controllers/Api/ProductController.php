@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Central\Product;
 use App\Models\Tenant\Address;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
+use App\Models\Tenant\ExtraVariable;
 use App\Models\Tenant\TenantProduct;
 use App\Models\Tenant\TenantUser;
 use Illuminate\Http\Request;
@@ -39,8 +41,14 @@ class ProductController extends ApiController
     {
         $page = request()->input('page', 1);
         $limit = request()->input('rows', 10);
-        
-        $data = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->skip(($page - 1) * $limit)->take($limit)->get()->map(function($pr){
+
+        $fams = ExtraVariable::where('name', 'WAAS_API_ENABLED')->first()->value ?? '';
+
+        $data = Product::whereIn('id', ALLOWED_PRODUCTS)
+            ->when(!empty($fams), function($query) use ($fams) {
+                $query->where('family_id', explode(',', $fams));
+            })->where('active', 1)->skip(($page - 1) * $limit)->take($limit)->get()->map(function($pr){
+            $pr->getTenantProduct();
             $pr->main_image = $pr->getMainImage();
             $pr->family_name = $pr->family->name ?? '';
             $pr->name = $pr->final_name;
@@ -49,6 +57,8 @@ class ProductController extends ApiController
             $pr->stock = $pr->inner_stock;
             $pr->stock_min = $pr->inner_stock_min;
             $pr->stock_max = $pr->inner_stock_max;
+            $pr->install_type = 0;
+            $pr->pdf_download = route('prs.pdf', $pr->id);
 
             $pr->images = $pr->images->map(function($img){
                 $img->url = $img->getUrlAttribute();
@@ -56,9 +66,7 @@ class ProductController extends ApiController
                 return $img;
             });
 
-            $pr->attributes = $pr->tenantAttributes->map(function($attr){
-                return $attr;
-            });
+            $pr->attributes = $pr->attributesActive();
 
             $home = $business = [];
             if ($pr->prices){
@@ -75,10 +83,16 @@ class ProductController extends ApiController
             $pr->business_prices = $business;
 
             unset($pr->inner_name, $pr->inner_prices, $pr->parts, $pr->other_parts, $pr->dismantling, $pr->inner_stock, $pr->inner_stock_min, 
-                $pr->inner_stock_max, $pr->inner_active, $pr->inner_model, $pr->final_name, $pr->final_model);
+                $pr->inner_stock_max, $pr->inner_model, $pr->final_name, $pr->final_model);
             return $pr;
         });
 
-        return parent::returnList($data, $page, $limit, TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->count());
+        $activeData = $data->filter(function($item) {
+            return $item->inner_active;
+        });
+
+        return parent::returnList($activeData, $page, $limit, Product::whereIn('id', ALLOWED_PRODUCTS)->when(!empty($fams), function($query) use ($fams) {
+                $query->where('family_id', explode(',', $fams));
+            })->where('active', 1)->count());
     }
 }

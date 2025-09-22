@@ -15,7 +15,7 @@ import Phone from "@/Template/CommonElements/Phone";
 import Email from "@/Template/CommonElements/Email";
 import FilterTable from "@/Template/Components/FilterTable";
 
-export default function InstallationList({ auth, title, pending, tecnics, clients, products, isInstallation, filters, filtered}) {
+export default function InstallationList({ auth, title, pending, tecnics, clients, products, isInstallation, filters, filtered }) {
     const [dataList, setDataList] = useState([]);
     const { handleDelete, deleteCounter } = useContext(MainDataContext);
     const [selectedOptionTc, setSelectedOptionTc] = useState(null);
@@ -33,28 +33,28 @@ export default function InstallationList({ auth, title, pending, tecnics, client
     const toggleModalHistory = () => setModalHistory(!modalHistory);
     const [historyList, setHistoryList] = useState([]);
 
-    const { data, setData, post, processing, errors, reset, clearErrors} = useForm({
-        id : 0
-    }); 
+    const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
+        id: 0
+    });
 
     const handleChange = (e) => {
-        setData(data => ({...data, [e.target.name]: e.target.value}));
+        setData(data => ({ ...data, [e.target.name]: e.target.value }));
     }
 
     const setSelected = (selected, evt) => {
-        
+
         if (evt.name == 'client_id') {
             setSelectedOptionCl(selected);
             setAddressList(selected.addresses);
             setSelectedOptionAd(null);
-            setData(data => ({...data, address_id : null, [evt.name]: selected.value}));
-        }else {
+            setData(data => ({ ...data, address_id: null, [evt.name]: selected.value }));
+        } else {
             if (evt.name == 'assigned_to') setSelectedOptionTc(selected);
             if (evt.name == 'address_id') setSelectedOptionAd(selected);
             if (evt.name == 'product_id') setSelectedOptionPr(selected);
-            setData(data => ({...data, [evt.name]: selected.value}))
+            setData(data => ({ ...data, [evt.name]: selected.value }))
         }
-        
+
     }
 
     const getInstallations = async (d) => {
@@ -71,34 +71,34 @@ export default function InstallationList({ auth, title, pending, tecnics, client
 
     const addNotes = async () => {
         let id = data.id;
-        toggleModalAction(); 
+        toggleModalAction();
         clearErrors();
         reset();
-        setData(data => ({...data, id : id, status : 0}));
+        setData(data => ({ ...data, id: id, status: 0 }));
         setModalActionTitle('Agregar Notas a la ');
     }
 
     const assignForm = async () => {
-        post(route(data.id == 0 ? 'installations.create' : 'installations.assign'),{
-                onSuccess: (y) => {
-                    getInstallations();
-                    toggleModal();
-                }
+        post(route(data.id == 0 ? 'installations.create' : 'installations.assign'), {
+            onSuccess: (y) => {
+                getInstallations();
+                toggleModal();
             }
+        }
         );
     }
 
     const actionForm = async () => {
-        post(route('installations.notes.store', data.id),{
-                onSuccess: (y) => {
-                    if (data.status != 0) getInstallations();
-                    else getHistory(data.id);
-                    toggleModalAction();
-                },
-                onError: (y) => {
-                    console.log(y);
-                }
+        post(route('installations.notes.store', data.id), {
+            onSuccess: (y) => {
+                if (data.status != 0) getInstallations();
+                else getHistory(data.id);
+                toggleModalAction();
+            },
+            onError: (y) => {
+                console.log(y);
             }
+        }
         );
     }
 
@@ -118,7 +118,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                             <Phone client={row['client_data']} /><br />
                             <Email client={row['client_data']} />
                         </div>
-                        
+
                     </>
                 )
             },
@@ -138,12 +138,12 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             selector: row => {
                 return (
                     <>
-                        {row['product'].inner_stock == 0 && <Badge color="danger" className="me-1">Sin Stock</Badge> }
-                        {(isInstallation && row['status'] == 0 ) &&
+                        {row['product'].inner_stock == 0 && <Badge color="danger" className="me-1">Sin Stock</Badge>}
+                        {(isInstallation && row['status'] == 0) &&
                             <>
-                            {(row['product'].inner_stock > 0) && 
-                            <Badge color={row['product'].inner_stock_min <= row['product'].inner_stock ? 'success' : 'warning'} className="me-1">{row['product'].inner_stock}</Badge> }
-                            
+                                {(row['product'].inner_stock > 0) &&
+                                    <Badge color={row['product'].inner_stock_min <= row['product'].inner_stock ? 'success' : 'warning'} className="me-1">{row['product'].inner_stock}</Badge>}
+
                             </>
                         }
                         {row['product'].final_name}
@@ -183,85 +183,85 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                 return (
                     <>
                         {!row['assigned_to'] || !row['installation_date'] ?
-                        <Icon 
-                            icon={!row['assigned_to'] ? 'UserPlus' : 'Clock'} 
-                            id={'accept-' + row['id']} 
-                            tooltip="Asignar" 
-                            onClick={() => {
-                                toggleModal(); 
-                                clearErrors();
-                                reset();
-                                if (row['assigned_to']) {
-                                    setData(data => ({...data, assigned_to: row['assigned_to'], id : row['id']}));
-                                    setHideTecnic(true);
-                                }else {
-                                    setHideTecnic(false);
-                                    setData(data => ({...data, id : row['id']}));
-                                }
-                            }} 
-                            className="text-success" 
-                        />
-                        :
-                        <>
-                            <Icon 
-                                icon="MessageSquare" 
-                                id={'message-' + row['id']} 
-                                tooltip="Mensajes" 
-                                className="me-1"
+                            <Icon
+                                icon={!row['assigned_to'] ? 'UserPlus' : 'Clock'}
+                                id={'accept-' + row['id']}
+                                tooltip="Asignar"
                                 onClick={() => {
-                                    toggleModalHistory();
+                                    toggleModal();
                                     clearErrors();
                                     reset();
-                                    setData(data => ({...data, id : row['id']}));
-                                    getHistory(row['id']);
+                                    if (row['assigned_to']) {
+                                        setData(data => ({ ...data, assigned_to: row['assigned_to'], id: row['id'] }));
+                                        setHideTecnic(true);
+                                    } else {
+                                        setHideTecnic(false);
+                                        setData(data => ({ ...data, id: row['id'] }));
+                                    }
                                 }}
+                                className="text-success"
                             />
-                            {row['status'] != 2 && row['status'] != 1 &&
+                            :
                             <>
-                                <Icon 
-                                    icon="Clock" 
-                                    id={'clock-' + row['id']} 
-                                    tooltip="Posponer"
+                                <Icon
+                                    icon="MessageSquare"
+                                    id={'message-' + row['id']}
+                                    tooltip="Mensajes"
+                                    className="me-1"
                                     onClick={() => {
-                                        toggleModalAction(); 
+                                        toggleModalHistory();
                                         clearErrors();
                                         reset();
-                                        setData(data => ({...data, id : row['id'], status : 3}));
-                                        setModalActionTitle('Posponer');
+                                        setData(data => ({ ...data, id: row['id'] }));
+                                        getHistory(row['id']);
                                     }}
                                 />
-                                <Icon 
-                                    icon="X" id={'reject-' + row['id']} 
-                                    tooltip="Rechazar" 
-                                    className="text-danger"
-                                    onClick={() => {
-                                        toggleModalAction(); 
-                                        clearErrors();
-                                        reset();
-                                        setData(data => ({...data, id : row['id'], status : 2}));
-                                        setModalActionTitle('Rechazar');
-                                    }}
-                                />
-                                {row['enabled'] && 
-                                <Icon icon="Tool" 
-                                    id={'accept-' + row['id']} 
-                                    tooltip="Instalar"
-                                    className="text-success"
-                                    onClick={() => router.visit(route(isInstallation ? 'installations.edit' : 'maintenances.edit', [row['id']]))}
-                                />
+                                {row['status'] != 2 && row['status'] != 1 &&
+                                    <>
+                                        <Icon
+                                            icon="Clock"
+                                            id={'clock-' + row['id']}
+                                            tooltip="Posponer"
+                                            onClick={() => {
+                                                toggleModalAction();
+                                                clearErrors();
+                                                reset();
+                                                setData(data => ({ ...data, id: row['id'], status: 3 }));
+                                                setModalActionTitle('Posponer');
+                                            }}
+                                        />
+                                        <Icon
+                                            icon="X" id={'reject-' + row['id']}
+                                            tooltip="Rechazar"
+                                            className="text-danger"
+                                            onClick={() => {
+                                                toggleModalAction();
+                                                clearErrors();
+                                                reset();
+                                                setData(data => ({ ...data, id: row['id'], status: 2 }));
+                                                setModalActionTitle('Rechazar');
+                                            }}
+                                        />
+                                        {row['enabled'] &&
+                                            <Icon icon="Tool"
+                                                id={'accept-' + row['id']}
+                                                tooltip="Instalar"
+                                                className="text-success"
+                                                onClick={() => router.visit(route(isInstallation ? 'installations.edit' : 'maintenances.edit', [row['id']]))}
+                                            />
+                                        }
+                                    </>
+                                }
+                                {row['status'] == 1 &&
+                                    <Icon
+                                        icon="Eye"
+                                        id={'see-' + row['id']}
+                                        tooltip="Ver Detalles"
+                                        className="text-success"
+                                        onClick={() => router.visit(route(isInstallation ? 'installations.show' : 'maintenances.edit', [row['id']]))}
+                                    />
                                 }
                             </>
-                            }
-                            {row['status'] == 1 &&
-                            <Icon 
-                                icon="Eye" 
-                                id={'see-' + row['id']} 
-                                tooltip="Ver Detalles"
-                                className="text-success"
-                                onClick={() => router.visit(route(isInstallation ? 'installations.show' : 'maintenances.edit', [row['id']]))}
-                            />
-                            }
-                        </>
                         }
                     </>
                 )
@@ -283,18 +283,18 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                     tableColumns={tableColumns}
                     filters={filters}
                     getList={(d) => getInstallations(d)}
-                /> 
+                />
 
                 {isInstallation &&
-                <AddBtn
-                    onClick={() => {
-                        toggleModal(); 
-                        clearErrors();
-                        reset();
-                        setHideTecnic(false);
-                        setData(data => ({...data, id : 0}));
-                    }} 
-                />
+                    <AddBtn
+                        onClick={() => {
+                            toggleModal();
+                            clearErrors();
+                            reset();
+                            setHideTecnic(false);
+                            setData(data => ({ ...data, id: 0 }));
+                        }}
+                    />
                 }
             </Fragment>
 
@@ -304,87 +304,91 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                     <Form className='theme-form'>
                         <Row>
                             {data.id == 0 &&
-                            <>
-                                <Col md={12}>
-                                    <Select 
-                                        label={{label : 'Producto'}} 
-                                        input={{ 
-                                            placeholder : 'Producto', 
-                                            onChange : setSelected,
-                                            name : 'product_id',
-                                            options : products,
-                                            defaultValue : selectedOptionPr,
-                                        }}
-                                        errors = {errors.product_id}
-                                    />
-                                </Col>
-                                <Col md={12}>
-                                    <Select 
-                                        label={{label : 'Cliente'}} 
-                                        input={{ 
-                                            placeholder : 'Cliente', 
-                                            onChange : setSelected,
-                                            name : 'client_id',
-                                            options : clients,
-                                            defaultValue : selectedOptionCl,
-                                        }}
-                                        errors = {errors.client_id}
-                                    />
-                                </Col>
-                                <Col md={12}>
-                                    <Select 
-                                        label={{label : 'Direción'}} 
-                                        input={{ 
-                                            placeholder : 'Direción', 
-                                            onChange : setSelected,
-                                            name : 'address_id',
-                                            options : addressList,
-                                            defaultValue : selectedOptionAd,
-                                        }}
-                                        errors = {errors.client_id}
-                                    />
-                                </Col>
-                            </>
+                                <>
+                                    <Col md={12}>
+                                        <Select
+                                            label={{ label: 'Producto' }}
+                                            input={{
+                                                placeholder: 'Producto',
+                                                onChange: setSelected,
+                                                name: 'product_id',
+                                                options: products,
+                                                defaultValue: selectedOptionPr,
+                                            }}
+                                            errors={errors.product_id}
+                                            zIndex={1006}
+                                        />
+                                    </Col>
+                                    <Col md={12}>
+                                        <Select
+                                            label={{ label: 'Cliente' }}
+                                            input={{
+                                                placeholder: 'Cliente',
+                                                onChange: setSelected,
+                                                name: 'client_id',
+                                                options: clients,
+                                                defaultValue: selectedOptionCl,
+                                            }}
+                                            errors={errors.client_id}
+                                            zIndex={1005}
+                                        />
+                                    </Col>
+                                    <Col md={12}>
+                                        <Select
+                                            label={{ label: 'Direción' }}
+                                            input={{
+                                                placeholder: 'Direción',
+                                                onChange: setSelected,
+                                                name: 'address_id',
+                                                options: addressList,
+                                                defaultValue: selectedOptionAd,
+                                            }}
+                                            errors={errors.client_id}
+                                            zIndex={1004}
+                                        />
+                                    </Col>
+                                </>
                             }
                             {!hideTecnic &&
-                            <Col md={12}>
-                                <Select 
-                                    label={{label : 'Técnico Asignado'}} 
-                                    input={{ 
-                                        placeholder : 'Técnico', 
-                                        onChange : setSelected,
-                                        name : 'assigned_to',
-                                        options : tecnics,
-                                        defaultValue : selectedOptionTc,
-                                    }}
-                                    errors = {errors.assigned_to}
-                                />
-                            </Col>
+                                <Col md={12}>
+                                    <Select
+                                        label={{ label: 'Técnico Asignado' }}
+                                        input={{
+                                            placeholder: 'Técnico',
+                                            onChange: setSelected,
+                                            name: 'assigned_to',
+                                            options: tecnics,
+                                            defaultValue: selectedOptionTc,
+                                        }}
+                                        errors={errors.assigned_to}
+                                        zIndex={1003}
+                                    />
+                                </Col>
                             }
                             <Col md={6}>
-                                <FloatingInput 
-                                    label={{label : 'Fecha y Hora'}} 
-                                    input={{ 
-                                        placeholder : 'Fecha y Hora', 
-                                        onChange : handleChange,
-                                        name : 'installation_date',
-                                        value : data.installation_date,
-                                        type : 'datetime-local'
+                                <FloatingInput
+                                    label={{ label: 'Fecha y Hora' }}
+                                    input={{
+                                        placeholder: 'Fecha y Hora',
+                                        onChange: handleChange,
+                                        name: 'installation_date',
+                                        value: data.installation_date,
+                                        type: 'datetime-local'
                                     }}
-                                    errors = {errors.installation_date}
+                                    errors={errors.installation_date}
                                 />
                             </Col>
                             <Col md={6}>
-                                <FloatingInput 
-                                    label={{label : 'Horas'}} 
-                                    input={{ 
-                                        placeholder : 'Horas', 
-                                        onChange : handleChange,
-                                        name : 'hours',
-                                        value : data.hours,
-                                        type : 'number'
+                                <FloatingInput
+                                    label={{ label: 'Horas' }}
+                                    input={{
+                                        placeholder: 'Horas',
+                                        onChange: handleChange,
+                                        name: 'hours',
+                                        value: data.hours,
+                                        type: 'number'
                                     }}
-                                    errors = {errors.hours}
+                                    errors={errors.hours}
                                 />
                             </Col>
                         </Row>
@@ -392,7 +396,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                 </ModalBody>
                 <ModalFooter>
                     <Btn attrBtn={{ color: 'secondary cancel-btn', onClick: toggleModal }} >Cerrar</Btn>
-                    <Btn attrBtn={{ color: 'primary save-btn', onClick: assignForm, disabled : processing}}>Guardar</Btn>
+                    <Btn attrBtn={{ color: 'primary save-btn', onClick: assignForm, disabled: processing }}>Guardar</Btn>
                 </ModalFooter>
             </Modal>
 
@@ -401,34 +405,34 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                 <ModalBody>
                     <Form className='theme-form'>
                         {data.status == 3 &&
-                        <FloatingInput 
-                            label={{label : 'Nueva Fecha y Hora'}} 
-                            input={{ 
-                                placeholder : 'Motivo', 
-                                onChange : handleChange,
-                                name : 'new_date',
-                                value : data.new_date,
-                                type : 'datetime-local'
-                            }}
-                            errors = {errors.new_date}
-                        />
+                            <FloatingInput
+                                label={{ label: 'Nueva Fecha y Hora' }}
+                                input={{
+                                    placeholder: 'Motivo',
+                                    onChange: handleChange,
+                                    name: 'new_date',
+                                    value: data.new_date,
+                                    type: 'datetime-local'
+                                }}
+                                errors={errors.new_date}
+                            />
                         }
-                        <FloatingInput 
-                            label={{label : 'Motivo'}} 
-                            input={{ 
-                                placeholder : 'Motivo', 
-                                onChange : handleChange,
-                                name : 'notes',
-                                value : data.notes,
-                                as : 'textarea'
+                        <FloatingInput
+                            label={{ label: 'Motivo' }}
+                            input={{
+                                placeholder: 'Motivo',
+                                onChange: handleChange,
+                                name: 'notes',
+                                value: data.notes,
+                                as: 'textarea'
                             }}
-                            errors = {errors.notes}
+                            errors={errors.notes}
                         />
                     </Form>
                 </ModalBody>
                 <ModalFooter>
                     <Btn attrBtn={{ color: 'secondary cancel-btn', onClick: toggleModalAction }} >Cerrar</Btn>
-                    <Btn attrBtn={{ color: 'primary save-btn', onClick: actionForm, disabled : processing}}>Guardar</Btn>
+                    <Btn attrBtn={{ color: 'primary save-btn', onClick: actionForm, disabled: processing }}>Guardar</Btn>
                 </ModalFooter>
             </Modal>
 
@@ -457,7 +461,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                                     <td>{item.notes}</td>
                                     <td>
                                         {item.status == 0 &&
-                                        <Trash onClick={() => handleDelete(route('installations.notes.destroy', item.id))} id={'delete-' + item.id}/>
+                                            <Trash onClick={() => handleDelete(route('installations.notes.destroy', item.id))} id={'delete-' + item.id} />
                                         }
                                     </td>
                                 </tr>
@@ -467,7 +471,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                 </ModalBody>
                 <ModalFooter>
                     <Btn attrBtn={{ color: 'secondary cancel-btn', onClick: toggleModalHistory }} >Cerrar</Btn>
-                    <Btn attrBtn={{ color: 'primary save-btn', onClick: addNotes, disabled : processing}}>Agregar Notas</Btn>
+                    <Btn attrBtn={{ color: 'primary save-btn', onClick: addNotes, disabled: processing }}>Agregar Notas</Btn>
                 </ModalFooter>
             </Modal>
 

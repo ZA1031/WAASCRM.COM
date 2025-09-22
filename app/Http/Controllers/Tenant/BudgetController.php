@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Helpers\Lerph;
 use App\Http\Controllers\Controller;
+use App\Models\Central\Product;
 use App\Models\Central\ProductAttr;
 use App\Models\Central\SparePart;
 use App\Models\Tenant\Budget;
@@ -52,8 +53,9 @@ class BudgetController extends Controller
         $products = [];
         $quantities = explode(',', $budget->quantities);
         foreach (explode(',', $budget->products) as $key => $product) {
-            $pr = TenantProduct::find($product);
+            $pr = Product::find($product);
             if (!$pr) continue;
+            $pr->getTenantProduct();
             for ($i = 0; $i < $quantities[$key]; $i++) $products[] = $pr;
         }
 
@@ -70,19 +72,24 @@ class BudgetController extends Controller
 
     public function create($cid)
     {
-        $products = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get()->map(function($pr){
-            $pr->label = $pr->final_name;
-            $pr->value = $pr->id;
-            $pr->prices = $pr->inner_prices;
-            return $pr;
-        });
+        $products = Product::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->get();
+        $allowed = [];
+        foreach ($products as $p) {
+            $p->getTenantProduct();
+            if ($p->inner_active == 0) continue;
+            $allowed[] = [
+                'label' => $p->final_name,
+                'value' => $p->id,
+                'prices' => $p->inner_prices,
+            ];
+        }
         
         return Inertia::render('Tenant/Budgets/BudgetForm', [
             'title' => 'Agregar Propuesta',
             'budget' => new Budget(),
             'cid' => $cid,
             'allDetails' => [],
-            'products' => $products,
+            'products' => $allowed,
             'extras' => Catalog::select('name as label', 'id as value')->where('type', 4)->get(),
             'dues' => Lerph::getDuesSelect(),
         ]);
@@ -91,20 +98,25 @@ class BudgetController extends Controller
     public function edit($cid, $bid)
     {
         $budget = Budget::find($bid);
-
-        $products = TenantProduct::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->where('inner_active', 1)->get()->map(function($pr){
-            $pr->label = $pr->final_name;
-            $pr->value = $pr->id;
-            $pr->prices = $pr->inner_prices;
-            return $pr;
-        });
+        
+        $allowed = [];
+        $products = Product::whereIn('id', ALLOWED_PRODUCTS)->where('active', 1)->get();
+        foreach ($products as $p) {
+            $p->getTenantProduct();
+            if ($p->inner_active == 0) continue;
+            $allowed[] = [
+                'label' => $p->final_name,
+                'value' => $p->id,
+                'prices' => $p->inner_prices,
+            ];
+        }
 
         return Inertia::render('Tenant/Budgets/BudgetForm', [
             'title' => 'Editar Presupuesto',
             'budget' => $budget,
             'cid' => $cid,
             'allDetails' => $budget->details,
-            'products' => $products,
+            'products' => $allowed,
             'extras' => Catalog::select('name as label', 'id as value')->where('type', 4)->get(),
             'dues' => Lerph::getDuesSelect(),
         ]);
@@ -243,7 +255,7 @@ class BudgetController extends Controller
             ///Generate Installations
             $quantities = explode(',', $budget->quantities);
             foreach (explode(',', $budget->products) as $key => $product) {
-                $pr = TenantProduct::find($product);
+                $pr = Product::find($product);
                 if (!$pr) continue;
                 for ($i = 0; $i < $quantities[$key]; $i++){
                     $addr = $request->input('address-'.$product.'-'.$i, 0);
@@ -281,13 +293,14 @@ class BudgetController extends Controller
         $quantities = explode(',', $budget->quantities);
 
         foreach (explode(',', $budget->products) as $key => $product) {
-            $pr = TenantProduct::find($product);
+            $pr = Product::find($product);
             if (!$pr) continue;
+            $pr->getProduct();
             for ($i = 0; $i < $quantities[$key]; $i++) $products[] = $pr;
         }
 
         ///FECHA DE CREACIÓN DE PROPUESTA
-        $date = (new Carbon($budget->created_at))->format('Y-m-d');
+        $date = (new Carbon($budget->created_at))->format('d-m-Y');
 
         $signature = Storage::disk('public')->url('pdf/firma.jpg');
 

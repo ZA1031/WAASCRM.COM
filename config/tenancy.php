@@ -20,8 +20,8 @@ return [
         '127.0.0.1',
         'localhost',
         //'wass.lerpsolutions.com'
-        //'www.waascrm.com',
-        //'waascrm.com'
+        'www.waascrm.com',
+        'waascrm.com'
     ],
 
     /**

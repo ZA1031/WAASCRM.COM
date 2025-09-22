@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Documentación API WaaS",
-        "description": "Documentación de la API de WaaS. Es necesario contar con un token de autenticación para poder acceder a los recursos de la API. \r\n    *       Para ello se debe enviar el token en el header de la petición con el nombre 'Authorization Bearer'.<br>Para obtener la clave de autenticación,\r\n    *       ingresar al penel, sección de Configuración -> Sistema y luego en API.",
+        "description": "Documentación de la API de WaaS. Es necesario contar con un token de autenticación para poder acceder a los recursos de la API. \n    *       Para ello se debe enviar el token en el header de la petición con el nombre 'Authorization Bearer'.<br>Para obtener la clave de autenticación,\n    *       ingresar al penel, sección de Configuración -> Sistema y luego en API.",
         "version": "1.0"
     },
     "servers": [
@@ -17,6 +17,50 @@
         },
         "/contact/{id}": {
             "$ref": "#/paths/~1client~1{id}"
+        },
+        "/brands": {
+            "get": {
+                "tags": [
+                    "Marcas"
+                ],
+                "description": "Listado de marcas",
+                "operationId": "5acde12e5d96b40ee0d5fefa5b75f6fd",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TenantProduct"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "rows": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
         },
         "/client": {
             "get": {
@@ -608,6 +652,27 @@
                 "properties": {
                     "id": {
                         "type": "integer"
+                    },
+                    "client_id": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "products": {
+                        "type": "string"
+                    },
+                    "quantities": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "rejection_reason": {
+                        "type": "string"
+                    },
+                    "is_horeca": {
+                        "type": "string"
                     }
                 },
                 "type": "object"

@@ -30,7 +30,7 @@ class CheckPermission
             abort(403, 'Access denied');
         } 
 
-        $company = Company::first();
+        $company = Company::where('tenant_id', tenant('id'))->first();
         if (!$company || $company->status != 1) {
             abort(403, 'Access denied');
         }

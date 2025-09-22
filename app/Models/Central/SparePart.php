@@ -7,11 +7,12 @@ use App\Models\Tenant\Catalog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\CentralConnection;
 use Storage;
 
 class SparePart extends Model
 {
-    use HasFactory;
+    use HasFactory, CentralConnection;
     use SoftDeletes;
 
     public $timestamps = false;
@@ -30,53 +31,6 @@ class SparePart extends Model
     protected $appends = [
         'image_url'
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::deleted(function ($sparePart) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($sparePart) {
-                    SparePart::where('id', $sparePart->id)->delete();
-                });
-            }
-        });
-
-        static::created(function ($sparePart) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($sparePart) {
-                    $data = $sparePart->toArray();
-                    unset($data['deleted_at']);
-                    unset($data['created_at']);
-                    unset($data['updated_at']);
-                    unset($data['image_url']);
-                    SparePart::create($data);
-                });
-            }
-        });
-
-        static::updated(function ($sparePart) {
-            if (!empty(tenant('id'))) return;
-            $tenants = Tenant::all();
-            foreach ($tenants as $tenant){
-                $tenant->run(function () use ($sparePart) {
-                    $data = $sparePart->toArray();
-                    unset($data['deleted_at']);
-                    unset($data['created_at']);
-                    unset($data['updated_at']);
-                    unset($data['image_url']);
-                    SparePart::where('id', $sparePart->id)->update($data);
-                });
-            }
-        });
-    }
-
-
 
     public function compatibility()
     {

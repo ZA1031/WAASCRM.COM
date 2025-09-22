@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Central\Product;
 use App\Models\Tenant\Address;
 use App\Models\Tenant\Budget;
 use App\Models\Tenant\BudgetDetail;
 use App\Models\Tenant\Catalog;
 use App\Models\Tenant\Client;
-use App\Models\Tenant\TenantProduct;
 use App\Models\Tenant\TenantUser;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -106,7 +106,7 @@ class ProposalController extends Controller
             ///Generate Installations
             $quantities = explode(',', $budget->quantities);
             foreach (explode(',', $budget->products) as $key => $product) {
-                $pr = TenantProduct::find($product);
+                $pr = Product::find($product);
                 if (!$pr) continue;
                 for ($i = 0; $i < $quantities[$key]; $i++){
                     $addr = $request->input('address-'.$product.'-'.$i, 0);

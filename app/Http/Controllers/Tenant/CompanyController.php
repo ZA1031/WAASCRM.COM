@@ -12,7 +12,7 @@ class CompanyController extends Controller
 {
     public function index()
     {
-        $company = Company::first();
+        $company = Company::where('tenant_id', tenant('id'))->first();
         if (!$company) abort(404);
         $company->logo_url = $company->logo_url;
         return Inertia::render('Tenant/Companies/CompanyForm', [
@@ -23,7 +23,7 @@ class CompanyController extends Controller
 
     public function store(Request $request)
     {
-        $company = Company::first();
+        $company = Company::where('tenant_id', tenant('id'))->first();
         return $this->upsertData($request, $company->id);
     }
 

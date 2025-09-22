@@ -411,7 +411,8 @@
     
     $products = explode(',', $budget->budget->products);
     foreach ($products as $pid){
-        $prod = TenantProduct::find($pid);
+        $prod = Product::find($pid);
+        $prod->getTenantProduct();
         $model = $prod->model;
 
         $files = $prod->getFilesData(1); 

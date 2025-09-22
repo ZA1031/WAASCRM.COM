@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use App\Models\Central\Product;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -50,7 +51,7 @@ class Installation extends Model
 
     public function product()
     {
-        return $this->belongsTo(TenantProduct::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function getStatus()

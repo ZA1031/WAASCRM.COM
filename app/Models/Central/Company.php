@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Stancl\Tenancy\Database\Concerns\CentralConnection;
 use Storage;
 
 class Company extends Model
 {
-    use HasFactory;
+    use HasFactory, CentralConnection;
     use SoftDeletes;
 
     public $timestamps = false;
@@ -60,70 +61,15 @@ class Company extends Model
 
             ///Add Domain
             $tenant->createDomain(['domain' => $company->domain.'.'.env('APP_DOMAIN')]);
-
-            ///Create Company, User and Products
-            $products = Product::withTrashed()->orderBy('id')->get();
-            $parts = SparePart::withTrashed()->get();
-            $catalogs = AdminCatalog::withTrashed()->get();
-            $tenant->run(function () use ($company, $products, $parts, $catalogs) {
-                Company::create($company->toArray());
-
-                foreach($catalogs as $catalog){
-                    $pr = AdminCatalog::create($catalog->toArray());
-                }
-
-                foreach($parts as $part){
-                    $pr = SparePart::create($part->toArray());
-                }
-
-                $first = $products->first();
-                if ($first){
-                    $id = $first->id;
-                    DB::statement("ALTER SEQUENCE products_id_seq RESTART WITH $id");
-                }
-
-                foreach($products as $product){
-                    $data = $product->toArray();
-                    unset($data['deleted_at']);
-                    unset($data['created_at']);
-                    unset($data['updated_at']);
-                    $pr = Product::create($data);
-
-                    $product->attributes()->each(function ($attribute) use ($pr){
-                        $pr->attributes()->create($attribute->toArray());
-                    });
-
-                    $product->files()->each(function ($image) use ($pr){
-                        $pr->images()->create($image->toArray());
-                    });
-
-                }
-            });
         });
 
         static::updated(function ($company) {
-            if (!empty(tenant('id'))){
-                tenancy()->central(function ($tenant) use ($company){
-                    $data = $company->toArray();
-                    unset($data['id']);
-                    Company::where('tenant_id', $company->tenant_id)->update($data);
-                });
-            }else {
-                $tenant = Tenant::find($company->tenant_id);
-                if (!$tenant) return;
+            $tenant = Tenant::find($company->tenant_id);
+            if (!$tenant) return;
 
-                $tenant->domains()->each(function ($domain) use ($company){
-                    $domain->update(['domain' => $company->domain.'.'.env('APP_DOMAIN')]);
-                });
-
-                $tenant->run(function () use ($company) {
-                    $cc = Company::first();
-                    if ($cc) {
-                        $cc->update($company->toArray());
-                    }
-                });
-            }
-           
+            $tenant->domains()->each(function ($domain) use ($company){
+                $domain->update(['domain' => $company->domain.'.'.env('APP_DOMAIN')]);
+            });
         });
 
         static::deleted(function ($company) {
