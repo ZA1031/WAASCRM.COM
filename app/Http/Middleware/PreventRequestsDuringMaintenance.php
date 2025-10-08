@@ -14,4 +14,14 @@ class PreventRequestsDuringMaintenance extends Middleware
     protected $except = [
         //
     ];
+
+    protected function inExceptArray($request)
+    {
+        // Allow only Aquaam tenant domain
+        if ($request->getHost() === 'aquaam.waascrm.com') {
+            return true;
+        }
+
+        return parent::inExceptArray($request);
+    }
 }

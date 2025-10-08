@@ -43,10 +43,12 @@ class ProductController extends ApiController
         $limit = request()->input('rows', 10);
 
         $fams = ExtraVariable::where('name', 'WAAS_API_ENABLED')->first()->value ?? '';
+        $familyIds = array_filter(explode(',', $fams));
+
 
         $data = Product::whereIn('id', ALLOWED_PRODUCTS)
             ->when(!empty($fams), function($query) use ($fams) {
-                $query->where('family_id', explode(',', $fams));
+                $query->whereIn('family_id', array_filter(explode(',', $fams)));
             })->where('active', 1)->skip(($page - 1) * $limit)->take($limit)->get()->map(function($pr){
             $pr->getTenantProduct();
             $pr->main_image = $pr->getMainImage();
@@ -86,7 +88,7 @@ class ProductController extends ApiController
                 $pr->inner_stock_max, $pr->inner_model, $pr->final_name, $pr->final_model);
             return $pr;
         });
-
+        return $data;
         $activeData = $data->filter(function($item) {
             return $item->inner_active;
         });
