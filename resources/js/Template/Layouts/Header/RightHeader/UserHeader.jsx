@@ -23,7 +23,8 @@ const UserHeader = () => {
   }, []);
 
   const Logout = () => {
-    router.post('/logout');
+    console.log('Logout===========');
+    router.post(route('logout'));
   };
 
   const UserMenuRedirect = (redirect) => {
