@@ -72,7 +72,7 @@ export default function Dashboard({ auth, users }) {
                             <CardBody className='pt-2'>
                                 <Row className='mt-2'>
                                     {actualUser.rol_id != 4 &&
-                                        <Col sm="2">
+                                        <Col sm="6" md="4" lg="2" className="mb-2">
                                             <Select
                                                 key={'users'}
                                                 label={{ label: 'Usuario' }}
@@ -82,13 +82,15 @@ export default function Dashboard({ auth, users }) {
                                                     name: 'uid',
                                                     options: users,
                                                     defaultValue: users.filter(option => option.value == data['uid'])[0],
-                                                    isClearable: true
+                                                    isClearable: true,
+                                                    // Try these props to control dropdown behavior
+                                                    menuPlacement: "auto",
+                                                    menuShouldBlockScroll: true,
                                                 }}
-                                                zIndex={2000}
                                             />
                                         </Col>
                                     }
-                                    <Col sm="2">
+                                    <Col sm="6" md="4" lg="2" className="mb-2">
                                         <FloatingInput
                                             label={{ label: 'Desde' }}
                                             input={{
@@ -101,7 +103,7 @@ export default function Dashboard({ auth, users }) {
                                             errors={errors.sd}
                                         />
                                     </Col>
-                                    <Col sm="2">
+                                    <Col sm="6" md="4" lg="2" className="mb-2">
                                         <FloatingInput
                                             label={{ label: 'Hasta' }}
                                             input={{
@@ -114,13 +116,13 @@ export default function Dashboard({ auth, users }) {
                                             errors={errors.ed}
                                         />
                                     </Col>
-                                    <Col md='2'>
+                                    <Col sm="6" md="4" lg="2" className="mb-2">
                                         <Switch
                                             label={'Simular Datos'}
                                             input={{ onChange: () => handleChangeSwitch('simulate'), name: 'simulate', checked: data.simulate }}
                                         />
                                     </Col>
-                                    <Col sm="2">
+                                    <Col sm="6" md="4" lg="2" className="mb-2">
                                         <Btn attrBtn={{ color: 'primary save-btn mt-4', onClick: filter, disabled: processing }}>Filtrar</Btn>
                                     </Col>
                                 </Row>
