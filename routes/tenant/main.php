@@ -122,7 +122,7 @@ Route::middleware('check-permission:0,1,2,4,6')->group(function () {
 ///Tecnic Access
 Route::middleware('check-permission:0,1,3,5')->group(function () {
     ///Instalations
-    Route::get('/installations/pending', [InstallationController::class, 'pending'])->name('installations.pendings');
+    Route::get('/installations/pending', [InstallationController::class, 'pending'])->name('installations.pending');
     Route::get('/installations/all', [InstallationController::class, 'allData'])->name('installations.all');
     Route::resource('/installations', InstallationController::class, ['names' => ['index' => 'installations']]);
     Route::post('/installations/list', [InstallationController::class, 'list'])->name('installations.list');

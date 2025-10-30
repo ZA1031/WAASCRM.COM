@@ -33,6 +33,10 @@ export default function InstallationList({ auth, title, pending, tecnics, client
     const toggleModalHistory = () => setModalHistory(!modalHistory);
     const [historyList, setHistoryList] = useState([]);
 
+    console.log('🔍 InstallationList - Pending value:', pending);
+    console.log('🔍 InstallationList - Title:', title);
+    console.log('🔍 InstallationList - Is Installation:', isInstallation);
+
     const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
         id: 0
     });
@@ -42,10 +46,11 @@ export default function InstallationList({ auth, title, pending, tecnics, client
     }
 
     const setSelected = (selected, evt) => {
-
+        if (!selected) return; // Add null check
+        
         if (evt.name == 'client_id') {
             setSelectedOptionCl(selected);
-            setAddressList(selected.addresses);
+            setAddressList(selected.addresses || []);
             setSelectedOptionAd(null);
             setData(data => ({ ...data, address_id: null, [evt.name]: selected.value }));
         } else {
@@ -54,19 +59,41 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             if (evt.name == 'product_id') setSelectedOptionPr(selected);
             setData(data => ({ ...data, [evt.name]: selected.value }))
         }
-
     }
 
-    const getInstallations = async (d) => {
-        if (d == undefined) d = {};
-        d.pending = pending;
-        const response = await axios.post(isInstallation ? route('installations.list') : route('maintenances.list'), d);
-        setDataList(response.data);
+    const getInstallations = async (d = {}) => {
+        try {
+            const params = {
+                pending: pending,
+                ...d
+            };
+            
+            console.log('🔄 Fetching installations with params:', params);
+            
+            const response = await axios.post(
+                isInstallation ? route('installations.list') : route('maintenances.list'), 
+                params
+            );
+            
+            // Add null checks for the data
+            const safeData = Array.isArray(response.data) ? response.data : [];
+            setDataList(safeData);
+            
+            console.log('✅ Received installations:', safeData.length);
+        } catch (error) {
+            console.error('❌ Error fetching installations:', error);
+            setDataList([]); // Set empty array on error
+        }
     }
 
     const getHistory = async (id) => {
-        const response = await axios.get(route('installations.notes', id));
-        setHistoryList(response.data);
+        try {
+            const response = await axios.get(route('installations.notes', id));
+            setHistoryList(Array.isArray(response.data) ? response.data : []);
+        } catch (error) {
+            console.error('Error fetching history:', error);
+            setHistoryList([]);
+        }
     }
 
     const addNotes = async () => {
@@ -84,8 +111,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                 getInstallations();
                 toggleModal();
             }
-        }
-        );
+        });
     }
 
     const actionForm = async () => {
@@ -98,27 +124,33 @@ export default function InstallationList({ auth, title, pending, tecnics, client
             onError: (y) => {
                 console.log(y);
             }
-        }
-        );
+        });
     }
 
     useEffect(() => {
+        console.log('🎯 useEffect triggered - Pending:', pending, 'Filtered:', filtered);
         getInstallations(filtered);
         if (modalHistory) getHistory(data.id);
-    }, [deleteCounter]);
+    }, [deleteCounter, pending]);
+
+    useEffect(() => {
+        console.log('🔄 Pending value changed to:', pending);
+        getInstallations(filtered);
+    }, [pending]);
 
     const tableColumns = [
         {
             name: 'Cliente',
             selector: (row) => {
+                // Add null checks for client data
+                const clientData = row?.['client_data'] || {};
                 return (
                     <>
-                        <div>{row['client_data']?.company_name}</div>
+                        <div>{clientData?.company_name || 'N/A'}</div>
                         <div className="small text-muted">
-                            <Phone client={row['client_data']} /><br />
-                            <Email client={row['client_data']} />
+                            <Phone client={clientData} /><br />
+                            <Email client={clientData} />
                         </div>
-
                     </>
                 )
             },
@@ -128,7 +160,9 @@ export default function InstallationList({ auth, title, pending, tecnics, client
         {
             name: 'Dirección',
             selector: (row) => {
-                return <Address address={row['address']} />
+                // Add null check for address
+                const address = row?.['address'] || {};
+                return <Address address={address} />
             },
             sortable: true,
             center: false,
@@ -136,17 +170,23 @@ export default function InstallationList({ auth, title, pending, tecnics, client
         {
             name: 'Producto',
             selector: row => {
+                // Add comprehensive null checks for product data
+                const product = row?.['product'] || {};
+                const productName = product?.final_name || 'Producto no disponible';
+                const innerStock = product?.inner_stock ?? 0;
+                const innerStockMin = product?.inner_stock_min ?? 0;
+                const status = row?.['status'] ?? -1;
+                
                 return (
                     <>
-                        {row['product'].inner_stock == 0 && <Badge color="danger" className="me-1">Sin Stock</Badge>}
-                        {(isInstallation && row['status'] == 0) &&
+                        {innerStock == 0 && <Badge color="danger" className="me-1">Sin Stock</Badge>}
+                        {(isInstallation && status == 0) &&
                             <>
-                                {(row['product'].inner_stock > 0) &&
-                                    <Badge color={row['product'].inner_stock_min <= row['product'].inner_stock ? 'success' : 'warning'} className="me-1">{row['product'].inner_stock}</Badge>}
-
+                                {(innerStock > 0) &&
+                                    <Badge color={innerStockMin <= innerStock ? 'success' : 'warning'} className="me-1">{innerStock}</Badge>}
                             </>
                         }
-                        {row['product'].final_name}
+                        {productName}
                     </>
                 )
             },
@@ -156,7 +196,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
         },
         {
             name: 'Fecha',
-            selector: row => row['installation_date'],
+            selector: row => row?.['installation_date'] || 'N/A',
             sortable: true,
             center: false,
             maxWidth: "150px"
@@ -164,12 +204,14 @@ export default function InstallationList({ auth, title, pending, tecnics, client
         {
             name: 'Estado',
             selector: (row) => {
+                const status = row?.['status'] ?? -1;
                 return (
                     <>
-                        {row['status'] == 0 && <Badge color="warning">Pendiente</Badge>}
-                        {row['status'] == 1 && <Badge color="success">Finalizado</Badge>}
-                        {row['status'] == 2 && <Badge color="danger">Rechazado</Badge>}
-                        {row['status'] == 3 && <Badge color="info">Pospuesto</Badge>}
+                        {status == 0 && <Badge color="warning">Pendiente</Badge>}
+                        {status == 1 && <Badge color="success">Finalizado</Badge>}
+                        {status == 2 && <Badge color="danger">Rechazado</Badge>}
+                        {status == 3 && <Badge color="info">Pospuesto</Badge>}
+                        {status == -1 && <Badge color="secondary">Desconocido</Badge>}
                     </>
                 )
             },
@@ -180,23 +222,34 @@ export default function InstallationList({ auth, title, pending, tecnics, client
         {
             name: 'Acciones',
             selector: (row) => {
+                // Add null checks for row data
+                if (!row) return null;
+                
+                const rowId = row?.id;
+                const assignedTo = row?.['assigned_to'];
+                const installationDate = row?.['installation_date'];
+                const status = row?.['status'] ?? -1;
+                const enabled = row?.['enabled'] ?? false;
+                
+                if (!rowId) return null;
+
                 return (
                     <>
-                        {!row['assigned_to'] || !row['installation_date'] ?
+                        {!assignedTo || !installationDate ?
                             <Icon
-                                icon={!row['assigned_to'] ? 'UserPlus' : 'Clock'}
-                                id={'accept-' + row['id']}
+                                icon={!assignedTo ? 'UserPlus' : 'Clock'}
+                                id={'accept-' + rowId}
                                 tooltip="Asignar"
                                 onClick={() => {
                                     toggleModal();
                                     clearErrors();
                                     reset();
-                                    if (row['assigned_to']) {
-                                        setData(data => ({ ...data, assigned_to: row['assigned_to'], id: row['id'] }));
+                                    if (assignedTo) {
+                                        setData(data => ({ ...data, assigned_to: assignedTo, id: rowId }));
                                         setHideTecnic(true);
                                     } else {
                                         setHideTecnic(false);
-                                        setData(data => ({ ...data, id: row['id'] }));
+                                        setData(data => ({ ...data, id: rowId }));
                                     }
                                 }}
                                 className="text-success"
@@ -205,60 +258,60 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                             <>
                                 <Icon
                                     icon="MessageSquare"
-                                    id={'message-' + row['id']}
+                                    id={'message-' + rowId}
                                     tooltip="Mensajes"
                                     className="me-1"
                                     onClick={() => {
                                         toggleModalHistory();
                                         clearErrors();
                                         reset();
-                                        setData(data => ({ ...data, id: row['id'] }));
-                                        getHistory(row['id']);
+                                        setData(data => ({ ...data, id: rowId }));
+                                        getHistory(rowId);
                                     }}
                                 />
-                                {row['status'] != 2 && row['status'] != 1 &&
+                                {status != 2 && status != 1 &&
                                     <>
                                         <Icon
                                             icon="Clock"
-                                            id={'clock-' + row['id']}
+                                            id={'clock-' + rowId}
                                             tooltip="Posponer"
                                             onClick={() => {
                                                 toggleModalAction();
                                                 clearErrors();
                                                 reset();
-                                                setData(data => ({ ...data, id: row['id'], status: 3 }));
+                                                setData(data => ({ ...data, id: rowId, status: 3 }));
                                                 setModalActionTitle('Posponer');
                                             }}
                                         />
                                         <Icon
-                                            icon="X" id={'reject-' + row['id']}
+                                            icon="X" id={'reject-' + rowId}
                                             tooltip="Rechazar"
                                             className="text-danger"
                                             onClick={() => {
                                                 toggleModalAction();
                                                 clearErrors();
                                                 reset();
-                                                setData(data => ({ ...data, id: row['id'], status: 2 }));
+                                                setData(data => ({ ...data, id: rowId, status: 2 }));
                                                 setModalActionTitle('Rechazar');
                                             }}
                                         />
-                                        {row['enabled'] &&
+                                        {enabled &&
                                             <Icon icon="Tool"
-                                                id={'accept-' + row['id']}
+                                                id={'accept-' + rowId}
                                                 tooltip="Instalar"
                                                 className="text-success"
-                                                onClick={() => router.visit(route(isInstallation ? 'installations.edit' : 'maintenances.edit', [row['id']]))}
+                                                onClick={() => router.visit(route(isInstallation ? 'installations.edit' : 'maintenances.edit', [rowId]))}
                                             />
                                         }
                                     </>
                                 }
-                                {row['status'] == 1 &&
+                                {status == 1 &&
                                     <Icon
                                         icon="Eye"
-                                        id={'see-' + row['id']}
+                                        id={'see-' + rowId}
                                         tooltip="Ver Detalles"
                                         className="text-success"
-                                        onClick={() => router.visit(route(isInstallation ? 'installations.show' : 'maintenances.edit', [row['id']]))}
+                                        onClick={() => router.visit(route(isInstallation ? 'installations.show' : 'maintenances.edit', [rowId]))}
                                     />
                                 }
                             </>
@@ -312,7 +365,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                                                 placeholder: 'Producto',
                                                 onChange: setSelected,
                                                 name: 'product_id',
-                                                options: products,
+                                                options: products || [],
                                                 defaultValue: selectedOptionPr,
                                             }}
                                             errors={errors.product_id}
@@ -326,7 +379,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                                                 placeholder: 'Cliente',
                                                 onChange: setSelected,
                                                 name: 'client_id',
-                                                options: clients,
+                                                options: clients || [],
                                                 defaultValue: selectedOptionCl,
                                             }}
                                             errors={errors.client_id}
@@ -357,7 +410,7 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                                             placeholder: 'Técnico',
                                             onChange: setSelected,
                                             name: 'assigned_to',
-                                            options: tecnics,
+                                            options: tecnics || [],
                                             defaultValue: selectedOptionTc,
                                         }}
                                         errors={errors.assigned_to}
@@ -450,17 +503,18 @@ export default function InstallationList({ auth, title, pending, tecnics, client
                             </tr>
                         </thead>
                         <tbody>
-                            {historyList.map((item, index) => (
+                            {Array.isArray(historyList) && historyList.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.created_date}</td>
+                                    <td>{item?.created_date || 'N/A'}</td>
                                     <td>
-                                        {item.status == 2 && <Badge color="danger">Rechazado</Badge>}
-                                        {item.status == 3 && <Badge color="info">Pospuesto</Badge>}
+                                        {item?.status == 2 && <Badge color="danger">Rechazado</Badge>}
+                                        {item?.status == 3 && <Badge color="info">Pospuesto</Badge>}
+                                        {(!item?.status || (item.status !== 2 && item.status !== 3)) && <Badge color="secondary">Nota</Badge>}
                                     </td>
-                                    <td>{item.user_name}</td>
-                                    <td>{item.notes}</td>
+                                    <td>{item?.user_name || 'N/A'}</td>
+                                    <td>{item?.notes || 'Sin notas'}</td>
                                     <td>
-                                        {item.status == 0 &&
+                                        {item?.status == 0 &&
                                             <Trash onClick={() => handleDelete(route('installations.notes.destroy', item.id))} id={'delete-' + item.id} />
                                         }
                                     </td>
