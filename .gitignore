@@ -1,6 +1,7 @@
 /.phpunit.cache
 /bootstrap/ssr
 /node_modules
+/_node_modules
 /public/build
 /public/hot
 /public/storage
@@ -21,3 +22,4 @@ yarn-error.log
 node_modules.zip
 waas
 waas.pub
+config/tenancy.php
